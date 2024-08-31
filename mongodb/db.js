@@ -19,7 +19,7 @@ mongoose.connect(dbUrl, options)
 
 mongoose.connection.on('disconnected', () => {
   console.log('MongoDB disconnected. Reconnecting...');
-  mongoose.connect(dbURI, options);
+  mongoose.connect(dbURl, options);
 });
 
 module.exports = mongoose;
