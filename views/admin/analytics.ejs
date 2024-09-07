@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Reports & Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Reports & Analytics</h1>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h3>Active Bookings</h3>
+                <p id="activeBookings">Loading...</p>
+            </div>
+            <div class="col-md-4">
+                <h3>Total Bookings</h3>
+                <p id="totalBookings">Loading...</p>
+            </div>
+            <div class="col-md-4">
+                <h3>Total Properties</h3>
+                <p id="totalProperties">Loading...</p>
+            </div>
+        </div>
+
+        <canvas id="bookingsPerPropertyChart" width="400" height="200"></canvas>
+
+    </div>
+
+    <script>
+        // Fetch analytics data
+        fetch('/admin/analytics')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('activeBookings').innerText = data.activeBookings;
+                document.getElementById('totalBookings').innerText = data.totalBookings;
+                document.getElementById('totalProperties').innerText = data.totalProperties;
+
+                // Check if bookingsPerProperty is empty or not
+                const bookingsPerProperty = data.bookingsPerProperty;
+                if (bookingsPerProperty.length === 0) {
+                    console.warn('No data available for bookings per property.');
+                }
+
+                // Create chart for bookings per property
+                const ctx = document.getElementById('bookingsPerPropertyChart').getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: bookingsPerProperty.length > 0 ? bookingsPerProperty.map(bp => bp.property) : ['No Data'],
+                        datasets: [{
+                            label: 'Bookings per Property',
+                            data: bookingsPerProperty.length > 0 ? bookingsPerProperty.map(bp => bp.total) : [0],
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching analytics data:', error));
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>

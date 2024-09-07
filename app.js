@@ -5,16 +5,19 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const expressSession =require("express-session");
-const roomdb=require('./routes/roomdb')
-const propertyroutes=require('./routes/propertyroutes')
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./models/users');
 const passport = require('passport');
 const flash=require("connect-flash");
 
-var app = express();
+const roomdb=require('./routes/roomdb')
+const propertyroutes=require('./routes/propertyroutes')
+var indexRouter = require('./routes/index');
+var usersRouter = require('./models/users');
+const adminRoutes = require('./routes/adminroutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
+const forgotRoutes = require('./routes/forgot');
+const contactroutes = require('./routes/contactroutes');
 
+var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -35,14 +38,6 @@ app.use(expressSession({
   cookie: { secure: false }
 }));
 
-// app.use(session({
-//   secret: 'yourSecret',
-//   resave: false,
-//   saveUninitialized: true,
-//   cookie: { secure: false }  // Set `secure` to `true` if using HTTPS
-// }));
-
-
 const bookingRoutes = require('./routes/bookingroutes'); // Adjust the path as needed
 
 app.use('/api/bookings', bookingRoutes);
@@ -53,7 +48,6 @@ app.post('/api/bookings', (req, res) => {
 });
 
 app.use(flash());
-
 
 // Passport initialization
 app.use(passport.initialize());
@@ -74,7 +68,10 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/Room', roomdb );
 app.use('/Property',propertyroutes);
-// app.use('/api', propertyRoutes);
+app.use('/admin', adminRoutes);
+app.use('/admin/analytics', analyticsRoutes);
+app.use('/forgot', forgotRoutes);
+app.use('/',contactroutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

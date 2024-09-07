@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Properties</title>
+</head>
+<body>
+    <h1>Manage Properties</h1>
+    <a href="/admin/properties/add">Add New Property</a>
+
+    <ol>
+        <% properties.forEach(property => { %>
+            <li>
+                <b>Name:</b> <%= property.name %> 
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Property ID</th>
+                            <th>Location</th>
+                            <th>Type</th>
+                            <th>Amenities</th>
+                            <th>Description</th>
+                            <th>Rooms</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><%= property._id %></td>
+                            <td><%= property.location %></td>
+                            <td><%= property.type %></td>
+                            <td>
+                                <ul>
+                                    <% property.amenities.forEach(amenity => { %>
+                                        <li><%= amenity %></li>
+                                    <% }) %>
+                                </ul>
+                            </td>
+                            <td><%= property.description %></td>
+                            <td>
+                                <ul>
+                                    <% property.rooms.forEach(room => { %>
+                                        <li><%= room.type %></li>
+                                    <% }) %>
+                                </ul>
+                            </td>
+                            <td>
+                                <a href="/admin/properties/edit/<%= property._id %>">Edit</a><br>
+                                <form action="/admin/properties/delete/<%= property._id %>" method="POST" style="display:inline;">
+                                    <button type="submit">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </li>
+        <% }) %>
+    </ol>
+</body>
+</html>

@@ -45,41 +45,41 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a property by ID
-// router.put('/properties/:id', async (req, res) => {
-//   try {
-//     const property = await Property.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }); // Fixed typo
-//     if (!property) {
-//       return res.status(404).json({ error: 'Property not found' });
-//     }
-//     res.status(200).json(property);
-//   } catch (err) {
-//     res.status(400).json({ error: err.message });
-//   }
-// });
+router.put('/properties/:id', async (req, res) => {
+  try {
+    const property = await Property.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }); // Fixed typo
+    if (!property) {
+      return res.status(404).json({ error: 'Property not found' });
+    }
+    res.status(200).json(property);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
 
 
 // Delete a property by ID
-// router.delete('/properties/:id', async (req, res) => {
-//   try {
-//     const property = await Property.findByIdAndDelete(req.params.id); // Fixed typo
-//     if (!property) {
-//       return res.status(404).json({ error: 'Property not found' });
-//     }
-//     res.status(200).json({ message: 'Property deleted successfully' });
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
+router.delete('/properties/:id', async (req, res) => {
+  try {
+    const property = await Property.findByIdAndDelete(req.params.id); // Fixed typo
+    if (!property) {
+      return res.status(404).json({ error: 'Property not found' });
+    }
+    res.status(200).json({ message: 'Property deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 
 // Get all properties
-// router.get('/properties', async (req, res) => {
-//   try {
-//     const properties = await Property.find(); // Fixed typo
-//     res.status(200).json(properties);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
+router.get('/properties', async (req, res) => {
+  try {
+    const properties = await Property.find(); // Fixed typo
+    res.status(200).json(properties);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 module.exports = router;

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Booking</title>
+</head>
+<body>
+    <h1>Edit Booking</h1>
+    <form action="/admin/bookings/edit/<%= booking._id %>" method="POST">
+        <label for="user">User:</label>
+        <select id="user" name="user" required>
+            <% users.forEach(user => { %>
+                <option value="<%= user._id %>" <%= booking.user._id.equals(user._id) ? 'selected' : '' %>><%= user.username %></option>
+            <% }) %>
+        </select><br>
+
+        <label for="property">Property:</label>
+        <select id="property" name="property" required>
+            <% properties.forEach(property => { %>
+                <option value="<%= property._id %>" 
+                    <%= (booking.roomType && booking.roomType.property && booking.roomType.property._id && booking.roomType.property._id.equals(property._id)) ? 'selected' : '' %>>
+                    <%= property.name %>
+                </option>
+            <% }) %>
+        </select><br>
+        
+
+        <label for="roomType">Room:</label>
+        <select id="roomType" name="roomType" required>
+            <% rooms.forEach(room => { %>
+                <option value="<%= room._id %>" <%= booking.roomType._id.equals(room._id) ? 'selected' : '' %>><%= room.type %></option>
+            <% }) %>
+        </select><br>
+
+        <label for="mobile">Mobile:</label>
+        <input type="text" id="mobile" name="mobile" value="<%= booking.mobile %>" required><br>
+
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate" value="<%= booking.startDate.toISOString().split('T')[0] %>" required><br>
+
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate" value="<%= booking.endDate.toISOString().split('T')[0] %>" required><br>
+
+        <label for="specialRequest">Special Request:</label>
+        <input type="text" id="specialRequest" name="specialRequest" value="<%= booking.specialRequest %>"><br>
+
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <script>
+        // Update rooms based on selected property (for editing)
+        document.getElementById('property').addEventListener('change', async function() {
+            const propertyId = this.value;
+            const roomTypeSelect = document.getElementById('roomType');
+
+            // Clear existing options
+            roomTypeSelect.innerHTML = '<option value="" disabled selected>Select a room</option>';
+
+            if (propertyId) {
+                try {
+                    const response = await fetch(`/admin/rooms-by-property/${propertyId}`);
+                    const data = await response.json();
+
+                    if (response.ok && data.rooms) {
+                        data.rooms.forEach(room => {
+                            const option = document.createElement('option');
+                            option.value = room._id;
+                            option.textContent = room.type;
+                            roomTypeSelect.appendChild(option);
+                        });
+
+                        // If the room matches the one in the booking, select it
+                        const bookingRoomId = "<%= booking.roomType._id %>";
+                        roomTypeSelect.value = bookingRoomId;
+                    } else {
+                        console.error('Failed to load rooms:', data.error);
+                    }
+                } catch (err) {
+                    console.error('Error fetching rooms:', err);
+                }
+            }
+        });
+
+        // Trigger the change event on page load to pre-select the room based on the current property
+        document.getElementById('property').dispatchEvent(new Event('change'));
+    </script>
+</body>
+</html>

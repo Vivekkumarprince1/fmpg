@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Rooms</title>
+</head>
+<body>
+    <h1>Manage Rooms</h1>
+    <a href="/admin/rooms/add">Add New Room</a>
+    <ul>
+        <% rooms.forEach(room => { %>
+            <li>
+                <%= room.number %> - <%= room.type %> - <%= room.price %> - <%= room.available %>
+                <a href="/admin/rooms/edit/<%= room._id %>">Edit</a>
+                <form action="/admin/rooms/delete/<%= room._id %>" method="POST" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        <% }) %>
+    </ul>
+</body>
+</html>
