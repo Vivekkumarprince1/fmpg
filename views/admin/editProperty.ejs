@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Property</title>
+    <style>
+        .input-group {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Edit Property</h1>
+    <form action="/admin/properties/edit/<%= property._id %>" method="POST">
+        <!-- Property Fields -->
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="<%= property.name %>" required><br>
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" value="<%= property.location %>" required><br>
+
+        <label for="type">Type:</label>
+        <input type="text" id="type" name="type" value="<%= property.type %>" required><br>
+
+        <label for="map">Map:</label>
+        <input type="text" id="map" name="map" value="<%= property.map %>"><br>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required><%= property.description %></textarea><br>
+
+        <!-- Images Section -->
+        <label>Images:</label>
+        <div id="image-container">
+            <% property.images.forEach((image, index) => { %>
+                <div class="input-group">
+                    <input type="text" name="images[]" value="<%= image %>" required>
+                    <button type="button" onclick="removeField(this)">-</button>
+                </div>
+            <% }) %>
+        </div>
+        <button type="button" onclick="addImageField()">Add Image</button><br>
+
+        <!-- Amenities Section -->
+        <label>Amenities:</label>
+        <div id="amenity-container">
+            <% property.amenities.forEach((amenity, index) => { %>
+                <div class="input-group">
+                    <input type="text" name="amenities[]" value="<%= amenity %>" required>
+                    <button type="button" onclick="removeField(this)">-</button>
+                </div>
+            <% }) %>
+        </div>
+        <button type="button" onclick="addAmenityField()">Add Amenity</button><br>
+
+        <!-- Rooms Section -->
+        <label>Rooms:</label>
+        <div id="room-container">
+            <% property.rooms.forEach((room, index) => { %>
+                <div class="input-group">
+                    <input type="text" name="rooms[number][]" value="<%= room.number %>" placeholder="Room Number" required>
+                    <input type="text" name="rooms[type][]" value="<%= room.type %>" placeholder="Room Type" required>
+                    <input type="number" name="rooms[price][]" value="<%= room.price %>" placeholder="Room Price" required>
+                    <input type="checkbox" name="rooms[available][]" <%= room.available ? 'checked' : '' %>> Available
+                    <button type="button" onclick="removeRoomField(this)">-</button>
+                </div>
+            <% }) %>
+        </div>
+        <button type="button" onclick="addRoomField()">Add Room</button><br>
+
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <script>
+        // Add new image input field
+        function addImageField() {
+            const container = document.getElementById('image-container');
+            const newImageInput = document.createElement('div');
+            newImageInput.className = 'input-group';
+            newImageInput.innerHTML = '<input type="text" name="images[]" placeholder="Add new image" required><button type="button" onclick="removeField(this)">-</button>';
+            container.appendChild(newImageInput);
+        }
+
+        // Add new amenity input field
+        function addAmenityField() {
+            const container = document.getElementById('amenity-container');
+            const newAmenityInput = document.createElement('div');
+            newAmenityInput.className = 'input-group';
+            newAmenityInput.innerHTML = '<input type="text" name="amenities[]" placeholder="Add new amenity" required><button type="button" onclick="removeField(this)">-</button>';
+            container.appendChild(newAmenityInput);
+        }
+
+        // Add new room input field
+        function addRoomField() {
+            const container = document.getElementById('room-container');
+            const newRoomInput = document.createElement('div');
+            newRoomInput.className = 'input-group';
+            newRoomInput.innerHTML = `
+                <input type="text" name="rooms[number][]" placeholder="Room Number" required>
+                <input type="text" name="rooms[type][]" placeholder="Room Type" required>
+                <input type="number" name="rooms[price][]" placeholder="Room Price" required>
+                <input type="checkbox" name="rooms[available][]" checked> Available
+                <button type="button" onclick="removeRoomField(this)">-</button>
+            `;
+            container.appendChild(newRoomInput);
+        }
+
+        // Remove any input field
+        function removeField(button) {
+            const container = button.parentNode.parentNode;
+            container.removeChild(button.parentNode);
+        }
+
+        // Remove a room input field
+        function removeRoomField(button) {
+            const container = button.parentNode.parentNode;
+            container.removeChild(button.parentNode);
+        }
+    </script>
+</body>
+</html>

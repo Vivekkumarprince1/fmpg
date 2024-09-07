@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Room</title>
+</head>
+<body>
+    <h1>Edit Room</h1>
+    <form action="/admin/rooms/edit/<%= room._id %>" method="POST">
+        <label for="property">Property:</label>
+        <select id="property" name="property" required>
+            <% properties.forEach(property => { %>
+                <option value="<%= property._id %>" <%= room.property._id.equals(property._id) ? 'selected' : '' %>><%= property.name %></option>
+            <% }) %>
+        </select><br>
+        <label for="number">Room Number:</label>
+        <input type="text" id="number" name="number" value="<%= room.number %>" required><br>
+        <label for="type">Room Type:</label>
+        <input type="text" id="type" name="type" value="<%= room.type %>" required><br>
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" value="<%= room.price %>" required><br>
+        <label for="available">Available:</label>
+        <input type="checkbox" id="available" name="available" <%= room.available ? 'checked' : '' %>><br>
+        <button type="submit">Save Changes</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users</title>
+</head>
+<body>
+    <h1>Manage Users</h1>
+    <a href="/admin/users/add">Add New User</a>
+    <ol>
+        <% users.forEach(user => { %>
+            <li>
+                <%= user.username %> - <%= user.email %> - <%= user.mobile %>
+                <a href="/admin/users/edit/<%= user._id %>">Edit</a>
+                <form action="/admin/users/delete/<%= user._id %>" method="POST" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        <% }) %>
+    </ol>
+</body>
+</html>

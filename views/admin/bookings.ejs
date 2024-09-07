@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Bookings</title>
+    <style>
+    </style>
+</head>
+<body>
+    <h1>Manage Bookings</h1>
+    <a href="/admin/bookings/add">Add New Booking</a>
+    <ol>
+        <table border="1" style="width: 100%; text-align: center;">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Booking ID</th>
+                    <th>Username</th>
+                    <th>Mobile</th>
+                    <th>Room Type</th>
+                    <th>Start-Date</th>
+                    <th>End-Date</th>
+                    <th>Request</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>   
+            <% bookings.forEach(booking => { %>
+                <tr>
+                    <td><li><%= booking.user ? booking.user.username : 'No user' %></li></td>
+                    <td><%= booking._id %></td>
+                    <td><%= booking.username || 'N/A' %></td>
+                    <td><%= booking.mobile || 'N/A' %></td>
+                    <td><%= booking.roomType ? booking.roomType.type : 'No room type' %></td>
+                    <td><%= booking.startDate ? booking.startDate.toDateString() : 'N/A' %></td>
+                    <td><%= booking.endDate ? booking.endDate.toDateString() : 'N/A' %></td>
+                    <td><%= booking.specialRequest || 'No request' %></td>
+                    <td><%= booking.status || 'No status' %></td>
+                    <td>
+                        <a href="/admin/booking/view/<%= booking._id %>">view</a>
+                        <a href="/admin/bookings/edit/<%= booking._id %>"> Edit </a>
+                        <form action="/admin/bookings/delete/<%= booking._id %>" method="POST" style="display:inline;">
+                            <button type="submit"> Delete </button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+            </tbody>
+        </table>
+    </ol>
+</body>
+</html>

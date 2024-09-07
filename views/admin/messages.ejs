@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Contact Messages</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Subject</th>
+            <th>Message</th>
+            <th>Date & Time</th> <!-- Updated column header -->
+        </tr>
+    </thead>
+    <tbody>
+        <% messages.forEach(function(message) { %>
+            <tr>
+                <td><%= message.name %></td>
+                <td><%= message.email %></td>
+                <td><%= message.subject %></td>
+                <td><%= message.message %></td>
+                <!-- Display both date and time -->
+                <td><%= message.date.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }) %></td>
+            </tr>
+        <% }); %>
+    </tbody>
+</table>
+</body>
+</html>

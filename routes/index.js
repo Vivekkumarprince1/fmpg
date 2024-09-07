@@ -79,30 +79,9 @@ router.get('/readmore', async function(req, res, next) {
   }
 });
 
-
-router.get('/Radhe-Shyam-PG', function(req, res, next) {
-  res.render('Radhe-Shyam-PG');
-});
-
-router.get('/Divine-Home', function(req, res, next) {
-  res.render('Readmore/Divine-Home');
-});
-
-router.get('/Sahara-PG', function(req, res, next) {
-  res.render('Sahara-PG');
-});
-
-router.get('/Heaven-PG', function(req, res, next) {
-  res.render('Heaven-PG');
-});
-
-router.get('/Dadra-Farm-PG', function(req, res, next) {
-  res.render('Dadra-Farm-PG');
-});
-
-router.get('/Shivalik-PG', function(req, res, next) {
-  res.render('Shivalik-PG');
-});
+// router.get('/Shivalik-PG', function(req, res, next) {
+//   res.render('Shivalik-PG');
+// });
 
 router.get('/404', function(req, res, next) {
   res.render('404');
@@ -133,11 +112,14 @@ router.get('/profile', isLoggedIn, async function(req, res, next) {
     const bookings = await Booking.find({ user: user._id }).populate('roomType').populate({
       path: 'roomType',
       populate: {
-        path: 'property', // Assuming roomType has a reference to property
-        model: 'Property', // Specify the model if necessary (optional if Mongoose can infer)
+        path: 'property', 
+        model: 'Property', 
       }
     });
-    
+    if (user.role === 'superadmin' || user.role === 'admin') {
+      req.flash('success', 'Successfully logged in as admin!');
+      return res.render('admin/dashboard', { admin: user });  // Adjust this route if needed
+    }
     console.log(user, bookings);
     
     res.render("profile", { user, bookings });
@@ -150,9 +132,12 @@ router.get('/profile', isLoggedIn, async function(req, res, next) {
 
 
 
-
 router.get('/signup', function(req, res) {
   res.render('signup');
+});
+
+router.get('/dashboard', isLoggedIn, (req, res) => {
+  res.render('admin/dashboard', { admin: req.user });
 });
 
 router.post('/register', function(req, res) {
@@ -171,17 +156,36 @@ router.post('/register', function(req, res) {
     });
 });
 
-router.post('/login', passport.authenticate("local", {
-  successRedirect: "/index",
-  failureRedirect: "/login",
-  failureFlash: true
-}), function(req, res) {
+router.post('/login', function(req, res, next) {
+  passport.authenticate('local', function(err, user, info) {
+    if (err) { return next(err); }
+    if (!user) {
+      req.flash('error', info ? info.message : 'Invalid username or password');
+      return res.redirect('/login');
+    }
+    
+    req.logIn(user, function(err) {
+      if (err) { return next(err); }
+      
+      // Check user role and redirect accordingly
+      if (user.role === 'superadmin' || user.role === 'admin') {
+        req.flash('success', 'Successfully logged in as admin!');
+        return res.render('admin/dashboard', { admin: user });  // Adjust this route if needed
+      }
+      
+      req.flash('success', 'Successfully logged in!');
+      return res.redirect('/'); // Redirect to the home page or user-specific page
+    });
+  })(req, res, next);
 });
 
+
 router.get('/login', function(req, res) {
-  const errorMessage = req.flash('error',"Invalid Username and Passward");
-  console.log('Flash message:', errorMessage); // Add this to debug
-  res.render('login', { error: errorMessage });
+  const errorMessages = req.flash("error");
+  const successMessages = req.flash("success");
+  console.log("Error messages:", errorMessages); // For debugging
+  console.log("Success messages:", successMessages); // For debugging
+  res.render('login', { error: errorMessages, success: successMessages });
 });
 
 
@@ -196,32 +200,6 @@ function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) return next();
   res.redirect("/login");
 };
-
-
-
-// router.get('/booking', async function(req, res, next) {
-//   console.log("ho gya");
-//   try {
-//     console.log('Room ID from session:', req.session.passport.room);
-    
-//     const roomT = await roomModel.findOne({
-//       property: req.session.passport.room
-//     });
-
-//     if (!roomT) {
-//       console.log('Room not found');
-//       return res.status(404).send('Room not found');
-//     }
-
-//     console.log('Fetched Room:', roomT); // Debugging line
-//     res.render("booking", { roomT });
-//   } catch (err) {
-//     console.error('Error fetching room:', err);
-//     res.status(500).send('Error fetching room');
-//   }
-// });
-
-
 
 
 module.exports = router;

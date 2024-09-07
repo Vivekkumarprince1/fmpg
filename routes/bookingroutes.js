@@ -77,56 +77,56 @@ router.get('/:id', async (req, res) => {
 
 
 
-router.get("/findByUser/:userID", async (req, res) => {
-  const userID = req.params.userID;
-  console.log("User ID: ", userID)
-  try {
-    console.log("ho gya");
-    const bookings = await Booking.find({ user: userID }).populate('user').populate('roomType');
-    // res.status(200).json(bookings);
-    res.render('profile',{bookings,userID});
+// router.get("/findByUser/:userID", async (req, res) => {
+//   const userID = req.params.userID;
+//   console.log("User ID: ", userID)
+//   try {
+//     console.log("ho gya");
+//     const bookings = await Booking.find({ user: userID }).populate('user').populate('roomType');
+//     // res.status(200).json(bookings);
+//     res.render('profile',{bookings,userID});
    
-  } catch (err) {
-    console.log("Error while fetching bookings: ", err);
-    res.status(500).json({ message: 'Error fetching bookings', error: err });
-    console.log(bookings)
-  }
-})
+//   } catch (err) {
+//     console.log("Error while fetching bookings: ", err);
+//     res.status(500).json({ message: 'Error fetching bookings', error: err });
+//     console.log(bookings)
+//   }
+// })
 
 
 
 // Update a booking
-router.put('/:id', async (req, res) => {
-  const { startDate, endDate, status, specialRequest } = req.body;
+// router.put('/:id', async (req, res) => {
+//   const { startDate, endDate, status, specialRequest } = req.body;
 
-  try {
-    const booking = await Booking.findById(req.params.id);
-    if (!booking) return res.status(404).json({ message: 'Booking not found' });
+//   try {
+//     const booking = await Booking.findById(req.params.id);
+//     if (!booking) return res.status(404).json({ message: 'Booking not found' });
 
-    if (startDate) booking.startDate = startDate;
-    if (endDate) booking.endDate = endDate;
-    if (status) booking.status = status;
-    if (specialRequest) booking.specialRequest = specialRequest;
+//     if (startDate) booking.startDate = startDate;
+//     if (endDate) booking.endDate = endDate;
+//     if (status) booking.status = status;
+//     if (specialRequest) booking.specialRequest = specialRequest;
 
-    await booking.save();
-    res.status(200).json(booking);
-  } catch (err) {
-    res.status(500).json({ message: 'Error updating booking', error: err });
-  }
-});
+//     await booking.save();
+//     res.status(200).json(booking);
+//   } catch (err) {
+//     res.status(500).json({ message: 'Error updating booking', error: err });
+//   }
+// });
 
 
 
-// Delete a booking
-router.delete('/:id', async (req, res) => {
-  try {
-    const booking = await Booking.findByIdAndDelete(req.params.id);
-    if (!booking) return res.status(404).json({ message: 'Booking not found' });
+// // Delete a booking
+// router.delete('/:id', async (req, res) => {
+//   try {
+//     const booking = await Booking.findByIdAndDelete(req.params.id);
+//     if (!booking) return res.status(404).json({ message: 'Booking not found' });
 
-    res.status(200).json({ message: 'Booking deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ message: 'Error deleting booking', error: err });
-  }
-});
+//     res.status(200).json({ message: 'Booking deleted successfully' });
+//   } catch (err) {
+//     res.status(500).json({ message: 'Error deleting booking', error: err });
+//   }
+// });
 
 module.exports = router;

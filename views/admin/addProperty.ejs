@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Property</title>
+    <style>
+        .input-group {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Add Property</h1>
+    <form action="/admin/properties/add" method="POST">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required><br>
+
+        <label for="type">Type:</label>
+        <input type="text" id="type" name="type" required><br>
+
+        <label for="map">Map:</label>
+        <input type="text" id="map" name="map"><br>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea><br>
+
+        <!-- Image Inputs -->
+        <label>Images:</label>
+        <div id="image-container">
+            <div class="input-group">
+                <input type="text" name="images[]" required>
+                <button type="button" onclick="addImageField()">+</button>
+            </div>
+        </div>
+
+        <!-- Amenity Inputs -->
+        <label>Amenities:</label>
+        <div id="amenity-container">
+            <div class="input-group">
+                <input type="text" name="amenities[]" required>
+                <button type="button" onclick="addAmenityField()">+</button>
+            </div>
+        </div>
+
+        <!-- Room Inputs -->
+        <label>Rooms:</label>
+        <div id="room-container">
+            <div class="input-group">
+                <input type="text" name="rooms[0][number]" placeholder="Room Number" required>
+                <input type="text" name="rooms[0][type]" placeholder="Room Type" required>
+                <input type="number" name="rooms[0][price]" placeholder="Price" required>
+                <select name="rooms[0][available]" required>
+                    <option value="true">Available</option>
+                    <option value="false">Not Available</option>
+                </select>
+                <button type="button" onclick="addRoomField()">+</button>
+            </div>
+        </div>
+
+        <button type="submit">Add Property</button>
+    </form>
+
+    <script>
+        // Function to dynamically add image input fields
+        function addImageField() {
+            const container = document.getElementById('image-container');
+            const newImageInput = document.createElement('div');
+            newImageInput.className = 'input-group';
+            newImageInput.innerHTML = '<input type="text" name="images[]" required><button type="button" onclick="removeField(this)">-</button>';
+            container.appendChild(newImageInput);
+        }
+
+        // Function to dynamically add amenity input fields
+        function addAmenityField() {
+            const container = document.getElementById('amenity-container');
+            const newAmenityInput = document.createElement('div');
+            newAmenityInput.className = 'input-group';
+            newAmenityInput.innerHTML = '<input type="text" name="amenities[]" required><button type="button" onclick="removeField(this)">-</button>';
+            container.appendChild(newAmenityInput);
+        }
+
+        // Function to dynamically add room input fields
+        function addRoomField() {
+            const container = document.getElementById('room-container');
+            const roomCount = container.getElementsByClassName('input-group').length;
+            const newRoomInput = document.createElement('div');
+            newRoomInput.className = 'input-group';
+            newRoomInput.innerHTML = `
+                <input type="text" name="rooms[${roomCount}][number]" placeholder="Room Number" required>
+                <input type="text" name="rooms[${roomCount}][type]" placeholder="Room Type" required>
+                <input type="number" name="rooms[${roomCount}][price]" placeholder="Price" required>
+                <select name="rooms[${roomCount}][available]" required>
+                    <option value="true">Available</option>
+                    <option value="false">Not Available</option>
+                </select>
+                <button type="button" onclick="removeField(this)">-</button>
+            `;
+            container.appendChild(newRoomInput);
+        }
+
+        // Generic function to remove an input field
+        function removeField(button) {
+            const container = button.parentNode.parentNode;
+            container.removeChild(button.parentNode);
+        }
+    </script>
+</body>
+</html>
