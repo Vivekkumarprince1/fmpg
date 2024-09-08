@@ -16,8 +16,13 @@
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required><br>
 
-        <label for="location">Location:</label>
-        <input type="text" id="location" name="location" required><br>
+        <label>Locations:</label>
+        <div id="location-container">
+            <div class="input-group">
+                <input type="text" name="locations[]" required>
+                <button type="button" onclick="addLocationField()">+</button>
+            </div>
+        </div>
 
         <label for="type">Type:</label>
         <input type="text" id="type" name="type" required><br>
@@ -65,6 +70,17 @@
     </form>
 
     <script>
+         // Function to dynamically add image input fields
+         function addLocationField() {
+            const container = document.getElementById('location-container');
+            const newLocationInput = document.createElement('div');
+            newLocationInput.className = 'input-group';
+            newLocationInput.innerHTML = '<input type="text" name="Location[]" required><button type="button" onclick="removeField(this)">-</button>';
+            container.appendChild(newLocationInput);
+        }
+
+
+
         // Function to dynamically add image input fields
         function addImageField() {
             const container = document.getElementById('image-container');

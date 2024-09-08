@@ -69,6 +69,7 @@ router.post('/properties/add', isAuthenticated, async (req, res) => {
 
     const images = req.body['images[]'];
     const amenities = req.body['amenities[]'];
+    const locations=req.body['locations']
 
     // Extract room data
     const roomsData = [];
@@ -106,10 +107,10 @@ router.post('/properties/add', isAuthenticated, async (req, res) => {
     }
 
     // Create property
-    const { name, location, type, map, description } = req.body;
+    const { name, type, map, description } = req.body;
     const newProperty = new Property({
       name,
-      location,
+      locations:Array.isArray(locations)?locations:[locations],
       type,
       images: Array.isArray(images) ? images : [images],
       map,
@@ -159,13 +160,15 @@ router.post('/properties/edit/:id', isAuthenticated, async (req, res) => {
     }
 
     // Extract property details from the request body
-    const { name, location, type, map, description } = req.body;
+    const { name, type, map, description } = req.body;
     let images = req.body['images[]'] || [];
     let amenities = req.body['amenities[]'] || [];
+    let locations = req.body['locations[]'] || [];
 
     // Ensure images and amenities are arrays
     if (!Array.isArray(images)) images = [images];
     if (!Array.isArray(amenities)) amenities = [amenities];
+    if (!Array.isArray(locations)) locations = [locations];
 
     // Extract room data from the request body
     const roomNumbers = req.body['rooms[number][]'] || [];
@@ -190,7 +193,8 @@ router.post('/properties/edit/:id', isAuthenticated, async (req, res) => {
       if (existingRoom) {
         await Room.findByIdAndUpdate(existingRoom._id, roomData);
         roomsData.push(existingRoom._id); // Track updated room ID
-      } else {
+      } 
+      else {
         const newRoom = new Room(roomData);
         await newRoom.save();
         roomsData.push(newRoom._id); // Track newly created room ID
@@ -199,7 +203,7 @@ router.post('/properties/edit/:id', isAuthenticated, async (req, res) => {
 
     // Update property with new data
     const updatedProperty = {
-      name,location,type,map,description,images,amenities,rooms: roomsData
+      name,locations,type,map,description,images,amenities,rooms: roomsData
     };
 
     await Property.findByIdAndUpdate(req.params.id, updatedProperty);
@@ -209,7 +213,6 @@ router.post('/properties/edit/:id', isAuthenticated, async (req, res) => {
     res.status(500).send('Error updating property');
   }
 });
-
 
 
 // Delete a property

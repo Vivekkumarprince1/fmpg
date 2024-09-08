@@ -7,8 +7,9 @@ const { type } = require('os');
     type: String,
     required: true
   },
-  location: {
-    type: [String], // Array of stringsrequired: true
+  locations: {
+    type: [String],
+    required: true, // Array of stringsrequired: true
   },
   type: {
     type: String,

@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin', 'superadmin'],
+    enum: ['user', 'admin', 'superadmin','propertyowner'],
     default: 'user'
   },
   resetPasswordOTP: String, // Add this field

@@ -72,16 +72,12 @@ router.get('/readmore', async function(req, res, next) {
       if (!property) {
           return res.status(404).json({ error: 'Property not found' });
       }
-      res.render('Readmore/readmore', { properties: property });
+      res.render('readmore', { properties: property });
   } catch (err) {
       console.error("Error fetching property:", err);
       res.status(500).json({ error: err.message });
   }
 });
-
-// router.get('/Shivalik-PG', function(req, res, next) {
-//   res.render('Shivalik-PG');
-// });
 
 router.get('/404', function(req, res, next) {
   res.render('404');
