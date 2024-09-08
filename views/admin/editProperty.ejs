@@ -17,8 +17,24 @@
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" value="<%= property.name %>" required><br>
 
-        <label for="location">Location:</label>
-        <input type="text" id="location" name="location" value="<%= property.location %>" required><br>
+        <!-- <label for="location">Location:</label>
+        <input type="text" id="location" name="location" value="<%= property.location %>" required><br> -->
+
+            <!-- Location Section -->
+            <label>Locations:</label>
+            <div id="location-container">
+                <% if (property.locations) { %>
+                    <% property.locations.forEach((location, index) => { %>
+                        <div class="input-group">
+                            <input type="text" name="locations[]" value="<%= location %>" required>
+                            <button type="button" onclick="removeField(this)">-</button>
+                        </div>
+                    <% }) %>
+                <% } %>
+            </div>
+            <button type="button" onclick="addLocationField()">Add Location</button><br>
+        <!-- End Location Section --> 
+
 
         <label for="type">Type:</label>
         <input type="text" id="type" name="type" value="<%= property.type %>" required><br>
@@ -72,6 +88,18 @@
     </form>
 
     <script>
+        // Add new location input field
+function addLocationField() {
+    const container = document.getElementById('location-container');
+    const newLocationInput = document.createElement('div');
+    newLocationInput.className = 'input-group';
+    newLocationInput.innerHTML = '<input type="text" name="locations[]" placeholder="Add new location" required><button type="button" onclick="removeField(this)">-</button>';
+    container.appendChild(newLocationInput);
+}
+
+
+
+
         // Add new image input field
         function addImageField() {
             const container = document.getElementById('image-container');

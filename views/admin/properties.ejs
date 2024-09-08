@@ -28,7 +28,13 @@
                     <tbody>
                         <tr>
                             <td><%= property._id %></td>
-                            <td><%= property.location %></td>
+                            <td>
+                                <ul>
+                                    <% property.locations.forEach(location => { %>
+                                        <li><%= location %></li>
+                                    <% }) %>
+                                </ul>
+                            </td>
                             <td><%= property.type %></td>
                             <td>
                                 <ul>
