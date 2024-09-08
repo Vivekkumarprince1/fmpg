@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { type } = require('os');
 
 const RoomSchema = new mongoose.Schema({
   // property: { type:String, require:true},

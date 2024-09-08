@@ -7,8 +7,6 @@ var logger = require('morgan');
 const expressSession =require("express-session");
 const passport = require('passport');
 const flash=require("connect-flash");
-const cluster = require('cluster'); // Cluster module for multi-core usage
-const os = require('os'); // To get the number of CPU cores
 
 const roomdb=require('./routes/roomdb')
 const propertyroutes=require('./routes/propertyroutes')
@@ -18,26 +16,6 @@ const adminRoutes = require('./routes/adminroutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const forgotRoutes = require('./routes/forgot');
 const contactroutes = require('./routes/contactroutes');
-
-// Check if the current process is the master
-if (cluster.isMaster) {
-  const numCPUs = os.cpus().length;
-
-  console.log(`Master ${process.pid} is running`);
-
-  // Fork workers for each CPU core
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
-
-  // Listen for dying workers and replace them with a new one
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died. Forking a new worker...`);
-    cluster.fork();
-  });
-
-} else {
-  // Worker processes will run the express server
 
 
 var app = express();
@@ -121,4 +99,3 @@ app.listen(port, () => {
 
 
 module.exports = app;
-}
