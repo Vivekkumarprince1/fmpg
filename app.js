@@ -36,7 +36,7 @@ app.use(expressSession({
   resave: false,
   saveUninitialized: false,
   secret: "hey hey",
-  cookie: { secure: false }
+  cookie: { secure: true }
 }));
 
 const bookingRoutes = require('./routes/bookingroutes'); // Adjust the path as needed
