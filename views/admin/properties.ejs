@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Properties</title>
+    <script>
+        function confirmAction(action, event) {
+          event.preventDefault(); // Prevent the form from submitting immediately
+          const confirmation = confirm(`Are you sure you want to ${action} this booking?`);
+          if (confirmation) {
+            event.target.submit(); // Submit the form if confirmed
+          }
+        }
+      </script>
 </head>
 <body>
     <h1>Manage Properties</h1>
@@ -28,13 +37,7 @@
                     <tbody>
                         <tr>
                             <td><%= property._id %></td>
-                            <td>
-                                <ul>
-                                    <% property.locations.forEach(location => { %>
-                                        <li><%= location %></li>
-                                    <% }) %>
-                                </ul>
-                            </td>
+                            <td><%= property.location %></td>
                             <td><%= property.type %></td>
                             <td>
                                 <ul>
@@ -53,7 +56,7 @@
                             </td>
                             <td>
                                 <a href="/admin/properties/edit/<%= property._id %>">Edit</a><br>
-                                <form action="/admin/properties/delete/<%= property._id %>" method="POST" style="display:inline;">
+                                <form action="/admin/properties/delete/<%= property._id %>" method="POST" style="display:inline;" onsubmit="confirmAction('delete', event);">
                                     <button type="submit">Delete</button>
                                 </form>
                             </td>

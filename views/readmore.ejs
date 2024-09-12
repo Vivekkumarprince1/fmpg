@@ -42,8 +42,8 @@
 
             <!-- Room Type Selection -->
             <div class="room-selection">
-                <label for="roomType">Select Room Type:</label>
-                <select id="roomType" onchange="updateRoomIDAndPrice()">
+                <label for="room">Select Room Type:</label>
+                <select id="room" onchange="updateRoomIDAndPrice()">
                     <% properties.rooms.forEach(function(room) { %>
                         <option value="<%= room._id %>" data-price="<%= room.price %>"><%= room.type %></option>
                     <% }) %>
@@ -151,17 +151,17 @@
 
     // Function to update room ID and price
     function updateRoomIDAndPrice() {
-        const roomTypeSelect = document.getElementById('roomType');
-        selectedRoomID = roomTypeSelect.value;
-        const selectedPrice = roomTypeSelect.options[roomTypeSelect.selectedIndex].getAttribute('data-price');
+        const roomSelect = document.getElementById('room');
+        selectedRoomID = roomSelect.value;
+        const selectedPrice = roomSelect.options[roomSelect.selectedIndex].getAttribute('data-price');
         document.getElementById('roomPrice').innerText = selectedPrice;
     }
 
-    // Book Button function to redirect with selected room ID
-    function bookButton() {
+    // Book Button function to redirect with selected room ID and property ID
+        function bookButton() {
         if (selectedRoomID) {
-            console.log(selectedRoomID);
-            const queryString = `roomID=${selectedRoomID}`;
+            const propertyID = "<%= properties._id %>";
+            const queryString = `roomID=${selectedRoomID}&propertyID=${propertyID}`;
             window.location.href = `/booking?${queryString}`;
         } else {
             alert('Please select a room type.');

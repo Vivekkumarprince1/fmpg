@@ -1,16 +1,18 @@
 var express = require('express');
 var router = express.Router();
 const userModel = require("../models/users");
-const roomSchema = require("../models/Room")
-const propertySchema = require("../models/Property")
+const roomSchema = require("../models/Room");
+const Room=require('../models/Room');
+const propertySchema = require("../models/Property");
 const passport = require('passport');
 const localStrategy = require("passport-local");
 const { error } = require('console');
-const mongoose=require("mongoose")
+const mongoose=require("mongoose");
 
 
 router.get('/create', async function(req, res, next) {
   console.log("Entering the create route");
+  
   try {
     const createdRoom = await roomSchema.create({
       property: "66cfa380712e965bbca4c607",

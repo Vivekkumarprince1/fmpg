@@ -30,6 +30,11 @@
         <label for="map">Map:</label>
         <input type="text" id="map" name="map"><br>
 
+
+        <label for="owner">owner</label>
+        <input type="text" id="owner" name="owner" required><br>
+
+
         <label for="description">Description:</label>
         <textarea id="description" name="description" required></textarea><br>
 
@@ -58,6 +63,8 @@
                 <input type="text" name="rooms[0][number]" placeholder="Room Number" required>
                 <input type="text" name="rooms[0][type]" placeholder="Room Type" required>
                 <input type="number" name="rooms[0][price]" placeholder="Price" required>
+                <input type="number" name="rooms[0][capacity]" placeholder="nober of room available" required>
+
                 <select name="rooms[0][available]" required>
                     <option value="true">Available</option>
                     <option value="false">Not Available</option>
@@ -109,6 +116,7 @@
                 <input type="text" name="rooms[${roomCount}][number]" placeholder="Room Number" required>
                 <input type="text" name="rooms[${roomCount}][type]" placeholder="Room Type" required>
                 <input type="number" name="rooms[${roomCount}][price]" placeholder="Price" required>
+                <input type="number" name="rooms[${roomCount}][capacity]" placeholder="nober of room available" required>
                 <select name="rooms[${roomCount}][available]" required>
                     <option value="true">Available</option>
                     <option value="false">Not Available</option>
@@ -118,6 +126,7 @@
             container.appendChild(newRoomInput);
         }
 
+        
         // Generic function to remove an input field
         function removeField(button) {
             const container = button.parentNode.parentNode;

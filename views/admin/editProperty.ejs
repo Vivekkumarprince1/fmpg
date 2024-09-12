@@ -45,6 +45,11 @@
         <label for="description">Description:</label>
         <textarea id="description" name="description" required><%= property.description %></textarea><br>
 
+        <!-- Owner Section -->
+        <label for="owner">Owner:</label>
+        <input type="text" id="owner" name="owner" value="<%= property.owner %>" required><br>
+
+
         <!-- Images Section -->
         <label>Images:</label>
         <div id="image-container">
@@ -77,13 +82,13 @@
                     <input type="text" name="rooms[number][]" value="<%= room.number %>" placeholder="Room Number" required>
                     <input type="text" name="rooms[type][]" value="<%= room.type %>" placeholder="Room Type" required>
                     <input type="number" name="rooms[price][]" value="<%= room.price %>" placeholder="Room Price" required>
+                    <input type="number" name="rooms[capacity][]" value="<%= room.capacity %>" placeholder="Room Capacity" required>
                     <input type="checkbox" name="rooms[available][]" <%= room.available ? 'checked' : '' %>> Available
                     <button type="button" onclick="removeRoomField(this)">-</button>
                 </div>
             <% }) %>
         </div>
         <button type="button" onclick="addRoomField()">Add Room</button><br>
-
         <button type="submit">Save Changes</button>
     </form>
 
@@ -127,11 +132,13 @@ function addLocationField() {
                 <input type="text" name="rooms[number][]" placeholder="Room Number" required>
                 <input type="text" name="rooms[type][]" placeholder="Room Type" required>
                 <input type="number" name="rooms[price][]" placeholder="Room Price" required>
+                <input type="number" name="rooms[capacity][]" placeholder="Room Capacity" required>
                 <input type="checkbox" name="rooms[available][]" checked> Available
                 <button type="button" onclick="removeRoomField(this)">-</button>
             `;
             container.appendChild(newRoomInput);
         }
+
 
         // Remove any input field
         function removeField(button) {

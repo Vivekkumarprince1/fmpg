@@ -1,38 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Booking</title>
 </head>
+
 <body>
     <h1>Add Booking</h1>
     <form action="/admin/bookings/add" method="POST">
         <label for="user">User:</label>
         <select id="user" name="user" required>
             <option value="" disabled selected>Select a user</option>
-            <% users.forEach(user => { %>
-                <option value="<%= user._id %>" data-username="<%= user.username %>"><%= user.username %></option>
-            <% }) %>
+            <% users.forEach(user=> { %>
+                <option value="<%= user._id %>" data-username="<%= user.username %>">
+                    <%= user.username %>
+                </option>
+                <% }) %>
         </select><br>
 
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br>
 
         <label for="property">Property:</label>
-        <select id="property" name="property" required>
+        <select id="property" name="propertyID" required>
             <option value="" disabled selected>Select a property</option>
-            <% properties.forEach(property => { %>
-                <option value="<%= property._id %>"><%= property.name %></option>
-            <% }) %>
+            <% properties.forEach(property=> { %>
+                <option value="<%= property._id %>">
+                    <%= property.name %>
+                </option>
+                <% }) %>
         </select><br>
 
-        <label for="roomType">Room:</label>
-        <select id="roomType" name="roomType" required>
+        <label for="room">Room:</label>
+        <select id="room" name="room" required>
             <option value="" disabled selected>Select a room</option>
-            <% rooms.forEach(room => { %>
-                <option value="<%= room._id %>"><%= room.type %></option>
-            <% }) %>
+            <% rooms.forEach(room=> { %>
+                <option value="<%= room._id %>">
+                    <%= room.type %>
+                </option>
+                <% }) %>
         </select><br>
 
         <label for="mobile">Mobile:</label>
@@ -52,31 +60,31 @@
 
     <script>
         // Auto-fill the username field based on selected user
-        document.getElementById('user').addEventListener('change', function() {
+        document.getElementById('user').addEventListener('change', function () {
             const selectedUser = this.options[this.selectedIndex];
             const username = selectedUser.getAttribute('data-username');
             document.getElementById('username').value = username;
         });
-    
+
         // Update rooms based on selected property
-        document.getElementById('property').addEventListener('change', async function() {
+        document.getElementById('property').addEventListener('change', async function () {
             const propertyId = this.value;
-            const roomTypeSelect = document.getElementById('roomType');
-    
+            const roomSelect = document.getElementById('room');
+
             // Clear existing options
-            roomTypeSelect.innerHTML = '<option value="" disabled selected>Select a room</option>';
-    
+            roomSelect.innerHTML = '<option value="" disabled selected>Select a room</option>';
+
             if (propertyId) {
                 try {
                     const response = await fetch(`/admin/rooms-by-property/${propertyId}`);
                     const data = await response.json();
-    
+
                     if (response.ok && data.rooms) {
                         data.rooms.forEach(room => {
                             const option = document.createElement('option');
                             option.value = room._id;
                             option.textContent = room.type;
-                            roomTypeSelect.appendChild(option);
+                            roomSelect.appendChild(option);
                         });
                     } else {
                         console.error('Failed to load rooms:', data.error);
@@ -86,6 +94,6 @@
                 }
             }
         });
-    </script>    
+    </script>
 </body>
 </html>

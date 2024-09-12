@@ -28,7 +28,8 @@ const { type } = require('os');
     type: String,
     required: true
   },
-  rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'room' }]
+  rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'room' }],
+  owner: { type: String,require:true }
 });
 
 // Create the model

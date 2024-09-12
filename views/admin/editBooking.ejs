@@ -19,17 +19,17 @@
         <select id="property" name="property" required>
             <% properties.forEach(property => { %>
                 <option value="<%= property._id %>" 
-                    <%= (booking.roomType && booking.roomType.property && booking.roomType.property._id && booking.roomType.property._id.equals(property._id)) ? 'selected' : '' %>>
+                    <%= (booking.room && booking.room.property && booking.room.property._id && booking.room.property._id.equals(property._id)) ? 'selected' : '' %>>
                     <%= property.name %>
                 </option>
             <% }) %>
         </select><br>
         
 
-        <label for="roomType">Room:</label>
-        <select id="roomType" name="roomType" required>
+        <label for="room">Room:</label>
+        <select id="room" name="room" required>
             <% rooms.forEach(room => { %>
-                <option value="<%= room._id %>" <%= booking.roomType._id.equals(room._id) ? 'selected' : '' %>><%= room.type %></option>
+                <option value="<%= room._id %>" <%= booking.room._id.equals(room._id) ? 'selected' : '' %>><%= room.type %></option>
             <% }) %>
         </select><br>
 
@@ -52,10 +52,10 @@
         // Update rooms based on selected property (for editing)
         document.getElementById('property').addEventListener('change', async function() {
             const propertyId = this.value;
-            const roomTypeSelect = document.getElementById('roomType');
+            const roomSelect = document.getElementById('room');
 
             // Clear existing options
-            roomTypeSelect.innerHTML = '<option value="" disabled selected>Select a room</option>';
+            roomSelect.innerHTML = '<option value="" disabled selected>Select a room</option>';
 
             if (propertyId) {
                 try {
@@ -67,12 +67,12 @@
                             const option = document.createElement('option');
                             option.value = room._id;
                             option.textContent = room.type;
-                            roomTypeSelect.appendChild(option);
+                            roomSelect.appendChild(option);
                         });
 
                         // If the room matches the one in the booking, select it
-                        const bookingRoomId = "<%= booking.roomType._id %>";
-                        roomTypeSelect.value = bookingRoomId;
+                        const bookingRoomId = "<%= booking.room._id %>";
+                        roomSelect.value = bookingRoomId;
                     } else {
                         console.error('Failed to load rooms:', data.error);
                     }

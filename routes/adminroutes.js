@@ -69,7 +69,6 @@ router.post('/properties/add', isAuthenticated, async (req, res) => {
 
     const images = req.body['images[]'];
     const amenities = req.body['amenities[]'];
-    const locations=req.body['locations']
 
     // Extract room data
     const roomsData = [];
@@ -100,24 +99,36 @@ router.post('/properties/add', isAuthenticated, async (req, res) => {
         number: roomData.number,
         type: roomData.type,
         price: roomData.price,
-        available: roomData.available === 'true' // Convert string to boolean
+        available: roomData.available === 'true', // Convert
+        capacity: roomData.capacity,// string to boolean
       });
       await room.save();
       rooms.push(room._id); // Save the room ID to the property
     }
 
+
     // Create property
-    const { name, type, map, description } = req.body;
+    const { name, location, type, map, owner, description } = req.body;
     const newProperty = new Property({
       name,
-      locations:Array.isArray(locations)?locations:[locations],
+      location,
       type,
       images: Array.isArray(images) ? images : [images],
       map,
       amenities: Array.isArray(amenities) ? amenities : [amenities],
       description,
-      rooms // Add room references to property
+      rooms, // Add room references to property
+      owner,
     });
+
+    // Check if the owner exists and update their role
+    const user = await User.findOne({ username: owner });
+    if (user) {
+      user.role = 'owner'; // Update role to owner
+      await user.save(); // Save the updated user
+    } else {
+      // return res.status(404).send('Owner username does not exist');
+    }
 
     await newProperty.save();
     res.redirect('/admin/properties');
@@ -126,7 +137,6 @@ router.post('/properties/add', isAuthenticated, async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
-
 
 
 
@@ -160,20 +170,19 @@ router.post('/properties/edit/:id', isAuthenticated, async (req, res) => {
     }
 
     // Extract property details from the request body
-    const { name, type, map, description } = req.body;
+    const { name, location, type, map, description, owner } = req.body;
     let images = req.body['images[]'] || [];
     let amenities = req.body['amenities[]'] || [];
-    let locations = req.body['locations[]'] || [];
 
     // Ensure images and amenities are arrays
     if (!Array.isArray(images)) images = [images];
     if (!Array.isArray(amenities)) amenities = [amenities];
-    if (!Array.isArray(locations)) locations = [locations];
 
     // Extract room data from the request body
     const roomNumbers = req.body['rooms[number][]'] || [];
-    const roomTypes = req.body['rooms[type][]'] || [];
+    const rooms = req.body['rooms[type][]'] || [];
     const roomPrices = req.body['rooms[price][]'] || [];
+    const roomCapacities = req.body['rooms[capacity][]'] || [];
     const roomAvailabilities = req.body['rooms[available][]'] || [];
 
     // Initialize roomsData array
@@ -183,8 +192,9 @@ router.post('/properties/edit/:id', isAuthenticated, async (req, res) => {
     for (let i = 0; i < roomNumbers.length; i++) {
       const roomData = {
         number: roomNumbers[i],
-        type: roomTypes[i],
+        type: rooms[i],
         price: roomPrices[i],
+        capacity: roomCapacities[i], // Adding capacity
         available: roomAvailabilities[i] === 'on'
       };
 
@@ -193,17 +203,25 @@ router.post('/properties/edit/:id', isAuthenticated, async (req, res) => {
       if (existingRoom) {
         await Room.findByIdAndUpdate(existingRoom._id, roomData);
         roomsData.push(existingRoom._id); // Track updated room ID
-      } 
-      else {
+      } else {
         const newRoom = new Room(roomData);
         await newRoom.save();
         roomsData.push(newRoom._id); // Track newly created room ID
       }
     }
 
+    // Check if the owner exists and update their role
+   const user = await User.findOne({ username: owner });
+   if (user) {
+     user.role = 'owner'; // Update role to owner
+     await user.save(); // Save the updated user
+   } else {
+     // return res.status(404).send('Owner username does not exist');
+   }
+
     // Update property with new data
     const updatedProperty = {
-      name,locations,type,map,description,images,amenities,rooms: roomsData
+      name, location, type, map, description, images, amenities, rooms: roomsData, owner // Adding owner
     };
 
     await Property.findByIdAndUpdate(req.params.id, updatedProperty);
@@ -212,6 +230,8 @@ router.post('/properties/edit/:id', isAuthenticated, async (req, res) => {
     console.error('Error updating property:', err);
     res.status(500).send('Error updating property');
   }
+
+   
 });
 
 
@@ -302,7 +322,20 @@ router.get('/rooms', isAuthenticated, async (req, res) => {
 // View all bookings
 router.get('/bookings', isAuthenticated, async (req, res) => {
   try {
-    const bookings = await Booking.find({}).populate('user roomType');
+    const bookings = await Booking.find({})
+      .populate({
+        path: 'user',          // Populate the 'user' field
+        select: 'username email' // Select only necessary fields, e.g., 'username' and 'email'
+      })
+      .populate({
+        path: 'room',          // Populate the 'room' field
+        select: 'number type price' // Select specific fields, e.g., 'number', 'type', and 'price'
+      })
+      .populate({
+        path: 'propertyID',    // Populate the 'propertyID' field
+        select: 'name location'  // Select specific fields, e.g., 'name' and 'location'
+      });
+
     res.render('admin/bookings', { bookings });
   } catch (err) {
     console.error(err);
@@ -340,9 +373,18 @@ try {
 
 router.post('/bookings/add', isAuthenticated, async (req, res) => {
   try {
-    const { user, username, roomType, mobile, startDate, endDate, specialRequest } = req.body;
+    const { user, propertyID , username, room, mobile, startDate, endDate, specialRequest } = req.body;
 
-    const newBooking = new Booking({ user, username, roomType, mobile, startDate, endDate, specialRequest });
+    const property = await Property.findById(propertyID);
+    if (!property) {
+      return res.status(404).send('Property not found');
+    }
+
+    if (!property.owner) {
+      return res.status(400).send('Property does not have an owner');
+    }
+
+    const newBooking = new Booking({ user ,owner: property.owner , propertyID , username, room, mobile, startDate, endDate, specialRequest });
     
     await newBooking.save();
     
@@ -359,9 +401,9 @@ router.get('/bookings/edit/:id', isAuthenticated, async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id)
       .populate({
-        path: 'roomType',
+        path: 'room',
         populate: {
-          path: 'property'  // Populate property within roomType
+          path: 'property'  // Populate property within room
         }
       })
       .populate('user');
@@ -380,8 +422,8 @@ router.get('/bookings/edit/:id', isAuthenticated, async (req, res) => {
 
 router.post('/bookings/edit/:id', isAuthenticated, async (req, res) => {
   try {
-    const { user, roomType, mobile, specialRequest } = req.body;
-    await Booking.findByIdAndUpdate(req.params.id, { user, roomType, mobile, specialRequest });
+    const { user, room, mobile, specialRequest } = req.body;
+    await Booking.findByIdAndUpdate(req.params.id, { user, room, mobile, specialRequest });
     res.redirect('/admin/bookings');
   } catch (err) {
     console.error(err);
@@ -400,17 +442,18 @@ router.post('/bookings/delete/:id', isAuthenticated, async (req, res) => {
   }
 });
 
+
+//view routes
 router.get('/booking/view/:id', isAuthenticated, async (req, res) => {
   try {
-    const booking = await Booking.findById(req.params.id)
+    const booking = await Booking.findById(req.params.id).populate('propertyID').populate('room')
       .populate({
-        path: 'roomType',
+        path: 'room',
         populate: {
-          path: 'property'  // Populate property within roomType
+          path: 'property'  // Populate property within room
         }
       })
       .populate('user');
-    
     const users = await User.find({});
     const properties = await Property.find({});
     const rooms = await Room.find({});
