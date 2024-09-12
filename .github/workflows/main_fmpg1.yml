@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - fmpg2
+name: Build and deploy Node.js app to Azure Web App - fmpg1
 
 on:
   push:
@@ -51,15 +51,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_4EF3D7928F664E71BFBFF70212075297 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4874DFE2A3AE48889E3BB99BDA3D3CBA }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_93181F4911A1443BB4A8A44F0AFE5E22 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_AB0D0304FBF3497AA5C8C0A1023C1814 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C4E24C56269D4A2DA64532FA81D69CAE }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_82BB38A9D3EF44549F769989FB4B6EFC }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'fmpg2'
+          app-name: 'fmpg1'
           slot-name: 'Production'
           package: .
           
