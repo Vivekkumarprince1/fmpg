@@ -92,8 +92,8 @@
     
 })(jQuery);
 
-console.log(options);
-$('#datetimepicker').datetimepicker(options);
+// console.log(options);
+// $('#datetimepicker').datetimepicker(options);
 
 
 

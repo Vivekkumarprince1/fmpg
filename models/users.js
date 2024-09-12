@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin', 'superadmin','propertyowner'],
+    enum: ['user', 'admin', 'superadmin','owner'],
     default: 'user'
   },
   resetPasswordOTP: String, // Add this field
@@ -49,4 +49,7 @@ userSchema.methods.comparePassword = function (candidatePassword, cb) {
 };
 
 userSchema.plugin(plm);
+
+const User = mongoose.models.User || mongoose.model('User', userSchema);
+
 module.exports = mongoose.model('user', userSchema);

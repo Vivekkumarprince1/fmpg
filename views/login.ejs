@@ -18,11 +18,19 @@
                 <img src="../images/avatar.svg">
                 <h2 class="title">Welcome</h2>
 
-                <% if (error && error.length > 0) { %>
+                <!-- Success and error messages in EJS -->
+                <% if (error.length > 0) { %>
                     <div class="alert alert-danger">
-                      <p><%= error[0] %></p> <!-- Display the first error message -->
+                        <%= error %>
                     </div>
-                  <% } %>                  
+                <% } %>
+                
+                <!-- Display success message -->
+                <% if (success.length > 0) { %>
+                    <div class="alert alert-success">
+                        <%= success %>
+                    </div>
+                <% } %>                  
                   
 
                 <div class="input-div one">

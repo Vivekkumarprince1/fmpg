@@ -35,8 +35,8 @@
                     <td><%= booking._id %></td>
                     <td><%= booking.username || 'N/A' %></td>
                     <td><%= booking.mobile || 'N/A' %></td>
-                    <td><%= booking.roomType.property.name || 'N/A' %></td>
-                    <td><%= booking.roomType ? booking.roomType.type : 'No room type' %></td>
+                    <td><%= booking.propertyID|| 'N/A' %></td>
+                    <td><%= booking.room ? booking.room.type : 'No room type' %></td>
                     <td><%= booking.startDate ? booking.startDate.toDateString() : 'N/A' %></td>
                     <td><%= booking.endDate ? booking.endDate.toDateString() : 'N/A' %></td>
                     <td><%= booking.specialRequest || 'No request' %></td>

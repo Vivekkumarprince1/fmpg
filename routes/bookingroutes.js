@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const Booking = require('../models/Booking');
+const Property = require('../models/Property');
 const User = require('../models/users');
 const { render } = require('ejs');
 const flash=require("connect-flash");
@@ -9,39 +10,38 @@ const flash=require("connect-flash");
 
 // Create a new booking
 router.post('/', async (req, res) => {
-  console.log('Received body:', req.body); 
-  const { mobile,
-    startDate, 
-    endDate, 
-    userId,
-     roomTypeId, 
-     specialRequest,
-      username } = req.body;
+  const { mobile, startDate, endDate, userId, roomId, specialRequest, username, propertyID } = req.body;
 
-  if (!mobile || !startDate || !endDate || !userId || !roomTypeId) {
+  if (!mobile || !startDate || !endDate || !userId || !roomId || !propertyID) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
-  // Validate ObjectId fields
-  if (!mongoose.Types.ObjectId.isValid(userId) ) {
-    return res.status(400).json({ message: 'Invalid userId' });
+  if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(roomId) || !mongoose.Types.ObjectId.isValid(propertyID)) {
+    return res.status(400).json({ message: 'Invalid userId, roomId, or propertyID' });
   }
 
   try {
+    const property = await Property.findById(propertyID);
+    if (!property) {
+      return res.status(404).json({ message: 'Property not found' });
+    }
+
     const booking = new Booking({
       mobile,
       startDate,
       endDate,
       user: new mongoose.Types.ObjectId(userId),
-      roomType: new mongoose.Types.ObjectId(roomTypeId),
+      room: new mongoose.Types.ObjectId(roomId),
+      propertyID: new mongoose.Types.ObjectId(propertyID), // Ensure correct field is used
+      owner: property.owner,
       specialRequest,
-      username
+      username,
+      status: 'Pending',
     });
 
     await booking.save();
-    // res.status(201).json(booking);
-    // req.flash('success', 'Booking created successfully');
-    res.redirect('/index'); // Redirect to index.ejs
+    console.log(booking)
+    res.redirect('/'); // Redirect to the main page
   } catch (err) {
     console.error('Error creating booking:', err);
     res.status(500).json({ message: 'Error creating booking', error: err });
@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
 // Get all bookings
 router.get('/allbookings', async (req, res) => {
   try {
-    const bookings = await Booking.find().populate('user').populate('roomType');
+    const bookings = await Booking.find().populate('user').populate('room');
     res.status(200).json(bookings);
   } catch (err) {
     res.status(500).json({ message: 'Error fetching bookings', error: err });
@@ -66,7 +66,7 @@ router.get('/allbookings', async (req, res) => {
 // Get a specific booking by ID
 router.get('/:id', async (req, res) => {
   try {
-    const booking = await Booking.findById(req.params.id).populate('user').populate('roomType');
+    const booking = await Booking.findById(req.params.id).populate('user').populate('room');
     if (!booking) return res.status(404).json({ message: 'Booking not found' });
 
     res.status(200).json(booking);
@@ -82,7 +82,7 @@ router.get('/:id', async (req, res) => {
 //   console.log("User ID: ", userID)
 //   try {
 //     console.log("ho gya");
-//     const bookings = await Booking.find({ user: userID }).populate('user').populate('roomType');
+//     const bookings = await Booking.find({ user: userID }).populate('user').populate('room');
 //     // res.status(200).json(bookings);
 //     res.render('profile',{bookings,userID});
    

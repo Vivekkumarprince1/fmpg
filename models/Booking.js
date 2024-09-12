@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const room = require('../models/Room');
 
 const bookingSchema = new mongoose.Schema({
   mobile: {
@@ -18,7 +19,7 @@ const bookingSchema = new mongoose.Schema({
     ref: 'user',
     required: true,
   },
-  roomType: {
+  room: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'room',
     required: true,
@@ -30,12 +31,21 @@ const bookingSchema = new mongoose.Schema({
   status: { 
     type: String, 
     enum: ['Pending', 'Confirmed', 'Cancelled'],
-    default: 'Confirmed' 
+    default: 'Pending' 
   },
   username: { 
     type: String,
     required: true 
   },
+  propertyID: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Property',
+    required: true // Ensure this is required
+  },
+  owner: { 
+    type: String,
+    ref: 'User', 
+    required: true }, // Reference to the owner
 });
 
 module.exports = mongoose.model('Booking', bookingSchema);

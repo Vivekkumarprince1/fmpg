@@ -16,7 +16,8 @@ router.get('/createproperty', async (req, res) => {
         map: "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d596.2901051922025!2d75.96645261982982!3d31.521505581003648!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391ae3c77ed7b187%3A0x7e1e97621f579c17!2sPanjab%20University%20Swami%20Sarvanand%20Giri%20Regional%20Centre!5e1!3m2!1sen!2sin!4v1724883652954!5m2!1sen!2sin",
         amenities: ["Common Toilet and Bathroom Block", "Bed","Water","24*7 Electricity","Wifi(not include in rent)","Garden Available"],
         description: "Find yourself in a secure and comfortable living space that combines practical design with a welcoming atmosphere. With a focus on reliability and peace, this environment is crafted to enhance your stay, providing you with everything you need for a smooth and enjoyable experience.",
-        rooms: []
+        rooms: [],
+        owner:" ",
       }
     ]);
     res.status(201).json(properties);
@@ -44,6 +45,17 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+
+// Get all properties
+router.get('/properties', async (req, res) => {
+  try {
+    const properties = await Property.find(); // Fixed typo
+    res.status(200).json(properties);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Update a property by ID
 router.put('/properties/:id', async (req, res) => {
   try {
@@ -66,17 +78,6 @@ router.delete('/properties/:id', async (req, res) => {
       return res.status(404).json({ error: 'Property not found' });
     }
     res.status(200).json({ message: 'Property deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-
-// Get all properties
-router.get('/properties', async (req, res) => {
-  try {
-    const properties = await Property.find(); // Fixed typo
-    res.status(200).json(properties);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -4,18 +4,23 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const expressSession =require("express-session");
+const expressSession = require("express-session");
 const passport = require('passport');
-const flash=require("connect-flash");
+const flash = require("connect-flash");
+const cluster = require('cluster'); // Cluster module for multi-core usage
+const os = require('os'); // To get the number of CPU cores
 
-const roomdb=require('./routes/roomdb')
-const propertyroutes=require('./routes/propertyroutes')
+const roomdb = require('./routes/roomdb');
+const propertyroutes = require('./routes/propertyroutes');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./models/users');
 const adminRoutes = require('./routes/adminroutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const forgotRoutes = require('./routes/forgot');
 const contactroutes = require('./routes/contactroutes');
+const ownerRoutes = require('./routes/ownerroutes');
+const bookingRoutes = require('./routes/bookingroutes'); 
+
 
 
 var app = express();
@@ -39,7 +44,7 @@ app.use(expressSession({
   cookie: { secure: false }
 }));
 
-const bookingRoutes = require('./routes/bookingroutes'); // Adjust the path as needed
+app.use(flash());
 
 app.use('/api/bookings', bookingRoutes);
 app.post('/api/bookings', (req, res) => {
@@ -48,13 +53,14 @@ app.post('/api/bookings', (req, res) => {
   res.send('Received');
 });
 
-app.use(flash());
+
 
 // Passport initialization
 app.use(passport.initialize());
 app.use(passport.session());
 passport.serializeUser(usersRouter.serializeUser());
 passport.deserializeUser(usersRouter.deserializeUser());
+
 
 // Flash message middleware
 app.use((req, res, next) => {
@@ -73,6 +79,8 @@ app.use('/admin', adminRoutes);
 app.use('/admin/analytics', analyticsRoutes);
 app.use('/forgot', forgotRoutes);
 app.use('/',contactroutes);
+app.use('/owner', ownerRoutes);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

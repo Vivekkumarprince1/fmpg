@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
       const bookingsPerProperty = await Booking.aggregate([
         {
           $group: {
-            _id: '$roomType',
+            _id: '$room',
             total: { $sum: 1 }
           }
         },
