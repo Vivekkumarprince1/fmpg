@@ -226,13 +226,6 @@ a:hover{
 	}
 }
 
-
-.dha{
-    display: block;
-}
-
-
-
 .alert {
     color: #ff0000;
     background-color: #f8d7da;
@@ -241,4 +234,3 @@ a:hover{
     border-radius: 5px;
     text-align: center;
 }
-
