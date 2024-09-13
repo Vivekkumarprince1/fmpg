@@ -166,29 +166,29 @@ router.get('/profile', isLoggedIn, async function(req, res, next) {
 
 
 
-router.get('/signup', function(req, res) {
-  res.render('signup');
-});
+// router.get('/signup', function(req, res) {
+//   res.render('signup');
+// });
 
 router.get('/dashboard', isLoggedIn, (req, res) => {
   res.render('admin/dashboard', { admin: req.user });
 });
 
-router.post('/register', function(req, res) {
-  const { username, email, mobile} = req.body;
-  const userData = new userModel({ username, email, mobile });
+// router.post('/register', function(req, res) {
+//   const { username, email, mobile} = req.body;
+//   const userData = new userModel({ username, email, mobile });
 
-  userModel.register(userData, req.body.password)
-    .then(function(){
-      passport.authenticate("local")(req, res, function() {
-        res.redirect("/profile");
-      })
-    })
-    .catch(function(err) {
-      console.error(err);
-      res.redirect("/login");
-    });
-});
+//   userModel.register(userData, req.body.password)
+//     .then(function(){
+//       passport.authenticate("local")(req, res, function() {
+//         res.redirect("/profile");
+//       })
+//     })
+//     .catch(function(err) {
+//       console.error(err);
+//       res.redirect("/login");
+//     });
+// });
 
 router.post('/login', function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
@@ -241,5 +241,143 @@ function isLoggedIn(req, res, next) {
   res.redirect("/login");
 };
 
+
+
+// Setup Nodemailer transporter
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+      user: 'fmpg974@gmail.com', // your email
+      pass: 'lrta iuce bpxm smxy', // your app-specific password
+  },
+});
+
+// Generate OTP
+function generateOTP() {
+  return Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+}
+
+// Send OTP route
+router.post('/send-otp', async (req, res) => {
+  const email = req.body.email;
+  if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+  }
+
+  // Generate OTP and store it in session
+  const otp = generateOTP();
+  req.session.otp = otp;
+  req.session.email = email;
+  req.session.isVerified = false;
+
+  // Email options
+  const mailOptions = {
+      from: 'fmpg974@gmail.com',
+      to: email,
+      subject: 'Your OTP for Verification',
+      text: `Your OTP is ${otp}. Please do not share this with anyone.`,
+  };
+
+  // Send the email
+  try {
+      await transporter.sendMail(mailOptions);
+      res.status(200).json({ message: 'OTP sent to email' });
+  } catch (error) {
+      console.error('Error sending email:', error);
+      res.status(500).json({ message: 'Error sending OTP' });
+  }
+});
+
+// Verify OTP route
+router.post('/verify-otp', (req, res) => {
+  const { otp } = req.body;
+  const sessionOtp = req.session.otp;
+
+  if (otp === sessionOtp) {
+      // OTP is correct
+      req.session.isVerified = true;
+      res.status(200).json({ message: 'OTP verified successfully' });
+      req.session.otp = null;  // Clear OTP from session after successful verification
+  } else {
+      // OTP is incorrect
+      res.status(400).json({ message: 'Invalid OTP' });
+  }
+});
+
+
+router.get('/signup', function(req, res) {
+  const errorMessages = req.session.error || [];
+  const successMessages = req.session.success || [];
+  const formData = req.session.formData || {}; // Retrieve form data from session
+
+  // Clear error and success messages after rendering
+  req.session.error = null;
+  req.session.success = null;
+
+  res.render('signup', { error: errorMessages, success: successMessages, formData });
+});
+
+router.post('/signup', async function(req, res, next) {
+  if (!req.session.isVerified) {
+    req.session.error = 'OTP verification required';
+    return res.redirect('/signup');
+  }
+
+  const { username, email, mobile, password } = req.body;
+
+  try {
+    // Check if the username, email, or mobile already exists
+    const existingUsers = await userModel.find({
+      $or: [
+        { username: username },
+        { email: email },
+        { mobile: mobile }
+      ]
+    });
+
+    let errorMessages = [];
+
+    // Collect all existing conflicts
+    existingUsers.forEach(user => {
+      if (user.username === username) {
+        errorMessages.push('Username already exists');
+      }
+      if (user.email === email) {
+        errorMessages.push('Email already exists');
+      }
+      if (user.mobile === mobile) {
+        errorMessages.push('Mobile number already exists');
+      }
+    });
+
+    // If there are errors, return them
+    if (errorMessages.length > 0) {
+      req.session.error = errorMessages.join(', ');
+      return res.redirect('/signup');
+    }
+
+    // Register user if no conflict found
+    const userData = new userModel({ username, email, mobile });
+    userModel.register(userData, password, function(err, user) {
+      if (err) {
+        req.session.error = 'Registration error: ' + err.message;
+        return res.redirect('/signup');
+      }
+
+      req.logIn(user, function(err) {
+        if (err) {
+          req.session.error = 'Login error: ' + err.message;
+          return res.redirect('/signup');
+        }
+        req.session.success = 'Successfully registered and logged in!';
+        return res.redirect('/'); // Redirect to home or a specific page
+      });
+    });
+
+  } catch (err) {
+    req.session.error = 'Server error: ' + err.message;
+    return res.redirect('/signup');
+  }
+});
 
 module.exports = router;

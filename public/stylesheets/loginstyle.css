@@ -148,8 +148,8 @@ form{
 }
 
 a{
-	display: block;
-	text-align: right;
+	/* display: block; */
+	/* text-align: right; */
 	text-decoration: none;
 	color: #999;
 	font-size: 0.9rem;
@@ -158,6 +158,11 @@ a{
 
 a:hover{
 	color: #38d39f;
+}
+
+.forgot{
+    display: block;
+	text-align: right;
 }
 
 .btn{
