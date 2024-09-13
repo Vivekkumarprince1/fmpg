@@ -47,6 +47,10 @@
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
         }
 
+        .manage{
+            border: none;
+        }
+
         .navbar a,
         .dropbtn {
             color: #333;
