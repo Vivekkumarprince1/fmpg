@@ -164,12 +164,6 @@ router.get('/profile', isLoggedIn, async function(req, res, next) {
 });
 
 
-
-
-// router.get('/signup', function(req, res) {
-//   res.render('signup');
-// });
-
 router.get('/dashboard', isLoggedIn, (req, res) => {
   res.render('admin/dashboard', { admin: req.user });
 });
@@ -200,12 +194,6 @@ router.post('/login', function(req, res, next) {
     
     req.logIn(user, function(err) {
       if (err) { return next(err); }
-      
-      // Check user role and redirect accordingly
-      // if (user.role === 'superadmin' || user.role === 'admin') {
-      //   req.session.success = 'Successfully logged in as admin!';
-      //   return res.render('admin/dashboard', { admin: user }); // Adjust this route if needed
-      // }
       
       req.session.success = 'Successfully logged in!';
       return res.redirect('/'); // Redirect to the home page or user-specific page
