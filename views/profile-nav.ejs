@@ -16,7 +16,7 @@
                             <%-include('admin/dashboard nav', { user: admin })%>
                         <% } %>
 
-                        <a href="/logout" class="btn" style="background-color: red;">Logout</a>
+                        <a href="/logout" class="btn" style="background-color: red;" onsubmit="confirmAction('Logout', event);">Logout</a>
                     </div>
             
             </div>
