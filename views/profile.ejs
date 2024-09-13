@@ -7,6 +7,17 @@
     <title>FMPG</title>
     <!-- <link rel="stylesheet" href="/stylesheets/style.css"> -->
     <link rel="stylesheet" href="/css/profile.css">
+    <script>
+        function confirmAction(action, event) {
+          event.preventDefault(); // Prevent the form from submitting immediately
+          
+          const confirmation = confirm(`Are you sure you want to ${action} this booking?`);
+          
+          if (confirmation) {
+            event.target.submit(); // Submit the form if confirmed
+          }
+        }
+    </script>
 </head>
 
 <body>
