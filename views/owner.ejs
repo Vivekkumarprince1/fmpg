@@ -35,7 +35,7 @@
       <tr>
         <td><%= booking._id %></td>
         <td><%= booking.propertyID.name %></td>
-        <td><%= booking.user.username %></td>
+        <td><%= booking.username %></td>
         <td><%= booking.status %></td>
         <td>
           <% if (booking.status.toLowerCase() === 'pending') { %>
