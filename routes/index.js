@@ -33,7 +33,7 @@ passport.use(new localStrategy(userModel.authenticate()));
 
 // launch
 resourceLimits.get ('/',function(req,res,next){
-  res.render('launch');
+  res.render('index');
 })
 
 router.get('/index', function(req, res, next) {
