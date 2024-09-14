@@ -20,21 +20,16 @@ const nodemailer = require('nodemailer'); // External package
 passport.use(new localStrategy(userModel.authenticate()));
 
 /* GET home page. */
-// router.get('/', function(req, res, next) {
-//   const success = req.session.message || req.session.success;
+router.get('/', function(req, res, next) {
+  const success = req.session.message || req.session.success;
   
-//   // Clear the message from the session
-//   req.session.message = null;
-//   req.session.success = null;
-//   res.render('index', { success, page: 'home', title: 'Home' });
+  // Clear the message from the session
+  req.session.message = null;
+  req.session.success = null;
+  res.render('index', { success, page: 'home', title: 'Home' });
 
-// });
+});
 
-
-// launch
-resourceLimits.get ('/',function(req,res,next){
-  res.render('index');
-})
 
 router.get('/index', function(req, res, next) {
   res.render('index');
