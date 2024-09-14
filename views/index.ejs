@@ -37,6 +37,41 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <style>
+        body .alert-custom {
+           position: fixed;
+           top: 50%;
+           left: 50%;
+           transform: translate(-50%, -50%);
+           z-index: 1050;
+           width: 80%;
+           max-width: 400px;
+           padding: 20px;
+           border-radius: 12px;
+           box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+           font-size: 1.2rem;
+           font-weight: 600;
+           text-align: center;
+           background: rgba(36, 193, 96, 0.9); 
+           /* background-color: #808b8d 0.9; */
+           backdrop-filter: blur(80%);
+           opacity: 0.8;
+           animation: fadeIn 1s forwards, fadeOut 1s forwards 3s;
+       }
+
+       
+
+       @keyframes fadeIn {
+           from { opacity: 0; }
+           to { opacity: 1; }
+       }
+
+       @keyframes fadeOut {
+           from { opacity: 1; }
+           to { opacity: 0; }
+       }
+   </style>
+
 </head>
 
 <body>
@@ -80,6 +115,13 @@
         </div>
     </div>
     <!-- Topbar End -->
+
+    <!-- Display success message -->
+    <% if (success) { %>
+        <div class="alert alert-success alert-custom" id="message-alert">
+            <%= success %>
+        </div>
+    <% } %>
 
     <!-- Navbar & Hero Start -->
     <div class="container-fluid position-relative p-0">
@@ -240,13 +282,6 @@
         </div>
     </div>
     <!-- Service End -->
-
-
-    <!-- Destination Start -->
-
-
-
-    <!-- Destination Start -->
 
 
     <!-- room Start -->
@@ -676,6 +711,18 @@
                 }
             });
         </script>
+        <script>
+            // Automatically hide the message after 4 seconds
+            setTimeout(function () {
+                const alertMessage = document.getElementById('message-alert');
+                if (alertMessage) {
+                    alertMessage.style.transition = 'opacity 1s ease';
+                    alertMessage.style.opacity = '0';
+                    setTimeout(() => alertMessage.remove(), 1000);  // Remove from DOM after fade-out
+                }
+            }, 4000);
+        </script>
+        
 </body>
 
 </html>

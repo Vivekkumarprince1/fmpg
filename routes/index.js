@@ -21,7 +21,13 @@ passport.use(new localStrategy(userModel.authenticate()));
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index');
+  const success = req.session.message || req.session.success;
+  
+  // Clear the message from the session
+  req.session.message = null;
+  req.session.success = null;
+  res.render('index', { success, page: 'home', title: 'Home' });
+
 });
 router.get('/index', function(req, res, next) {
   res.render('index');
