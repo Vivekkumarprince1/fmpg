@@ -1,3 +1,4 @@
+//Booking.js
 const mongoose = require('mongoose');
 const room = require('../models/Room');
 

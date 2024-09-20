@@ -1,3 +1,4 @@
+//Analisis.js
 const mongoose = require('mongoose');
 
 const analysisSchema = new mongoose.Schema({
