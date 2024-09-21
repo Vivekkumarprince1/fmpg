@@ -1,5 +1,3 @@
-//bookingroutes.js
-
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -42,7 +40,9 @@ router.post('/', async (req, res) => {
     });
 
     await booking.save();
-    console.log(booking)
+    console.log(booking);
+    // Set success message in session
+    req.session.message = 'Booking created successfully';
     res.redirect('/'); // Redirect to the main page
   } catch (err) {
     console.error('Error creating booking:', err);
