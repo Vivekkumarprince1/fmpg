@@ -89,7 +89,7 @@ function sendInvoiceEmail(user, pdfBuffer) {
     service: 'gmail',
     auth: {
       user: 'fmpg974@gmail.com', // Your email
-      pass: 'lrta iuce bpxm smxy', // Your app-specific password
+      pass: 'fcdz hxcn yktl zzzx', // Your app-specific password
     },
   });
 
