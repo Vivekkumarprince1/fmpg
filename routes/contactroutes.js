@@ -22,7 +22,7 @@ router.post('/contact', async (req, res) => {
             service: 'gmail',
             auth: {
                 user: 'fmpg974@gmail.com', // Replace with your email
-                pass: 'lrta iuce bpxm smxy'   // Replace with your app password (Google)
+                pass: 'fcdz hxcn yktl zzzx'   // Replace with your app password (Google)
             }
         });
 
