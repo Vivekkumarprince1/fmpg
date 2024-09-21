@@ -64,55 +64,6 @@ router.get('/api/bookings', (req, res) => {
 });
 
 
-// router.get('/api/bookings', (req, res) => {
-//   res.json({ message: 'Bookings fetched successfully' });
-// });
-
-// router.get('/booking', isLoggedIn, async function(req, res, next) {
-//   const user =await userModel.findOne({
-//     username: req.session.passport.user
-//   })
-//   try {
-//     const rooms = await roomModel.find();
-//     // res.render('/', {rooms:rooms });
-//     console.log(rooms)
-//   } catch (err) {
-//     console.error('Error fetching room:', err);
-//     res.status(500).send('Error fetching room');
-//   }
-//   console.log("here is it", user);
-//   res.render('booking', { user });
-
-// });
-
-// router.get('/booking', isLoggedIn, async function(req, res, next) {
-//   const user =await userModel.findOne({
-//     username: req.session.passport.user
-//   })
-//   try {
-//     const rooms = await roomModel.find();
-//     console.log(rooms)
-//   } catch (err) {
-//     console.error('Error fetching room:', err);
-//     res.status(500).send('Error fetching room');
-//   }
-//   console.log("here is it", user);
-//   res.render('booking', { user , page: 'booking', title: 'Booking'});
-
-// });
-// router.get('/api/bookings', (req, res) => {
-//   res.status(200).json({
-//     status: 'success',
-//     code: 200,
-//     message: 'Bookings fetched successfully',
-//     data: {
-//       bookings: [],
-//       totalBookings: 0,
-//       fetchedAt: new Date().toISOString(),
-//     },
-//   });
-// });
-
  
 
 router.get('/TermsAndConditions', function(req, res, next) {
