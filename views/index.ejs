@@ -117,11 +117,12 @@
     <!-- Topbar End -->
 
     <!-- Display success message -->
-    <% if (success) { %>
+    <% if (typeof success !== 'undefined' && success) { %>
         <div class="alert alert-success alert-custom" id="message-alert">
             <%= success %>
         </div>
     <% } %>
+    
 
     <!-- Navbar & Hero Start -->
     <div class="container-fluid position-relative p-0">
