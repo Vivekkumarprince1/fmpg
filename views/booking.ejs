@@ -132,8 +132,8 @@
                     </div>
                     <div class="col-md-6">
                       <div class="form-floating">
-                        <input type="text" class="form-control bg-transparent" id="userId" name="userId" placeholder="User ID" value="<%=user._id %>" readonly required>
-                        <label for="userId">User ID</label>
+                        <input type="hidden" class="form-control bg-transparent" id="userId" name="userId" placeholder="User ID" value="<%=user._id %>" readonly required>
+                        <!-- <label for="userId">User ID</label> -->
                       </div>
                     </div>
                     <% if (typeof roomT !== 'undefined' && roomT) { %>
@@ -146,8 +146,8 @@
                       <% } else { %>
                         <div class="col-md-6">
                           <div class="form-floating">
-                            <input type="text" class="form-control bg-transparent text-white" id="roomId" name="roomId" placeholder="Room ID" required>
-                            <label for="roomId">Room ID</label>
+                            <input type="hidden" class="form-control bg-transparent text-white" id="roomId" name="roomId" placeholder="Room ID"  readonly required>
+                            <!-- <label for="roomId">Room ID</label> -->
                           </div>
                         </div>
                       <% } %>
@@ -155,12 +155,11 @@
                       <!-- Hidden input for propertyID -->
                       <div class="col-md-6">
                         <div class="form-floating">
-                          <input type="text" class="form-control bg-transparent" id="propertyID" name="propertyID" readonly required>
-                          <label for="propertyID">Property ID</label>
+                          <input type="hidden" class="form-control bg-transparent" id="propertyID" name="propertyID" readonly required>
+                          <!-- <label for="propertyID">Property ID</label> -->
                         </div>
                       </div>
-                      
-                      
+                                            
 
                     <div class="col-12">
                       <div class="form-floating">
