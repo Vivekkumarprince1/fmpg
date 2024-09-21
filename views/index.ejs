@@ -70,6 +70,39 @@
            from { opacity: 1; }
            to { opacity: 0; }
        }
+
+       .suggestions-container {
+        position: absolute;
+        top: 100%; /* Positions the dropdown right below the input */
+        left: 0;
+        width: 100%;
+        background-color: white;
+        /* border-radius: 0 0 20px 20px; */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        max-height: 150px;
+        overflow-y: auto;
+    }
+
+    .dropdown-item {
+        padding: 10px;
+        cursor: pointer;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f0f0f0;
+    }
+
+    /* Style to match the input field's rounded corners when dropdown appears */
+    #input {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .suggestions-container div:last-child {
+        border-bottom: none; /* Remove the last item's bottom border */
+    }
    </style>
 
 </head>
