@@ -34,7 +34,7 @@ console.log("Saved OTP:", user.resetPasswordOTP, "Expires at:", user.resetPasswo
     service: 'Gmail',
     auth: {
       user: 'fmpg974@gmail.com',
-      pass: 'lrta iuce bpxm smxy',
+      pass: 'fcdz hxcn yktl zzzx',
     },
     pool: true, // Reuse connections
   rateLimit: 1, // Limit sending rate
