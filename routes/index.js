@@ -8,7 +8,7 @@ const passport = require('passport');
 const localStrategy = require("passport-local");
 const { error } = require('console');
 const Booking = require('../models/Booking'); 
-const properties= require('../models/Property');
+// const properties= require('../models/Property');
 const Property = require('../models/Property');
 const flash=require('connect-flash');
 passport.use(new localStrategy(userModel.authenticate()));
@@ -85,9 +85,17 @@ router.get('/about', function(req, res, next) {
 
 router.get('/readmore', async function(req, res, next) {
   try {
-      const propertyID = req.query.PropertyID.trim();  // Ensure propertyID is defined
-      console.log(propertyID)
-      const property = await Property.findById(propertyID).populate('rooms');
+      const propertyID = req.query.propertyID;  // Use lowercase 'propertyID'
+      
+      // Check if propertyID is defined and is a string before trimming
+      if (!propertyID || typeof propertyID !== 'string') {
+          return res.status(400).json({ error: 'propertyID is required' });
+      }
+
+      const trimmedID = propertyID.trim();  // Now it should be safe to trim
+      console.log(trimmedID);  // Log the trimmed propertyID
+      
+      const property = await Property.findById(trimmedID).populate('rooms');
       if (!property) {
           return res.status(404).json({ error: 'Property not found' });
       }
@@ -97,6 +105,7 @@ router.get('/readmore', async function(req, res, next) {
       res.status(500).json({ error: err.message });
   }
 });
+
 
 router.get('/404', function(req, res, next) {
   res.render('404',{ page: '404', title: '404' });
@@ -110,9 +119,33 @@ router.get('/destination', function(req, res, next) {
   res.render('destination',{ page: 'destination', title: 'Destination' });
 });
 
-router.get('/search-page', function(req, res, next) {
-  res.render('search-page',{ page: 'search-page', title: 'Search result' });
+
+router.get('/search-page', async function(req, res, next) {
+  try {
+    // Fetch all properties and populate rooms correctly
+    const properties = await Property.find().populate('rooms'); 
+
+    // Iterate over each property and its rooms
+    properties.forEach(property => {
+      if (property.rooms && property.rooms.length > 0) {
+        property.rooms.forEach((room, index) => {
+          console.log(`Room ${index + 1} price: ${room.price}`); // Log price of each room for each property
+        });
+      } else {
+        console.log("No rooms found for this property");
+      }
+    });
+
+    // Pass the properties array to the view
+    res.render('search-page', { page: 'search-page', title: 'Search result', properties: properties }); 
+  } catch (err) {
+    console.error("Error fetching properties:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
+
+
+
 
 router.get('/service', function(req, res, next) {
   res.render('service',{ page: 'service', title: 'Service' });

@@ -196,17 +196,20 @@ router.post('/properties/edit/:id', isAuthenticated, async (req, res) => {
         number: roomNumbers[i],
         type: rooms[i],
         price: roomPrices[i],
-        capacity: roomCapacities[i], // Adding capacity
+        capacity: roomCapacities[i],
         available: roomAvailabilities[i] === 'on'
       };
 
       // Check if the room already exists
-      const existingRoom = await Room.findOne({ number: roomData.number });
+      const existingRoom = await Room.findOne({ number: roomData.number, property: req.params.id });
+
       if (existingRoom) {
+        // Update the existing room if it belongs to this property
         await Room.findByIdAndUpdate(existingRoom._id, roomData);
         roomsData.push(existingRoom._id); // Track updated room ID
       } else {
-        const newRoom = new Room(roomData);
+        // Create a new room and associate it with the property
+        const newRoom = new Room({ ...roomData, property: req.params.id }); // Associate with property
         await newRoom.save();
         roomsData.push(newRoom._id); // Track newly created room ID
       }
