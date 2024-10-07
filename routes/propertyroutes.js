@@ -48,14 +48,18 @@ router.get('/:id', async (req, res) => {
 
 
 // Get all properties
+// Get all properties and render the cards on the frontend
 router.get('/properties', async (req, res) => {
   try {
-    const properties = await Property.find(); // Fixed typo
-    res.status(200).json(properties);
+    const properties = await Property.find(); // Fetch all properties
+    res.render('properties', { properties }); // Pass data to the 'properties.ejs' file
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.render
+
+    //res.status(500).json({ error: err.message });
   }
 });
+
 
 // Update a property by ID
 router.put('/properties/:id', async (req, res) => {
