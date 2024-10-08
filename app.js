@@ -41,7 +41,10 @@ app.use(expressSession({
   resave: false,
   saveUninitialized: false,
   secret: "hey hey",
-  cookie: { secure: false }
+  cookie: {
+    secure: true, // Set to true if using HTTPS
+    maxAge: 1000 * 60 * 60 * 24 * 365 * 10 // 10 years in milliseconds
+  }
 }));
 
 app.use(flash());
