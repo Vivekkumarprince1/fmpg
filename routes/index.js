@@ -40,7 +40,7 @@ router.get('/', async function(req, res, next) {
 });
 
 router.get('/index', function(req, res, next) {
-  res.render('index');
+  res.redirect('/');
 });
 
 

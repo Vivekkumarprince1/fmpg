@@ -255,6 +255,7 @@
 /*** Package ***/
 .package-item {
     box-shadow: 0 0 45px rgba(0, 0, 0, .08);
+    height: 100%;
 }
 
 .package-item img {
@@ -450,4 +451,20 @@
 
 .f101{
     padding: 4rem;
+}
+
+
+#near-me-btn {
+    position: absolute;
+    right: 110px; /* Adjust this value to move the button closer to Search */
+    top: 0;
+    margin-top: 7px;
+    margin-left: 0px;
+}
+
+#search-btn {
+    position: absolute;
+    right: 6px;
+    top: 0;
+    margin-top: 7px;
 }

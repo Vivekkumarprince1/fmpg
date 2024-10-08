@@ -103,6 +103,9 @@
     .suggestions-container div:last-child {
         border-bottom: none; /* Remove the last item's bottom border */
     }
+
+    
+
    </style>
 
 </head>
@@ -125,7 +128,7 @@
                 <div class="d-inline-flex align-items-center" style="height: 45px;">
                     <small class="me-3 text-light"><a href="https://maps.app.goo.gl/KJCAo6hSidjYhC5D8" style="color: white;" class="mb-2" ><i class="fa fa-map-marker-alt me-3"></i>UIET Hoshiarpur , india</a><br>
                     </small>
-                    <small class="me-3 text-light"><a href=" tel: +9198xxxxxxxx" style="color: white;" class="mb-2"><i class="fa fa-phone-alt me-3"></i>+917321835093</a><br>
+                    <small class="me-3 text-light"><a href=" tel: +917321835093" style="color: white;" class="mb-2"><i class="fa fa-phone-alt me-3"></i>+917321835093</a><br>
                     </small>
                     <small class="text-light"><a href="mailto: fmpg974@gmail.com?" style="color: white;" class="mb-2"><i class="fa fa-envelope me-3"></i>fmpg974@gmail.com</a>
                     </small>
@@ -181,7 +184,7 @@
                         <div class="dropdown-menu m-0">
                             <a href="destination" class="dropdown-item">Destination</a>
                             <!-- <a href="booking" class="dropdown-item">Booking</a> -->
-                            <a href="team" class="dropdown-item">Team</a>
+                            <!-- <a href="team" class="dropdown-item">Team</a> -->
                         </div>
                     </div>
                     <a href="contact" class="nav-item nav-link">Contact</a>
@@ -200,16 +203,24 @@
                             meets convenience!</p>
                             <div class="position-relative w-75 mx-auto animated slideInDown">
                                 <div class="position-relative" style="width: 100%;">
-                                    <input class="form-control border-0  w-100 py-3 ps-4 pe-5" id="input"
+                                    <input class="form-control border-0 w-100 py-3 ps-4 pe-5" id="input"
                                            type="text" placeholder="Eg: Delhi" autocapitalize="on" required>
-                                    <button type="button"
-                                            class="btn btn-primary py-2 px-4 position-absolute top-0 end-0 me-2"
-                                            id="search-btn" style="margin-top: 7px;" disabled>Search</button>
-                            
-                                    <!-- Suggestions will appear inside the same container -->
+                                    
+                                    <!-- Near Me button -->
+                                    <button type="button" class="btn btn-primary py-2 px-3" id="near-me-btn">
+                                        <i class="fa-sharp-duotone fa-solid fa-location-crosshairs"></i>
+                                    </button>
+                                    
+                                    <!-- Search button -->
+                                    <button type="button" class="btn btn-primary py-2 px-4" id="search-btn" disabled>
+                                        Search
+                                    </button>
+                                    
+                                    <!-- Suggestions container -->
                                     <div class="suggestions-container" id="dropdown" style="display: none;"></div>
                                 </div>
                             </div>
+                            
                     </div>
                 </div>
             </div>
@@ -376,10 +387,10 @@
 
 
                 <% properties.slice(0, 3).forEach(property => { %>
-                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="col-lg-4 col-md-7 wow fadeInUp" data-wow-delay="0.1s">
                         <div class="package-item">
                             <div class="overflow-hidden">
-                                <img class="img-fluid" style="height: 300px; width: 100vh;" src="<%= property.images[0] %>"
+                                <img class="img-fluid"  src="<%= property.images[0] %>"
                                     alt="<%= property.name %>">
                             </div>
                             <div class="d-flex border-bottom" style="color: #808b8d;">
@@ -673,6 +684,32 @@
                     window.open("404");
                 }
             });
+
+            document.getElementById('near-me-btn').addEventListener('click', function () {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            // Here you can implement logic to find nearby locations based on the latitude and longitude.
+            // For example, you can use an API like Google Places or use a static list of places with coordinates.
+
+            // For demonstration purposes, let's log the coordinates
+            console.log('Latitude:', latitude);
+            console.log('Longitude:', longitude);
+
+            // Example: Open a search page with the coordinates (you might want to customize this)
+            window.open(`search-page?lat=${latitude}&lng=${longitude}`, "_blank");
+        }, function () {
+            alert('Unable to retrieve your location.');
+        });
+    } else {
+        alert('Geolocation is not supported by this browser.');
+    }
+});
+
+
+
         </script>
         <script>
             // Automatically hide the message after 4 seconds
