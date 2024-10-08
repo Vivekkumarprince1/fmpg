@@ -76,6 +76,11 @@
     border-radius: 0px;
 }
 
+.book-btn{
+    position: relative;
+    bottom: 15px;
+}
+
 
 /*** Navbar ***/
 .navbar-light .navbar-nav .nav-link {
