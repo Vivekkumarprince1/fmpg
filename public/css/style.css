@@ -271,6 +271,11 @@
     transform: scale(1.1);
 }
 
+.footer-img{
+    height: 80px;
+    width: 100px;
+}
+
 
 /*** Booking ***/
 .booking {
