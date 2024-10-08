@@ -333,48 +333,7 @@
                 <h1 class="mb-5">Top Rooms</h1>
             </div>
             <div class="row g-4 justify-content-center">
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <!-- <a href="../Readmore/Radhe-Shyam-PG"> -->
-                    <div class="package-item">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="../PG-photos/radheshyam-1.jpg" alt="">
-                        </div>
-                        <div class="d-flex border-bottom" style="color: #808b8d;">
-                            <small class="flex-fill text-center border-end py-2">Shared Room</small>
-                            <small class="flex-fill text-center border-end py-2"><i
-                                    class="fa fa-calendar-alt text-primary me-2"></i>1 Month</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>2
-                                Person</small>
-                        </div>
-                        <div class="text-center p-4">
-                            <h3 class="mb-0">RadheShyam PG</h3>
-                            <div class="mb-3">
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                            </div>
-                            <p style="color: #808b8d;"> Each room is fully furnished with a cozy bed, a spacious
-                                wardrobe, a study desk, and ample lighting to create an ideal environment for both
-                                relaxation and productivity. With high-speed internet, air conditioning, and a dedicated
-                                bathroom, you can enjoy all the comforts of home.</p>
-                            <div class="d-flex justify-content-center mb-2">
-                                <!-- <a href="../Readmore/Radhe-Shyam-PG" class="btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;">Read More</a> -->
-                                <button class="book-btn btn-primary btn " style="border-radius: 30px;" id="book-btn"
-                                    onclick="readmore_R()">Book Now</button>
-                                <script>
-                                    const readmore_R = () => {
-                                        const propertyID = "66cf8d9f028162a0701ff6f4";
-                                        const queryString = `PropertyID=${propertyID}`;
-                                        window.location.href = `/readmore?${queryString}`;
-                                    };
-                                </script>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <!-- <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                     <div class="package-item">
 
                         <div class="overflow-hidden">
@@ -400,7 +359,6 @@
                                 living environment for two. Each room is fully furnished with two comfortable beds,
                                 ample storage space, study desks, and plenty of natural light. </p>
                             <div class="d-flex justify-content-center mb-2">
-                                <!-- <a href="#" class="btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;">Read More</a> -->
                                 <button class="book-btn btn-primary btn " style="border-radius: 30px;" id="book-btn"
                                     onclick="readmore_S()">Book Now</button>
                                 <script>
@@ -413,48 +371,58 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="package-item">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="PG-photos/mundi-1.jpg" alt="">
-                        </div>
-                        <div class="d-flex border-bottom" style="color: #808b8d;">
-                            <small class="flex-fill text-center border-end py-2">Hostel</small>
-                            <small class="flex-fill text-center border-end py-2">1 Month</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>2
-                                Person</small>
-                        </div>
-                        <div class="text-center p-4">
-                            <h3 class="mb-0">Divine Home</h3>
-                            <div class="mb-3">
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
+
+
+                <% properties.slice(0, 3).forEach(property => { %>
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="package-item" style="height: 650px;">
+                            <div class="overflow-hidden">
+                                <img class="img-fluid" style="height: 300px; width: 100vh;" src="<%= property.images[0] %>"
+                                    alt="<%= property.name %>">
                             </div>
-                            <p style="color: #808b8d;">Our hostel offers clean and comfortable accommodations with
-                                secure facilities, friendly staff, and vibrant common areas that foster social
-                                interactions. It is conveniently located, providing Hygienic food and additional perks
-                                like free Wi-Fi and organized activities.</p>
+                            <div class="d-flex border-bottom" style="color: #808b8d;">
+                                <small class="flex-fill text-center border-end py-2">
+                                    <%= property.type %>
+                                </small>
+                                <small class="flex-fill text-center border-end py-2"><i
+                                        class="fa fa-calendar-alt text-primary me-2"></i>Per Month
+                                </small>
+                                <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>
+                                </small>
+
+                            </div>
+
+                            <div class="text-center p-4">
+                                <h3 class="mb-0">
+                                    <%= property.name %>
+                                </h3>
+                                <div class="mb-3">
+                                    <small class="fa fa-star text-primary"></small>
+                                    <small class="fa fa-star text-primary"></small>
+                                    <small class="fa fa-star text-primary"></small>
+                                    <small class="fa fa-star text-primary"></small>
+                                    <small class="fa fa-star text-primary"></small>
+                                </div>
+                                <p style="color: #808b8d;">
+                                    <%= property.description %>
+                                </p>
+                            </div>
+                            <!-- <div class="mb-3"></div> -->
                             <div class="d-flex justify-content-center mb-2">
-                                <!-- <button class="btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;" onclick="readmore()">Read More</button> -->
-                                <button class="book-btn btn-primary btn " style="border-radius: 30px;" id="book-btn"
-                                    onclick="readmore_D()">Book Now</button>
+                                <button class="book-btn btn-primary btn" style="border-radius: 30px;" id="book-btn"
+                                    onclick="readmore('<%= property._id %>')">Book Now</button>
+                                <script>
+                                    const readmore = (propertyID) => {
+                                        const queryString = `propertyID=${propertyID}`;
+                                        window.location.href = `/readmore?${queryString}`;
+                                    };
+                                </script>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <script>
-                    const readmore_D = () => {
-                        const propertyID = "66cf6e331ae3bc6245e85ace";
-                        const queryString = `PropertyID=${propertyID}`;
-                        window.location.href = `/readmore?${queryString}`;
-                    };
-                </script>
+                <% }) %>
 
             </div>
         </div>
