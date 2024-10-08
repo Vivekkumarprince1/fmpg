@@ -19,19 +19,30 @@ const nodemailer = require('nodemailer'); // External package
 passport.use(new localStrategy(userModel.authenticate()));
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  const success = req.session.message || req.session.success;
-  
-  // Clear the message from the session
-  req.session.message = null;
-  req.session.success = null;
-  res.render('index', { success, page: 'home', title: 'Home' });
 
+router.get('/', async function(req, res, next) {
+  try {
+    const success = req.session.message || req.session.success;
+
+    // Clear the message from the session
+    req.session.message = null;
+    req.session.success = null;
+
+    // Fetch properties from the database
+    const properties = await Property.find().populate('rooms'); // Populate rooms if needed
+
+    // Render the index view with properties
+    res.render('index', { properties, success, page: 'home', title: 'Home' });
+  } catch (err) {
+    console.error("Error fetching properties:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 router.get('/index', function(req, res, next) {
   res.render('index');
 });
+
 
 
 router.get('/booking', isLoggedIn, async function(req, res, next) {
