@@ -38,6 +38,20 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <style>
+        .filter-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-section select, 
+.filter-section button {
+    padding: 10px;
+    font-size: 16px;
+}
+
+    </style>
 </head>
 
 <body>
@@ -47,93 +61,61 @@
 
         <div class="container-xxl py-5">
             <div class="container">
-                <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+    
+                <!-- Filter Section -->
+                <div class="filter-section">
+                    <!-- Gender Filter -->
+                    <select id="gender-filter" class="form-select">
+                        <option value="all">All Genders</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="unisex">Unisex</option>
+                    </select>
+    
+                    <!-- Sorting Filter -->
+                    <select id="sorting-filter" class="form-select">
+                        <option value="relevant">Most Relevant</option>
+                        <option value="low-to-high">Price: Low to High</option>
+                        <option value="high-to-low">Price: High to Low</option>
+                        <option value="distance">Distance from Me</option>
+                    </select>
                 </div>
-                <div class="row g-4 justify-content-center">
-                    <!-- <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s"> -->
-                    <!-- <div class="package-item"> -->
-                    <!-- <div class="overflow-hidden">
-                            <img class="img-fluid" src="PG-photos/mundi-1.jpg" alt="">
-                        </div>
-                        <div class="d-flex border-bottom" style="color: #808b8d;">
-                            <small class="flex-fill text-center border-end py-2">Shared Room</small>
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-calendar-alt text-primary me-2"></i>1 Month</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>2 Person</small>
-                        </div>
-                        <div class="text-center p-4">
-                            <h3 class="mb-0">Divine Home (Mundi)</h3>
-                            <h6 class="mb-0">Rs 3000.00</h6>
-                            <div class="mb-3">
+    
+                <!-- Properties List -->
+                <div class="row g-4 justify-content-center" id="properties-list">
+                    <% properties.forEach(property => { %>
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="package-item" style="height: 500px;">
+                            <div class="overflow-hidden">
+                                <img class="img-fluid" style="height: 300px;" src="<%= property.images[0] %>"
+                                    alt="<%= property.name %>">
+                            </div>
+                            <div class="d-flex border-bottom" style="color: #808b8d;">
+                                <small class="flex-fill text-center border-end py-2"><%= property.type %></small>
+                                <small class="flex-fill text-center border-end py-2"><i
+                                        class="fa fa-calendar-alt text-primary me-2"></i>Per Month</small>
+                                <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i><%= property.capacity %></small>
+                            </div>
+                            <div class="text-center p-4">
+                                <h3 class="mb-0"><%= property.name %></h3>
+                                <div class="room-prices">
+                                    <% if (property.rooms && property.rooms.length > 0) { %>
+                                    <h6 class="mb-0">Room Prices: <%= property.rooms.map(room => room.price).join(' / ') %></h6>
+                                    <% } else { %>
+                                    <h6 class="mb-0">No rooms available</h6>
+                                    <% } %>
+                                </div>
                             </div>
                             <div class="d-flex justify-content-center mb-2">
-                                <button class="book-btn btn-primary btn " style="border-radius: 30px;" id="book-btn" onclick="readmore_D()">Book Now</button>
-                                <script>
-                                    const readmore_D = () => {
-                                        const propertyID = "66cf6e331ae3bc6245e85ace";
-                                        const queryString = `PropertyID=${propertyID}`;
-                                        window.location.href = `/readmore?${queryString}`;
-                                    };
-                                </script>
+                                <button class="book-btn btn-primary btn" style="border-radius: 30px;" id="book-btn"
+                                    onclick="readmore('<%= property._id %>')">Book Now</button>
                             </div>
                         </div>
                     </div>
-                    </div> -->
-                    <% properties.forEach(property=> { %>
-                        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                            <div class="package-item" style="height: 500px;">
-
-                                <div class="overflow-hidden">
-                                    <img class="img-fluid" style="height: 300px;" src="<%= property.images[0] %>"
-                                        alt="<%= property.name %>">
-                                </div>
-                                <div class="d-flex border-bottom" style="color: #808b8d;">
-                                    <small class="flex-fill text-center border-end py-2">
-                                        <%= property.type %>
-                                    </small>
-                                    <small class="flex-fill text-center border-end py-2"><i
-                                            class="fa fa-calendar-alt text-primary me-2"></i>Per Month</small>
-                                    <small class="flex-fill text-center py-2"><i
-                                            class="fa fa-user text-primary me-2"></i>
-                                        <%= property.capacity %>
-                                    </small>
-                                </div>
-                                <div class="text-center p-4">
-                                    <h3 class="mb-0">
-                                        <%= property.name %>
-                                    </h3>
-                                    <div class="room-prices">
-                                        <% if (property.rooms && property.rooms.length> 0) { %>
-                                            <h6 class="mb-0">
-                                                Room Prices:
-                                                <%= property.rooms.map(room=> room.price).join(' / ') %>
-                                            </h6>
-                                            <% } else { %>
-                                                <h6 class="mb-0">No rooms available</h6>
-                                                <% } %>
-                                    </div>
-                                </div>
-                                <div class="mb-3"></div>
-                                <div class="d-flex justify-content-center mb-2">
-                                    <button class="book-btn btn-primary btn" style="border-radius: 30px;" id="book-btn"
-                                        onclick="readmore('<%= property._id %>')">Book Now</button>
-                                    <script>
-                                        const readmore = (propertyID) => {
-                                            const queryString = `propertyID=${propertyID}`;
-                                            window.location.href = `/readmore?${queryString}`;
-                                        };
-                                    </script>
-                                </div>
-                            </div>
-                        </div>
-                        <% }) %>
-                            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
-                            </div>
+                    <% }) %>
                 </div>
             </div>
         </div>
-
-
-
 
 
         <!--footer start-->
@@ -157,6 +139,104 @@
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
+
+        <!-- Filter & Distance Logic -->
+        <script>
+            const properties =  JSON.stringify(properties) ;
+    
+            document.getElementById('gender-filter').addEventListener('change', filterProperties);
+            document.getElementById('sorting-filter').addEventListener('change', filterProperties);
+    
+            function filterProperties() {
+                const genderFilter = document.getElementById('gender-filter').value;
+                const sortingFilter = document.getElementById('sorting-filter').value;
+    
+                let filteredProperties = properties;
+    
+                // Gender filter
+                if (genderFilter !== 'all') {
+                    filteredProperties = filteredProperties.filter(property => property.gender === genderFilter);
+                }
+    
+                // Sorting filter
+                if (sortingFilter === 'low-to-high') {
+                    filteredProperties.sort((a, b) => a.rooms[0].price - b.rooms[0].price);
+                } else if (sortingFilter === 'high-to-low') {
+                    filteredProperties.sort((a, b) => b.rooms[0].price - a.rooms[0].price);
+                } else if (sortingFilter === 'distance') {
+                    calculateDistance();
+                    return;
+                }
+    
+                renderProperties(filteredProperties);
+            }
+    
+            function renderProperties(properties) {
+                const propertyList = document.getElementById('properties-list');
+                propertyList.innerHTML = ''; // Clear current list
+    
+                properties.forEach(property => {
+                    const propertyHTML = `
+                        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                            <div class="package-item" style="height: 500px;">
+                                <div class="overflow-hidden">
+                                    <img class="img-fluid" style="height: 300px;" src="${property.images[0]}" alt="${property.name}">
+                                </div>
+                                <div class="d-flex border-bottom" style="color: #808b8d;">
+                                    <small class="flex-fill text-center border-end py-2">${property.type}</small>
+                                    <small class="flex-fill text-center border-end py-2"><i
+                                            class="fa fa-calendar-alt text-primary me-2"></i>Per Month</small>
+                                    <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>${property.capacity}</small>
+                                </div>
+                                <div class="text-center p-4">
+                                    <h3 class="mb-0">${property.name}</h3>
+                                    <div class="room-prices">
+                                        ${property.rooms.length > 0 ? `Room Prices: ${property.rooms.map(room => room.price).join(' / ')}` : 'No rooms available'}
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-center mb-2">
+                                    <button class="book-btn btn-primary btn" style="border-radius: 30px;" id="book-btn"
+                                        onclick="readmore('${property._id}')">Book Now</button>
+                                </div>
+                            </div>
+                        </div>`;
+                    propertyList.innerHTML += propertyHTML;
+                });
+            }
+    
+            function calculateDistance() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(position => {
+                        const { latitude, longitude } = position.coords;
+    
+                        properties.forEach(property => {
+                            const distance = getDistanceFromLatLonInKm(latitude, longitude, property.lat, property.lng);
+                            property.distance = distance;
+                        });
+    
+                        // Sort by distance
+                        properties.sort((a, b) => a.distance - b.distance);
+                        renderProperties(properties);
+                    });
+                } else {
+                    alert("Geolocation is not supported by this browser.");
+                }
+            }
+    
+            function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+                const R = 6371;
+                const dLat = deg2rad(lat2 - lat1);
+                const dLon = deg2rad(lon2 - lon1);
+                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                return R * c;
+            }
+    
+            function deg2rad(deg) {
+                return deg * (Math.PI / 180);
+            }
+        </script>
+
 </body>
 
 </html>
