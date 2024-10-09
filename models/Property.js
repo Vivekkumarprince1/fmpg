@@ -30,7 +30,10 @@ const { type } = require('os');
     required: true
   },
   rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'room' }],
-  owner: { type: String,require:true }
+  owner: { type: String,require:true },
+  gender: { type: String, enum: ['male', 'female', 'unisex'] },
+  lat: Number, // Latitude for distance calculation
+  lng: Number, // Longitude for distance calculation
 });
 
 // Create the model

@@ -11,12 +11,13 @@ const Booking = require('../models/Booking');
 // const properties= require('../models/Property');
 const Property = require('../models/Property');
 const flash=require('connect-flash');
-passport.use(new localStrategy(userModel.authenticate()));
+// passport.use(new localStrategy(userModel.authenticate()));
 const crypto = require('crypto'); // Built-in Node.js module
 const nodemailer = require('nodemailer'); // External package
 
 
-passport.use(new localStrategy(userModel.authenticate()));
+passport.use(new localStrategy({ usernameField: 'email' }, userModel.authenticate()));
+
 
 /* GET home page. */
 
@@ -47,7 +48,7 @@ router.get('/index', function(req, res, next) {
 
 router.get('/booking', isLoggedIn, async function(req, res, next) {
   const user =await userModel.findOne({
-    username: req.session.passport.user
+    email: req.session.passport.user
   })
   try {
     const rooms = await roomModel.find();
@@ -156,6 +157,53 @@ router.get('/search-page', async function(req, res, next) {
 });
 
 
+// Helper function to calculate distance between two lat/lng points
+const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
+  const R = 6371; // Radius of Earth in km
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+};
+
+const deg2rad = (deg) => deg * (Math.PI / 180);
+
+// Route to filter properties
+router.get('/filter-sort', async (req, res) => {
+try {
+  const { gender = 'all', sort = '', lat, lng } = req.query;
+
+  // Initialize query with optional gender filter
+  let query = {};
+  if (gender && gender !== 'all') {
+    query.gender = gender;
+  }
+
+  // Fetch filtered properties
+  let properties = await Property.find(query).populate('rooms');
+
+  // Sort properties based on selected criteria
+  if (sort === 'low-to-high') {
+    properties = properties.sort((a, b) => a.rooms[0]?.price - b.rooms[0]?.price);
+  } else if (sort === 'high-to-low') {
+    properties = properties.sort((a, b) => b.rooms[0]?.price - a.rooms[0]?.price);
+  } else if (sort === 'distance' && lat && lng) {
+    properties = properties.map(property => {
+      property.distance = getDistanceFromLatLonInKm(lat, lng, property.lat, property.lng);
+      return property;
+    });
+    properties.sort((a, b) => a.distance - b.distance); // Sort by nearest distance
+  }
+
+  res.render('search-sort', { properties, gender, sort });
+} catch (err) {
+  res.status(500).json({ error: err.message });
+}
+});
+
 
 
 router.get('/service', function(req, res, next) {
@@ -166,11 +214,9 @@ router.get('/team', function(req, res, next) {
   res.render('team',{ page: 'team', title: 'Team' });
 });
 
-
-
 router.get('/profile', isLoggedIn, async function(req, res, next) {
   try {
-    const user = await userModel.findOne({ username: req.session.passport.user });
+    const user = await userModel.findOne({ email: req.session.passport.user });
     const bookings = await Booking.find({ user: user._id }).populate('room').populate('propertyID').populate({
       path: 'room',
       populate: {
@@ -195,7 +241,6 @@ router.get('/profile', isLoggedIn, async function(req, res, next) {
   }
 });
 
-
 router.get('/dashboard', isLoggedIn, (req, res) => {
   res.render('admin/dashboard', { admin: req.user });
 });
@@ -217,13 +262,13 @@ router.get('/dashboard', isLoggedIn, (req, res) => {
 // });
 
 router.post('/login', function(req, res, next) {
-  passport.authenticate('local', function(err, user, info) {
+  passport.authenticate('local', { usernameField: 'email' }, function(err, user, info) {
     if (err) { return next(err); }
     if (!user) {
-      req.session.error = info ? info.message : 'Invalid username or password';
+      req.session.error = info ? info.message : 'Invalid email or password';
       return res.redirect('/login');
     }
-    
+
     req.logIn(user, function(err) {
       if (err) { return next(err); }
       
@@ -232,6 +277,7 @@ router.post('/login', function(req, res, next) {
     });
   })(req, res, next);
 });
+
 
 
 router.get('/login', function(req, res) {
