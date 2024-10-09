@@ -132,29 +132,48 @@ router.get('/destination', function(req, res, next) {
 });
 
 
-router.get('/search-page', async function(req, res, next) {
-  try {
-    // Fetch all properties and populate rooms correctly
-    const properties = await Property.find().populate('rooms'); 
+// router.get('/search-page', async function(req, res, next) {
+//   try {
+//     const { gender = 'all', sort = '', lat, lng } = req.query;
 
-    // Iterate over each property and its rooms
-    properties.forEach(property => {
-      if (property.rooms && property.rooms.length > 0) {
-        property.rooms.forEach((room, index) => {
-          console.log(`Room ${index + 1} price: ${room.price}`); // Log price of each room for each property
-        });
-      } else {
-        console.log("No rooms found for this property");
-      }
-    });
+//   // Initialize query with optional gender filter
+//   let query = {};
+//   if (gender && gender !== 'all') {
+//     query.gender = gender;
+//   }
+//     // Fetch all properties and populate rooms correctly
+//     const properties = await Property.find().populate('rooms'); 
 
-    // Pass the properties array to the view
-    res.render('search-page', { page: 'search-page', title: 'Search result', properties: properties }); 
-  } catch (err) {
-    console.error("Error fetching properties:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
+//     if (sort === 'low-to-high') {
+//       properties = properties.sort((a, b) => a.rooms[0]?.price - b.rooms[0]?.price);
+//     } else if (sort === 'high-to-low') {
+//       properties = properties.sort((a, b) => b.rooms[0]?.price - a.rooms[0]?.price);
+//     } else if (sort === 'distance' && lat && lng) {
+//       properties = properties.map(property => {
+//         property.distance = getDistanceFromLatLonInKm(lat, lng, property.lat, property.lng);
+//         return property;
+//       });
+//       properties.sort((a, b) => a.distance - b.distance); // Sort by nearest distance
+//     }
+
+//     // Iterate over each property and its rooms
+//     properties.forEach(property => {
+//       if (property.rooms && property.rooms.length > 0) {
+//         property.rooms.forEach((room, index) => {
+//           console.log(`Room ${index + 1} price: ${room.price}`); // Log price of each room for each property
+//         });
+//       } else {
+//         console.log("No rooms found for this property");
+//       }
+//     });
+
+//     // Pass the properties array to the view
+//     res.render('search-page', { page: 'search-page', title: 'Search result', properties: properties, gender, sort }); 
+//   } catch (err) {
+//     console.error("Error fetching properties:", err);
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 
 
 // Helper function to calculate distance between two lat/lng points
@@ -171,8 +190,9 @@ const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
 
 const deg2rad = (deg) => deg * (Math.PI / 180);
 
+
 // Route to filter properties
-router.get('/filter-sort', async (req, res) => {
+router.get('/search-page', async (req, res) => {
 try {
   const { gender = 'all', sort = '', lat, lng } = req.query;
 
@@ -198,7 +218,7 @@ try {
     properties.sort((a, b) => a.distance - b.distance); // Sort by nearest distance
   }
 
-  res.render('search-sort', { properties, gender, sort });
+  res.render('search-page', { page: 'search-page', title: 'Search result', properties: properties, gender, sort });
 } catch (err) {
   res.status(500).json({ error: err.message });
 }
