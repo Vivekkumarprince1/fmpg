@@ -7,7 +7,7 @@ const options = {
   // useUnifiedTopology: true,
   // useCreateIndex: true,
   // useFindAndModify: false,
-  serverSelectionTimeoutMS: 30000,
+  serverSelectionTimeoutMS: 30000*100*100,
 };
 
 mongoose.connect(dbUrl, options)
@@ -19,7 +19,8 @@ mongoose.connect(dbUrl, options)
 
 mongoose.connection.on('disconnected', () => {
   console.log('MongoDB disconnected. Reconnecting...');
-  mongoose.connect(dbURl, options);
+  // Fix: Change dbURL to dbUrl
+  mongoose.connect(dbUrl, options);
 });
 
 module.exports = mongoose;
