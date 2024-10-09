@@ -57,7 +57,6 @@ app.post('/api/bookings', (req, res) => {
 });
 
 
-
 // Passport initialization
 app.use(passport.initialize());
 app.use(passport.session());

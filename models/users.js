@@ -48,7 +48,10 @@ userSchema.methods.comparePassword = function (candidatePassword, cb) {
   });
 };
 
-userSchema.plugin(plm);
+userSchema.plugin(plm, {
+  usernameField: "email" // Tell Passport to use email instead of username
+});
+
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
