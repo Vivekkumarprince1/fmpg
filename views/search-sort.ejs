@@ -43,45 +43,46 @@
 </div>
 
 
-    <script>
-        document.getElementById('filter-sort-form').addEventListener('submit', async function (event) {
-            const sort = document.getElementById('sort').value;
-        
-            // If "Distance from Me" is selected, get user location
-            if (sort === 'distance') {
-                event.preventDefault(); // Prevent default form submission
-        
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function (position) {
-                        const latitude = position.coords.latitude;
-                        const longitude = position.coords.longitude;
-        
-                        // Add lat/lng as hidden fields to the form
-                        const latInput = document.createElement('input');
-                        latInput.type = 'hidden';
-                        latInput.name = 'lat';
-                        latInput.value = latitude;
-        
-                        const lngInput = document.createElement('input');
-                        lngInput.type = 'hidden';
-                        lngInput.name = 'lng';
-                        lngInput.value = longitude;
-        
-                        document.getElementById('filter-sort-form').appendChild(latInput);
-                        document.getElementById('filter-sort-form').appendChild(lngInput);
-        
-                        // Submit the form with lat/lng
-                        document.getElementById('filter-sort-form').submit();
-                    }, function (error) {
-                        alert("Unable to retrieve your location");
-                        console.error(error);
-                    });
-                } else {
-                    alert("Geolocation is not supported by this browser.");
-                }
-            }
-        });
-        </script>
+        <script>
+document.getElementById('filter-sort-form').addEventListener('submit', async function (event) {
+    const sort = document.getElementById('sort').value;
+
+    // If "Distance from Me" is selected, get user location
+    if (sort === 'distance') {
+        event.preventDefault(); // Prevent default form submission
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+
+                // Add lat/lng as hidden fields to the form
+                const latInput = document.createElement('input');
+                latInput.type = 'hidden';
+                latInput.name = 'lat';
+                latInput.value = latitude;
+
+                const lngInput = document.createElement('input');
+                lngInput.type = 'hidden';
+                lngInput.name = 'lng';
+                lngInput.value = longitude;
+
+                document.getElementById('filter-sort-form').appendChild(latInput);
+                document.getElementById('filter-sort-form').appendChild(lngInput);
+
+                // Submit the form with lat/lng
+                document.getElementById('filter-sort-form').submit();
+            }, function (error) {
+                alert("Unable to retrieve your location");
+                console.error(error);
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+});
+</script>
+
         
 
 </body>
