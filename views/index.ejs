@@ -407,7 +407,7 @@
 
                 <% properties.slice(0, 3).forEach(property => { %>
                     <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="package-item">
+                        <div class="package-item" onclick="readmore('<%= property._id %>')">
                             <div class="overflow-hidden">
                                 <img class="img-fluid"  src="<%= property.images[0] %>"
                                     alt="<%= property.name %>">
@@ -443,16 +443,17 @@
                             <div class="d-flex justify-content-center mb-2">
                                 <button class="book-btn btn-primary btn" style="border-radius: 30px;" id="book-btn"
                                     onclick="readmore('<%= property._id %>')">Book Now</button>
-                                <script>
-                                    const readmore = (propertyID) => {
-                                        const queryString = `propertyID=${propertyID}`;
-                                        window.location.href = `/readmore?${queryString}`;
-                                    };
-                                </script>
+                                
                             </div>
                         </div>
                     </div>
                 <% }) %>
+                <script>
+                    const readmore = (propertyID) => {
+                        const queryString = `propertyID=${propertyID}`;
+                        window.location.href = `/readmore?${queryString}`;
+                    };
+                </script>
 
             </div>
         </div>

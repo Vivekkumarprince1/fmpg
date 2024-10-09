@@ -181,7 +181,7 @@ const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
   const R = 6371; // Radius of Earth in km
   const dLat = deg2rad(lat2 - lat1);
   const dLon = deg2rad(lon2 - lon1);
-  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+  const a = Math.sin(dLat / 2) * Math.sin(dLon / 2) +
             Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
             Math.sin(dLon / 2) * Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
@@ -190,38 +190,56 @@ const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
 
 const deg2rad = (deg) => deg * (Math.PI / 180);
 
+// Helper function to extract lat/lng from Google Maps URL
+const extractLatLngFromMapUrl = (url) => {
+    const regex = /!2d([-\d.]+)!3d([-\d.]+)/;
+    const match = url.match(regex);
+    if (match) {
+        const lng = parseFloat(match[1]); // Longitude
+        const lat = parseFloat(match[2]); // Latitude
+        return { lat, lng };
+    } else {
+        console.error('No coordinates found in the map URL');
+        return null;
+    }
+};
 
-// Route to filter properties
+// Route to filter and sort properties, including by distance
 router.get('/search-page', async (req, res) => {
-try {
-  const { gender = 'all', sort = '', lat, lng } = req.query;
+  try {
+    const { gender = 'all', sort = '', lat, lng } = req.query;
 
-  // Initialize query with optional gender filter
-  let query = {};
-  if (gender && gender !== 'all') {
-    query.gender = gender;
+    // Initialize query with optional gender filter
+    let query = {};
+    if (gender && gender !== 'all') {
+      query.gender = gender;
+    }
+
+    // Fetch filtered properties
+    let properties = await Property.find(query).populate('rooms');
+
+    // Sort properties based on selected criteria
+    if (sort === 'low-to-high') {
+      properties = properties.sort((a, b) => a.rooms[0]?.price - b.rooms[0]?.price);
+    } else if (sort === 'high-to-low') {
+      properties = properties.sort((a, b) => b.rooms[0]?.price - a.rooms[0]?.price);
+    } else if (sort === 'distance' && lat && lng) {
+      properties = properties.map(property => {
+        const coordinates = extractLatLngFromMapUrl(property.map);
+        if (coordinates) {
+          property.distance = getDistanceFromLatLonInKm(lat, lng, coordinates.lat, coordinates.lng);
+        } else {
+          property.distance = Infinity; // Assign a large number if no coordinates are found
+        }
+        return property;
+      });
+      properties.sort((a, b) => a.distance - b.distance); // Sort by nearest distance
+    }
+
+    res.render('search-page', { page: 'search-page', title: 'Search result', properties:properties, gender, sort });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  // Fetch filtered properties
-  let properties = await Property.find(query).populate('rooms');
-
-  // Sort properties based on selected criteria
-  if (sort === 'low-to-high') {
-    properties = properties.sort((a, b) => a.rooms[0]?.price - b.rooms[0]?.price);
-  } else if (sort === 'high-to-low') {
-    properties = properties.sort((a, b) => b.rooms[0]?.price - a.rooms[0]?.price);
-  } else if (sort === 'distance' && lat && lng) {
-    properties = properties.map(property => {
-      property.distance = getDistanceFromLatLonInKm(lat, lng, property.lat, property.lng);
-      return property;
-    });
-    properties.sort((a, b) => a.distance - b.distance); // Sort by nearest distance
-  }
-
-  res.render('search-page', { page: 'search-page', title: 'Search result', properties: properties, gender, sort });
-} catch (err) {
-  res.status(500).json({ error: err.message });
-}
 });
 
 
