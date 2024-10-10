@@ -414,18 +414,18 @@ router.post('/verify-otp', (req, res) => {
 });
 
 
-router.get('/signup', function(req, res) {
-  const errorMessages = req.session.error || [];
-  const successMessages = req.session.success || [];
-  const formData = req.session.formData || {}; // Retrieve form data from session
+// router.get('/signup', function(req, res) {
+//   const errorMessages = req.session.error || [];
+//   const successMessages = req.session.success || [];
+//   const formData = req.session.formData || {}; // Retrieve form data from session
 
-  // Clear error and success messages after rendering
-  req.session.error = null;
-  req.session.success = null;
-  const referrerId = req.query.ref;  // Capture referrerId from URL
+//   // Clear error and success messages after rendering
+//   req.session.error = null;
+//   req.session.success = null;
+//   const referrerId = req.query.ref;  // Capture referrerId from URL
 
-  res.render('signup', { error: errorMessages, success: successMessages, formData ,referrerId});
-});
+//   res.render('signup', { error: errorMessages, success: successMessages, formData ,referrerId});
+// });
 
 // router.post('/signup', async function(req, res, next) {
 //   if (!req.session.isVerified) {
@@ -434,6 +434,7 @@ router.get('/signup', function(req, res) {
 //   }
 
 //   const { username, email, mobile, password } = req.body;
+// const referrerId = req.query.ref;  // Get referrerId from the query parameters
 
 //   try {
 //     // Check if the username, email, or mobile already exists
@@ -444,6 +445,23 @@ router.get('/signup', function(req, res) {
 //         { mobile: mobile }
 //       ]
 //     });
+
+
+
+//     // Assign 50 credits on signup
+//     user.referralCredits = 50;
+
+// if (referrerId) {
+//   const referrer = await userModel.findById(referrerId);
+//   if (referrer) {
+//     user.referredBy = referrer._id;
+//     // Reward referrer with additional credits
+//     referrer.referralCredits += 10;  // Adjust as necessary for referrer reward
+//     await referrer.save();
+//   }
+// }
+
+
 
 //     let errorMessages = [];
 
@@ -491,49 +509,139 @@ router.get('/signup', function(req, res) {
 // });
 
 
-router.post('/signup', async function (req, res, next) {
-  const { username, email, mobile, password } = req.body;
-  const referrerId = req.query.ref;  // Get referrerId from the query parameters
 
+
+
+router.post('/signup', async function(req, res, next) {
   if (!req.session.isVerified) {
     req.session.error = 'OTP verification required';
     return res.redirect('/signup');
   }
 
+  const { username, email, mobile, password } = req.body;
+  const referrerId = req.query.ref;  // Get referrerId from the query parameters
+
   try {
-    const user = new User({ username, email, mobile });
+    // Check if the username, email, or mobile already exists
+    const existingUsers = await userModel.find({
+      $or: [
+        { username: username },
+        { email: email },
+        { mobile: mobile }
+      ]
+    });
 
-    // Assign 50 credits on signup
-    user.referralCredits = 50;
+    let errorMessages = [];
 
-    // Check if referral link was used
-    if (referrerId) {
-      const referrer = await User.findById(referrerId);
-      if (referrer) {
-        user.referredBy = referrer._id;
-        // Reward referrer with additional credits
-        referrer.referralCredits += 10;  // Adjust as necessary for referrer reward
-        await referrer.save();
+    // Collect all existing conflicts
+    existingUsers.forEach(user => {
+      if (user.username === username) {
+        errorMessages.push('Username already exists');
       }
+      if (user.email === email) {
+        errorMessages.push('Email already exists');
+      }
+      if (user.mobile === mobile) {
+        errorMessages.push('Mobile number already exists');
+      }
+    });
+
+    // If there are errors, return them
+    if (errorMessages.length > 0) {
+      req.session.error = errorMessages.join(', ');
+      return res.redirect('/signup');
     }
 
-    User.register(user, password, (err, user) => {
+    // Register user if no conflict found
+    const userData = new userModel({ username, email, mobile });
+    userModel.register(userData, password, async function(err, user) {
       if (err) {
-        req.session.error = err.message;
+        req.session.error = 'Registration error: ' + err.message;
         return res.redirect('/signup');
       }
 
-      req.logIn(user, (err) => {
-        if (err) return next(err);
-        req.session.success = 'Successfully registered!';
-        res.redirect('/');
+      // Assign 50 credits on signup
+      user.referralCredits = 50;
+
+      // Handle referrer credits
+      if (referrerId) {
+        const referrer = await userModel.findById(referrerId);
+        if (referrer) {
+          console.log('Referrer found:', referrer);  // Debugging output
+          user.referredBy = referrer._id;
+          referrer.referralCredits += 10;
+          console.log('Referrer credits updated to:', referrer.referralCredits);  // Debugging output
+          await referrer.save();
+        } else {
+          console.log('No referrer found with that ID');
+        }
+      }
+      
+
+      req.logIn(user, function(err) {
+        if (err) {
+          req.session.error = 'Login error: ' + err.message;
+          return res.redirect('/signup');
+        }
+        req.session.success = 'Successfully registered and logged in!';
+        return res.redirect('/'); // Redirect to home or a specific page
       });
     });
+
   } catch (err) {
-    req.session.error = 'Registration error: ' + err.message;
+    req.session.error = 'Server error: ' + err.message;
     return res.redirect('/signup');
   }
 });
+
+
+
+
+
+
+// router.post('/signup', async function (req, res, next) {
+//   const { username, email, mobile, password } = req.body;
+//   const referrerId = req.query.ref;  // Get referrerId from the query parameters
+
+//   if (!req.session.isVerified) {
+//     req.session.error = 'OTP verification required';
+//     return res.redirect('/signup');
+//   }
+
+//   try {
+//     const user = new User({ username, email, mobile });
+
+//     // Assign 50 credits on signup
+//     user.referralCredits = 50;
+
+//     // Check if referral link was used
+//     if (referrerId) {
+//       const referrer = await User.findById(referrerId);
+//       if (referrer) {
+//         user.referredBy = referrer._id;
+//         // Reward referrer with additional credits
+//         referrer.referralCredits += 10;  // Adjust as necessary for referrer reward
+//         await referrer.save();
+//       }
+//     }
+
+//     User.register(user, password, (err, user) => {
+//       if (err) {
+//         req.session.error = err.message;
+//         return res.redirect('/signup');
+//       }
+
+//       req.logIn(user, (err) => {
+//         if (err) return next(err);
+//         req.session.success = 'Successfully registered!';
+//         res.redirect('/');
+//       });
+//     });
+//   } catch (err) {
+//     req.session.error = 'Registration error: ' + err.message;
+//     return res.redirect('/signup');
+//   }
+// });
 
 
 
