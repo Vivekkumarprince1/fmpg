@@ -26,6 +26,14 @@ router.post('/', async (req, res) => {
       return res.status(404).json({ message: 'Property not found' });
     }
 
+const referrer = await User.findById(user.referredBy);  // Find the referrer
+
+    // Reward referrer with additional credits when referred user books
+    if (referrer) {
+      referrer.referralCredits += 100;  // Adjust points as per your logic
+      await referrer.save();
+    }
+
     const booking = new Booking({
       mobile,
       startDate,
@@ -49,6 +57,38 @@ router.post('/', async (req, res) => {
     res.status(500).json({ message: 'Error creating booking', error: err });
   }
 });
+
+// router.post('/', async (req, res) => {
+//   const { mobile, startDate, endDate, userId, roomId, propertyID } = req.body;
+
+//   try {
+//     const user = await User.findById(userId);
+//     const referrer = await User.findById(user.referredBy);  // Find the referrer
+
+//     // Reward referrer with additional credits when referred user books
+//     if (referrer) {
+//       referrer.referralCredits += 100;  // Adjust points as per your logic
+//       await referrer.save();
+//     }
+
+//     const booking = new Booking({
+//       mobile,
+//       startDate,
+//       endDate,
+//       user: user._id,
+//       room: roomId,
+//       propertyID: propertyID,
+//       status: 'Pending',
+//     });
+
+//     await booking.save();
+//     res.redirect('/');
+//   } catch (err) {
+//     console.error('Error creating booking:', err);
+//     res.status(500).json({ message: 'Error creating booking', error: err });
+//   }
+// });
+
 
 
 

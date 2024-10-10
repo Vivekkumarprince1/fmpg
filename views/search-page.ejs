@@ -8,7 +8,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
-    
+
     <link rel="icon" href="img/logo.png" type="image/icon type">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
@@ -36,6 +36,7 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/footer.css">
     <style>
         .filter-section {
     display: flex;
@@ -62,7 +63,6 @@
     
                 <!-- Filter Section -->
                 <div class="filter-section">
-                    <!-- Gender Filter -->
                     <select id="gender-filter" class="form-select">
                         <option value="all">All Genders</option>
                         <option value="male">Male</option>
@@ -70,20 +70,20 @@
                         <option value="unisex">Unisex</option>
                     </select>
     
-                    <!-- Sorting Filter -->
-                    <select id="sorting-filter" class="form-select">
+                    
+                    <select id="sorting-filter" class="form-select sort">
                         <option value="relevant">Most Relevant</option>
                         <option value="low-to-high">Price: Low to High</option>
                         <option value="high-to-low">Price: High to Low</option>
-                        <option value="distance">Distance from Me</option>
+                        <option value="distance">Distance</option>
                     </select>
                 </div>
-    
+
                 <!-- Properties List -->
                 <div class="row g-4 justify-content-center" id="properties-list">
                     <% properties.forEach(property => { %>
                     <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="package-item" style="height: 500px;">
+                        <div class="package-item" style="height: 500px;" onclick="readmore('<%= property._id %>')">
                             <div class="overflow-hidden">
                                 <img class="img-fluid" style="height: 300px;" src="<%= property.images[0] %>"
                                     alt="<%= property.name %>">
@@ -96,10 +96,12 @@
                             </div>
                             <div class="text-center p-4">
                                 <h3 class="mb-0"><%= property.name %></h3>
+                                
                                 <div class="room-prices">
                                     <% if (property.rooms && property.rooms.length > 0) { %>
-                                    <h6 class="mb-0">Room Prices: <%= property.rooms.map(room => room.price).join(' / ') %></h6>
+                                    <h6 class="mb-0">Starting Price: <%= property.rooms[0] ? property.rooms[0].price : 'N/A' %></h6>
                                     <% } else { %>
+                                    
                                     <h6 class="mb-0">No rooms available</h6>
                                     <% } %>
                                 </div>
@@ -118,120 +120,53 @@
         <%- include('footer') %>
         <!--footer end-->
 
-        <!-- Back to Top -->
-        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
-
-        <!-- JavaScript Libraries -->
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="lib/wow/wow.min.js"></script>
-        <script src="lib/easing/easing.min.js"></script>
-        <script src="lib/waypoints/waypoints.min.js"></script>
-        <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-        <script src="lib/tempusdominus/js/moment.min.js"></script>
-        <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-        <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
 
         <!-- Filter & Distance Logic -->
-        <script>
-            const properties =  JSON.stringify(properties) ;
-    
-            document.getElementById('gender-filter').addEventListener('change', filterProperties);
-            document.getElementById('sorting-filter').addEventListener('change', filterProperties);
-    
-            function filterProperties() {
-                const genderFilter = document.getElementById('gender-filter').value;
-                const sortingFilter = document.getElementById('sorting-filter').value;
-    
-                let filteredProperties = properties;
-    
-                // Gender filter
-                if (genderFilter !== 'all') {
-                    filteredProperties = filteredProperties.filter(property => property.gender === genderFilter);
+       
+            <script>
+                const readmore = (propertyID) => {
+                    const queryString = `propertyID=${propertyID}`;
+                    window.location.href = `/readmore?${queryString}`;
+                };
+            </script>
+            <script>
+                document.getElementById('gender-filter').addEventListener('change', applyFilters);
+                document.getElementById('sorting-filter').addEventListener('change', applyFilters);
+            
+                function applyFilters() {
+                    const gender = document.getElementById('gender-filter').value;
+                    const sort = document.getElementById('sorting-filter').value;
+            
+                    // If the user selected "Distance", get their location
+                    if (sort === 'distance') {
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(position => {
+                                const lat = position.coords.latitude;
+                                const lng = position.coords.longitude;
+            
+                                // Construct query parameters including the user's location
+                                const queryParams = new URLSearchParams({ gender, sort, lat, lng });
+            
+                                // Redirect to the search-page route with the query parameters
+                                window.location.href = `/search-page?${queryParams.toString()}`;
+                            }, (error) => {
+                                alert("Unable to retrieve your location");
+                                console.error(error);
+                            });
+                        } else {
+                            alert("Geolocation is not supported by this browser.");
+                        }
+                    } else {
+                        // If no location is needed, simply apply the filters
+                        const queryParams = new URLSearchParams({ gender, sort });
+                        window.location.href = `/search-page?${queryParams.toString()}`;
+                    }
                 }
-    
-                // Sorting filter
-                if (sortingFilter === 'low-to-high') {
-                    filteredProperties.sort((a, b) => a.rooms[0].price - b.rooms[0].price);
-                } else if (sortingFilter === 'high-to-low') {
-                    filteredProperties.sort((a, b) => b.rooms[0].price - a.rooms[0].price);
-                } else if (sortingFilter === 'distance') {
-                    calculateDistance();
-                    return;
-                }
-    
-                renderProperties(filteredProperties);
-            }
-    
-            function renderProperties(properties) {
-                const propertyList = document.getElementById('properties-list');
-                propertyList.innerHTML = ''; // Clear current list
-    
-                properties.forEach(property => {
-                    const propertyHTML = `
-                        <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                            <div class="package-item" style="height: 500px;">
-                                <div class="overflow-hidden">
-                                    <img class="img-fluid" style="height: 300px;" src="${property.images[0]}" alt="${property.name}">
-                                </div>
-                                <div class="d-flex border-bottom" style="color: #808b8d;">
-                                    <small class="flex-fill text-center border-end py-2">${property.type}</small>
-                                    <small class="flex-fill text-center border-end py-2"><i
-                                            class="fa fa-calendar-alt text-primary me-2"></i>Per Month</small>
-                                    <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>${property.capacity}</small>
-                                </div>
-                                <div class="text-center p-4">
-                                    <h3 class="mb-0">${property.name}</h3>
-                                    <div class="room-prices">
-                                        ${property.rooms.length > 0 ? `Room Prices: ${property.rooms.map(room => room.price).join(' / ')}` : 'No rooms available'}
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-center mb-2">
-                                    <button class="book-btn btn-primary btn" style="border-radius: 30px;" id="book-btn"
-                                        onclick="readmore('${property._id}')">Book Now</button>
-                                </div>
-                            </div>
-                        </div>`;
-                    propertyList.innerHTML += propertyHTML;
-                });
-            }
-    
-            function calculateDistance() {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(position => {
-                        const { latitude, longitude } = position.coords;
-    
-                        properties.forEach(property => {
-                            const distance = getDistanceFromLatLonInKm(latitude, longitude, property.lat, property.lng);
-                            property.distance = distance;
-                        });
-    
-                        // Sort by distance
-                        properties.sort((a, b) => a.distance - b.distance);
-                        renderProperties(properties);
-                    });
-                } else {
-                    alert("Geolocation is not supported by this browser.");
-                }
-            }
-    
-            function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-                const R = 6371;
-                const dLat = deg2rad(lat2 - lat1);
-                const dLon = deg2rad(lon2 - lon1);
-                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                return R * c;
-            }
-    
-            function deg2rad(deg) {
-                return deg * (Math.PI / 180);
-            }
-        </script>
+            </script>
+            
 
 </body>
 

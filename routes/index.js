@@ -132,29 +132,48 @@ router.get('/destination', function(req, res, next) {
 });
 
 
-router.get('/search-page', async function(req, res, next) {
-  try {
-    // Fetch all properties and populate rooms correctly
-    const properties = await Property.find().populate('rooms'); 
+// router.get('/search-page', async function(req, res, next) {
+//   try {
+//     const { gender = 'all', sort = '', lat, lng } = req.query;
 
-    // Iterate over each property and its rooms
-    properties.forEach(property => {
-      if (property.rooms && property.rooms.length > 0) {
-        property.rooms.forEach((room, index) => {
-          console.log(`Room ${index + 1} price: ${room.price}`); // Log price of each room for each property
-        });
-      } else {
-        console.log("No rooms found for this property");
-      }
-    });
+//   // Initialize query with optional gender filter
+//   let query = {};
+//   if (gender && gender !== 'all') {
+//     query.gender = gender;
+//   }
+//     // Fetch all properties and populate rooms correctly
+//     const properties = await Property.find().populate('rooms'); 
 
-    // Pass the properties array to the view
-    res.render('search-page', { page: 'search-page', title: 'Search result', properties: properties }); 
-  } catch (err) {
-    console.error("Error fetching properties:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
+//     if (sort === 'low-to-high') {
+//       properties = properties.sort((a, b) => a.rooms[0]?.price - b.rooms[0]?.price);
+//     } else if (sort === 'high-to-low') {
+//       properties = properties.sort((a, b) => b.rooms[0]?.price - a.rooms[0]?.price);
+//     } else if (sort === 'distance' && lat && lng) {
+//       properties = properties.map(property => {
+//         property.distance = getDistanceFromLatLonInKm(lat, lng, property.lat, property.lng);
+//         return property;
+//       });
+//       properties.sort((a, b) => a.distance - b.distance); // Sort by nearest distance
+//     }
+
+//     // Iterate over each property and its rooms
+//     properties.forEach(property => {
+//       if (property.rooms && property.rooms.length > 0) {
+//         property.rooms.forEach((room, index) => {
+//           console.log(`Room ${index + 1} price: ${room.price}`); // Log price of each room for each property
+//         });
+//       } else {
+//         console.log("No rooms found for this property");
+//       }
+//     });
+
+//     // Pass the properties array to the view
+//     res.render('search-page', { page: 'search-page', title: 'Search result', properties: properties, gender, sort }); 
+//   } catch (err) {
+//     console.error("Error fetching properties:", err);
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 
 
 // Helper function to calculate distance between two lat/lng points
@@ -162,7 +181,7 @@ const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
   const R = 6371; // Radius of Earth in km
   const dLat = deg2rad(lat2 - lat1);
   const dLon = deg2rad(lon2 - lon1);
-  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+  const a = Math.sin(dLat / 2) * Math.sin(dLon / 2) +
             Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
             Math.sin(dLon / 2) * Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
@@ -171,37 +190,56 @@ const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
 
 const deg2rad = (deg) => deg * (Math.PI / 180);
 
-// Route to filter properties
-router.get('/filter-sort', async (req, res) => {
-try {
-  const { gender = 'all', sort = '', lat, lng } = req.query;
+// Helper function to extract lat/lng from Google Maps URL
+const extractLatLngFromMapUrl = (url) => {
+    const regex = /!2d([-\d.]+)!3d([-\d.]+)/;
+    const match = url.match(regex);
+    if (match) {
+        const lng = parseFloat(match[1]); // Longitude
+        const lat = parseFloat(match[2]); // Latitude
+        return { lat, lng };
+    } else {
+        console.error('No coordinates found in the map URL');
+        return null;
+    }
+};
 
-  // Initialize query with optional gender filter
-  let query = {};
-  if (gender && gender !== 'all') {
-    query.gender = gender;
+// Route to filter and sort properties, including by distance
+router.get('/search-page', async (req, res) => {
+  try {
+    const { gender = 'all', sort = '', lat, lng } = req.query;
+
+    // Initialize query with optional gender filter
+    let query = {};
+    if (gender && gender !== 'all') {
+      query.gender = gender;
+    }
+
+    // Fetch filtered properties
+    let properties = await Property.find(query).populate('rooms');
+
+    // Sort properties based on selected criteria
+    if (sort === 'low-to-high') {
+      properties = properties.sort((a, b) => a.rooms[0]?.price - b.rooms[0]?.price);
+    } else if (sort === 'high-to-low') {
+      properties = properties.sort((a, b) => b.rooms[0]?.price - a.rooms[0]?.price);
+    } else if (sort === 'distance' && lat && lng) {
+      properties = properties.map(property => {
+        const coordinates = extractLatLngFromMapUrl(property.map);
+        if (coordinates) {
+          property.distance = getDistanceFromLatLonInKm(lat, lng, coordinates.lat, coordinates.lng);
+        } else {
+          property.distance = Infinity; // Assign a large number if no coordinates are found
+        }
+        return property;
+      });
+      properties.sort((a, b) => a.distance - b.distance); // Sort by nearest distance
+    }
+
+    res.render('search-page', { page: 'search-page', title: 'Search result', properties:properties, gender, sort });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-
-  // Fetch filtered properties
-  let properties = await Property.find(query).populate('rooms');
-
-  // Sort properties based on selected criteria
-  if (sort === 'low-to-high') {
-    properties = properties.sort((a, b) => a.rooms[0]?.price - b.rooms[0]?.price);
-  } else if (sort === 'high-to-low') {
-    properties = properties.sort((a, b) => b.rooms[0]?.price - a.rooms[0]?.price);
-  } else if (sort === 'distance' && lat && lng) {
-    properties = properties.map(property => {
-      property.distance = getDistanceFromLatLonInKm(lat, lng, property.lat, property.lng);
-      return property;
-    });
-    properties.sort((a, b) => a.distance - b.distance); // Sort by nearest distance
-  }
-
-  res.render('search-sort', { properties, gender, sort });
-} catch (err) {
-  res.status(500).json({ error: err.message });
-}
 });
 
 
@@ -217,6 +255,11 @@ router.get('/team', function(req, res, next) {
 router.get('/profile', isLoggedIn, async function(req, res, next) {
   try {
     const user = await userModel.findOne({ email: req.session.passport.user });
+    if (!user.referralLink) {
+      // If for some reason the referral link is not set, regenerate it
+      user.referralLink = `https://www.fmpg.in/signup?ref=${user._id}`;
+      await user.save();
+    }
     const bookings = await Booking.find({ user: user._id }).populate('room').populate('propertyID').populate({
       path: 'room',
       populate: {
@@ -379,9 +422,95 @@ router.get('/signup', function(req, res) {
   // Clear error and success messages after rendering
   req.session.error = null;
   req.session.success = null;
+  const referrerId = req.query.ref;  // Capture referrerId from URL
 
-  res.render('signup', { error: errorMessages, success: successMessages, formData });
+  res.render('signup', { error: errorMessages, success: successMessages, formData ,referrerId});
 });
+
+// router.post('/signup', async function(req, res, next) {
+//   if (!req.session.isVerified) {
+//     req.session.error = 'OTP verification required';
+//     return res.redirect('/signup');
+//   }
+
+//   const { username, email, mobile, password } = req.body;
+// const referrerId = req.query.ref;  // Get referrerId from the query parameters
+
+//   try {
+//     // Check if the username, email, or mobile already exists
+//     const existingUsers = await userModel.find({
+//       $or: [
+//         { username: username },
+//         { email: email },
+//         { mobile: mobile }
+//       ]
+//     });
+
+
+
+//     // Assign 50 credits on signup
+//     user.referralCredits = 50;
+
+// if (referrerId) {
+//   const referrer = await userModel.findById(referrerId);
+//   if (referrer) {
+//     user.referredBy = referrer._id;
+//     // Reward referrer with additional credits
+//     referrer.referralCredits += 10;  // Adjust as necessary for referrer reward
+//     await referrer.save();
+//   }
+// }
+
+
+
+//     let errorMessages = [];
+
+//     // Collect all existing conflicts
+//     existingUsers.forEach(user => {
+//       if (user.username === username) {
+//         errorMessages.push('Username already exists');
+//       }
+//       if (user.email === email) {
+//         errorMessages.push('Email already exists');
+//       }
+//       if (user.mobile === mobile) {
+//         errorMessages.push('Mobile number already exists');
+//       }
+//     });
+
+//     // If there are errors, return them
+//     if (errorMessages.length > 0) {
+//       req.session.error = errorMessages.join(', ');
+//       return res.redirect('/signup');
+//     }
+
+//     // Register user if no conflict found
+//     const userData = new userModel({ username, email, mobile });
+//     userModel.register(userData, password, function(err, user) {
+//       if (err) {
+//         req.session.error = 'Registration error: ' + err.message;
+//         return res.redirect('/signup');
+//       }
+
+//       req.logIn(user, function(err) {
+//         if (err) {
+//           req.session.error = 'Login error: ' + err.message;
+//           return res.redirect('/signup');
+//         }
+//         req.session.success = 'Successfully registered and logged in!';
+//         return res.redirect('/'); // Redirect to home or a specific page
+//       });
+//     });
+
+//   } catch (err) {
+//     req.session.error = 'Server error: ' + err.message;
+//     return res.redirect('/signup');
+//   }
+// });
+
+
+
+
 
 router.post('/signup', async function(req, res, next) {
   if (!req.session.isVerified) {
@@ -390,6 +519,7 @@ router.post('/signup', async function(req, res, next) {
   }
 
   const { username, email, mobile, password } = req.body;
+  const referrerId = req.query.ref;  // Get referrerId from the query parameters
 
   try {
     // Check if the username, email, or mobile already exists
@@ -423,12 +553,32 @@ router.post('/signup', async function(req, res, next) {
     }
 
     // Register user if no conflict found
-    const userData = new userModel({ username, email, mobile });
-    userModel.register(userData, password, function(err, user) {
+    const userData = new userModel({ username, email, mobile,
+       referralCredits: 50  // Assign 50 credits on signup
+      });
+    userModel.register(userData, password, async function(err, user) {
       if (err) {
         req.session.error = 'Registration error: ' + err.message;
         return res.redirect('/signup');
       }
+
+      // Assign 50 credits on signup
+      user.referralCredits = 50;
+
+      // Handle referrer credits
+      if (referrerId) {
+        const referrer = await userModel.findById(referrerId);
+        if (referrer) {
+          console.log('Referrer found:', referrer);  // Debugging output
+          user.referredBy = referrer._id;
+          referrer.referralCredits += 10;
+          console.log('Referrer credits updated to:', referrer.referralCredits);  // Debugging output
+          await referrer.save();
+        } else {
+          console.log('No referrer found with that ID');
+        }
+      }
+      
 
       req.logIn(user, function(err) {
         if (err) {
@@ -445,5 +595,56 @@ router.post('/signup', async function(req, res, next) {
     return res.redirect('/signup');
   }
 });
+
+
+
+
+
+
+// router.post('/signup', async function (req, res, next) {
+//   const { username, email, mobile, password } = req.body;
+//   const referrerId = req.query.ref;  // Get referrerId from the query parameters
+
+//   if (!req.session.isVerified) {
+//     req.session.error = 'OTP verification required';
+//     return res.redirect('/signup');
+//   }
+
+//   try {
+//     const user = new User({ username, email, mobile });
+
+//     // Assign 50 credits on signup
+//     user.referralCredits = 50;
+
+//     // Check if referral link was used
+//     if (referrerId) {
+//       const referrer = await User.findById(referrerId);
+//       if (referrer) {
+//         user.referredBy = referrer._id;
+//         // Reward referrer with additional credits
+//         referrer.referralCredits += 10;  // Adjust as necessary for referrer reward
+//         await referrer.save();
+//       }
+//     }
+
+//     User.register(user, password, (err, user) => {
+//       if (err) {
+//         req.session.error = err.message;
+//         return res.redirect('/signup');
+//       }
+
+//       req.logIn(user, (err) => {
+//         if (err) return next(err);
+//         req.session.success = 'Successfully registered!';
+//         res.redirect('/');
+//       });
+//     });
+//   } catch (err) {
+//     req.session.error = 'Registration error: ' + err.message;
+//     return res.redirect('/signup');
+//   }
+// });
+
+
 
 module.exports = router;

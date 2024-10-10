@@ -19,6 +19,7 @@ router.get('/createproperty', async (req, res) => {
         description: "Find yourself in a secure and comfortable living space that combines practical design with a welcoming atmosphere. With a focus on reliability and peace, this environment is crafted to enhance your stay, providing you with everything you need for a smooth and enjoyable experience.",
         rooms: [],
         owner:" ",
+        gender:"male",
       }
     ]);
     res.status(201).json(properties);
