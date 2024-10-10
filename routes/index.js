@@ -519,7 +519,7 @@ router.post('/signup', async function(req, res, next) {
     return res.redirect('/signup');
   }
 
-  const { username, email, mobile, password, } = req.body;
+  const { username, email, mobile, password } = req.body;
   const referrerId = req.query.ref;  // Get referrerId from the query parameters
 
   try {
@@ -554,9 +554,7 @@ router.post('/signup', async function(req, res, next) {
     }
 
     // Register user if no conflict found
-    const userData = new userModel({ username, email, mobile,
-       referralCredits: 50  // Assign 50 credits on signup
-      });
+    const userData = new userModel({ username, email, mobile });
     userModel.register(userData, password, async function(err, user) {
       if (err) {
         req.session.error = 'Registration error: ' + err.message;
@@ -574,12 +572,14 @@ router.post('/signup', async function(req, res, next) {
           user.referredBy = referrer._id;
           referrer.referralCredits += 10;
           console.log('Referrer credits updated to:', referrer.referralCredits);  // Debugging output
-          await referrer.save();
+          await referrer.save(); // Await referrer save operation
         } else {
           console.log('No referrer found with that ID');
         }
       }
-      
+
+      // Save the user with the referredBy field
+      await user.save(); // Ensure user is saved with the referredBy field
 
       req.logIn(user, function(err) {
         if (err) {
