@@ -177,6 +177,7 @@ router.get('/destination', function(req, res, next) {
 
 
 // Helper function to calculate distance between two lat/lng points
+
 const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
   const R = 6371; // Radius of Earth in km
   const dLat = deg2rad(lat2 - lat1);
@@ -518,7 +519,7 @@ router.post('/signup', async function(req, res, next) {
     return res.redirect('/signup');
   }
 
-  const { username, email, mobile, password } = req.body;
+  const { username, email, mobile, password, } = req.body;
   const referrerId = req.query.ref;  // Get referrerId from the query parameters
 
   try {
