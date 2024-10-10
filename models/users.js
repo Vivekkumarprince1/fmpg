@@ -27,13 +27,20 @@ const userSchema = new mongoose.Schema({
     default: 'user'
   },
   resetPasswordOTP: String, // Add this field
-  resetPasswordExpires: Date
+  resetPasswordExpires: Date,
+  referralLink: { type: String, unique: true },  // Store unique referral link
+  referredBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },  // Store referring user’s ID
+  referralCredits: { type: Number, default: 0 },
 });
 
 // Hash password before saving
 userSchema.pre('save', function (next) {
   if (!this.isModified('password')) return next();
   bcrypt.hash(this.password, 10, (err, hash) => {
+    if (!this.referralLink) {
+      // Generate referral link using user ID
+      this.referralLink = `https://www.fmpg.in/signup?ref=${this._id}`;
+    }
     if (err) return next(err);
     this.password = hash;
     next();

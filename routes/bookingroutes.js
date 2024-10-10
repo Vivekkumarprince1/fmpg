@@ -9,46 +9,78 @@ const flash=require("connect-flash");
 
 
 // Create a new booking
+// router.post('/', async (req, res) => {
+//   const { mobile, startDate, endDate, userId, roomId, specialRequest, username, propertyID } = req.body;
+
+//   if (!mobile || !startDate || !endDate || !userId || !roomId || !propertyID) {
+//     return res.status(400).json({ message: 'Missing required fields' });
+//   }
+
+//   if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(roomId) || !mongoose.Types.ObjectId.isValid(propertyID)) {
+//     return res.status(400).json({ message: 'Invalid userId, roomId, or propertyID' });
+//   }
+
+//   try {
+//     const property = await Property.findById(propertyID);
+//     if (!property) {
+//       return res.status(404).json({ message: 'Property not found' });
+//     }
+
+//     const booking = new Booking({
+//       mobile,
+//       startDate,
+//       endDate,
+//       user: new mongoose.Types.ObjectId(userId),
+//       room: new mongoose.Types.ObjectId(roomId),
+//       propertyID: new mongoose.Types.ObjectId(propertyID), // Ensure correct field is used
+//       owner: property.owner,
+//       specialRequest,
+//       username,
+//       status: 'Pending',
+//     });
+
+//     await booking.save();
+//     console.log(booking);
+//     // Set success message in session
+//     req.session.message = 'Booking created successfully';
+//     res.redirect('/'); // Redirect to the main page
+//   } catch (err) {
+//     console.error('Error creating booking:', err);
+//     res.status(500).json({ message: 'Error creating booking', error: err });
+//   }
+// });
+
 router.post('/', async (req, res) => {
-  const { mobile, startDate, endDate, userId, roomId, specialRequest, username, propertyID } = req.body;
-
-  if (!mobile || !startDate || !endDate || !userId || !roomId || !propertyID) {
-    return res.status(400).json({ message: 'Missing required fields' });
-  }
-
-  if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(roomId) || !mongoose.Types.ObjectId.isValid(propertyID)) {
-    return res.status(400).json({ message: 'Invalid userId, roomId, or propertyID' });
-  }
+  const { mobile, startDate, endDate, userId, roomId, propertyID } = req.body;
 
   try {
-    const property = await Property.findById(propertyID);
-    if (!property) {
-      return res.status(404).json({ message: 'Property not found' });
+    const user = await User.findById(userId);
+    const referrer = await User.findById(user.referredBy);  // Find the referrer
+
+    // Reward referrer with additional credits when referred user books
+    if (referrer) {
+      referrer.referralCredits += 5;  // Adjust points as per your logic
+      await referrer.save();
     }
 
     const booking = new Booking({
       mobile,
       startDate,
       endDate,
-      user: new mongoose.Types.ObjectId(userId),
-      room: new mongoose.Types.ObjectId(roomId),
-      propertyID: new mongoose.Types.ObjectId(propertyID), // Ensure correct field is used
-      owner: property.owner,
-      specialRequest,
-      username,
+      user: user._id,
+      room: roomId,
+      propertyID: propertyID,
       status: 'Pending',
     });
 
     await booking.save();
-    console.log(booking);
-    // Set success message in session
-    req.session.message = 'Booking created successfully';
-    res.redirect('/'); // Redirect to the main page
+    res.redirect('/');
   } catch (err) {
     console.error('Error creating booking:', err);
     res.status(500).json({ message: 'Error creating booking', error: err });
   }
 });
+
 
 
 
