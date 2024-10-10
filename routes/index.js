@@ -553,7 +553,9 @@ router.post('/signup', async function(req, res, next) {
     }
 
     // Register user if no conflict found
-    const userData = new userModel({ username, email, mobile });
+    const userData = new userModel({ username, email, mobile,
+       referralCredits: 50  // Assign 50 credits on signup
+      });
     userModel.register(userData, password, async function(err, user) {
       if (err) {
         req.session.error = 'Registration error: ' + err.message;
