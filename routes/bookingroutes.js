@@ -21,19 +21,28 @@ router.post('/', async (req, res) => {
   }
 
   try {
+    // Fetch the property to ensure it exists
     const property = await Property.findById(propertyID);
     if (!property) {
       return res.status(404).json({ message: 'Property not found' });
     }
 
-const referrer = await User.findById(user.referredBy);  // Find the referrer
+    // Fetch the user and populate the referredBy field to get the referrer
+    const user = await User.findById(userId).populate('referredBy');  // Populate referrer information
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
-    // Reward referrer with additional credits when referred user books
+    const referrer = user.referredBy;  // Access the referrer (if any)
+    
+    // Reward the referrer with additional credits if a referral exists
     if (referrer) {
       referrer.referralCredits += 100;  // Adjust points as per your logic
       await referrer.save();
+      console.log(`Referrer ${referrer.username} credited with 100 points`);
     }
 
+    // Create a new booking
     const booking = new Booking({
       mobile,
       startDate,
@@ -47,8 +56,10 @@ const referrer = await User.findById(user.referredBy);  // Find the referrer
       status: 'Pending',
     });
 
+    // Save the booking
     await booking.save();
-    console.log(booking);
+    console.log('Booking created:', booking);
+    
     // Set success message in session
     req.session.message = 'Booking created successfully';
     res.redirect('/'); // Redirect to the main page
@@ -57,6 +68,7 @@ const referrer = await User.findById(user.referredBy);  // Find the referrer
     res.status(500).json({ message: 'Error creating booking', error: err });
   }
 });
+
 
 // router.post('/', async (req, res) => {
 //   const { mobile, startDate, endDate, userId, roomId, propertyID } = req.body;
