@@ -255,6 +255,11 @@ router.get('/team', function(req, res, next) {
 router.get('/profile', isLoggedIn, async function(req, res, next) {
   try {
     const user = await userModel.findOne({ email: req.session.passport.user });
+    if (!user.referralLink) {
+      // If for some reason the referral link is not set, regenerate it
+      user.referralLink = `https://www.fmpg.in/signup?ref=${user._id}`;
+      await user.save();
+    }
     const bookings = await Booking.find({ user: user._id }).populate('room').populate('propertyID').populate({
       path: 'room',
       populate: {
@@ -417,71 +422,119 @@ router.get('/signup', function(req, res) {
   // Clear error and success messages after rendering
   req.session.error = null;
   req.session.success = null;
+  const referrerId = req.query.ref;  // Capture referrerId from URL
 
-  res.render('signup', { error: errorMessages, success: successMessages, formData });
+  res.render('signup', { error: errorMessages, success: successMessages, formData ,referrerId});
 });
 
-router.post('/signup', async function(req, res, next) {
+// router.post('/signup', async function(req, res, next) {
+//   if (!req.session.isVerified) {
+//     req.session.error = 'OTP verification required';
+//     return res.redirect('/signup');
+//   }
+
+//   const { username, email, mobile, password } = req.body;
+
+//   try {
+//     // Check if the username, email, or mobile already exists
+//     const existingUsers = await userModel.find({
+//       $or: [
+//         { username: username },
+//         { email: email },
+//         { mobile: mobile }
+//       ]
+//     });
+
+//     let errorMessages = [];
+
+//     // Collect all existing conflicts
+//     existingUsers.forEach(user => {
+//       if (user.username === username) {
+//         errorMessages.push('Username already exists');
+//       }
+//       if (user.email === email) {
+//         errorMessages.push('Email already exists');
+//       }
+//       if (user.mobile === mobile) {
+//         errorMessages.push('Mobile number already exists');
+//       }
+//     });
+
+//     // If there are errors, return them
+//     if (errorMessages.length > 0) {
+//       req.session.error = errorMessages.join(', ');
+//       return res.redirect('/signup');
+//     }
+
+//     // Register user if no conflict found
+//     const userData = new userModel({ username, email, mobile });
+//     userModel.register(userData, password, function(err, user) {
+//       if (err) {
+//         req.session.error = 'Registration error: ' + err.message;
+//         return res.redirect('/signup');
+//       }
+
+//       req.logIn(user, function(err) {
+//         if (err) {
+//           req.session.error = 'Login error: ' + err.message;
+//           return res.redirect('/signup');
+//         }
+//         req.session.success = 'Successfully registered and logged in!';
+//         return res.redirect('/'); // Redirect to home or a specific page
+//       });
+//     });
+
+//   } catch (err) {
+//     req.session.error = 'Server error: ' + err.message;
+//     return res.redirect('/signup');
+//   }
+// });
+
+
+router.post('/signup', async function (req, res, next) {
+  const { username, email, mobile, password } = req.body;
+  const referrerId = req.query.ref;  // Get referrerId from the query parameters
+
   if (!req.session.isVerified) {
     req.session.error = 'OTP verification required';
     return res.redirect('/signup');
   }
 
-  const { username, email, mobile, password } = req.body;
-
   try {
-    // Check if the username, email, or mobile already exists
-    const existingUsers = await userModel.find({
-      $or: [
-        { username: username },
-        { email: email },
-        { mobile: mobile }
-      ]
-    });
+    const user = new User({ username, email, mobile });
 
-    let errorMessages = [];
+    // Assign 50 credits on signup
+    user.referralCredits = 50;
 
-    // Collect all existing conflicts
-    existingUsers.forEach(user => {
-      if (user.username === username) {
-        errorMessages.push('Username already exists');
+    // Check if referral link was used
+    if (referrerId) {
+      const referrer = await User.findById(referrerId);
+      if (referrer) {
+        user.referredBy = referrer._id;
+        // Reward referrer with additional credits
+        referrer.referralCredits += 10;  // Adjust as necessary for referrer reward
+        await referrer.save();
       }
-      if (user.email === email) {
-        errorMessages.push('Email already exists');
-      }
-      if (user.mobile === mobile) {
-        errorMessages.push('Mobile number already exists');
-      }
-    });
-
-    // If there are errors, return them
-    if (errorMessages.length > 0) {
-      req.session.error = errorMessages.join(', ');
-      return res.redirect('/signup');
     }
 
-    // Register user if no conflict found
-    const userData = new userModel({ username, email, mobile });
-    userModel.register(userData, password, function(err, user) {
+    User.register(user, password, (err, user) => {
       if (err) {
-        req.session.error = 'Registration error: ' + err.message;
+        req.session.error = err.message;
         return res.redirect('/signup');
       }
 
-      req.logIn(user, function(err) {
-        if (err) {
-          req.session.error = 'Login error: ' + err.message;
-          return res.redirect('/signup');
-        }
-        req.session.success = 'Successfully registered and logged in!';
-        return res.redirect('/'); // Redirect to home or a specific page
+      req.logIn(user, (err) => {
+        if (err) return next(err);
+        req.session.success = 'Successfully registered!';
+        res.redirect('/');
       });
     });
-
   } catch (err) {
-    req.session.error = 'Server error: ' + err.message;
+    req.session.error = 'Registration error: ' + err.message;
     return res.redirect('/signup');
   }
 });
+
+
 
 module.exports = router;

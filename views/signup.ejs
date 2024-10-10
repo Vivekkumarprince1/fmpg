@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>fmpg signup Form</title>
-    <link rel="stylesheet" type="text/css" href="../stylesheets/loginstyle.css">
+    <link rel="stylesheet" type="text/css" href="../css/loginstyle.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a81368914c.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,7 +15,8 @@
             <img src="../images/bg.svg">
         </div>
         <div class="login-content">
-            <form action="/signup" method="POST" id="signup-form">
+            <!-- <form action="/signup" method="POST" id="signup-form"> -->
+                <form action="/signup?ref=<%= referrerId %>" method="POST" id="signup-form">
                 <img src="../images/avatar.svg">
 				
                 <h2 class="title">Please Signup</h2>
@@ -76,6 +77,8 @@
                         <input type="text" class="input" id="mobile" name="mobile" required>
                     </div>
                 </div>
+
+                <input type="text" name="referrerId" value="<%= referrerId %>">
 
                 <div class="input-div pass">
                     <div class="i">
