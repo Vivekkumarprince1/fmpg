@@ -414,18 +414,18 @@ router.post('/verify-otp', (req, res) => {
 });
 
 
-// router.get('/signup', function(req, res) {
-//   const errorMessages = req.session.error || [];
-//   const successMessages = req.session.success || [];
-//   const formData = req.session.formData || {}; // Retrieve form data from session
+router.get('/signup', function(req, res) {
+  const errorMessages = req.session.error || [];
+  const successMessages = req.session.success || [];
+  const formData = req.session.formData || {}; // Retrieve form data from session
 
-//   // Clear error and success messages after rendering
-//   req.session.error = null;
-//   req.session.success = null;
-//   const referrerId = req.query.ref;  // Capture referrerId from URL
+  // Clear error and success messages after rendering
+  req.session.error = null;
+  req.session.success = null;
+  const referrerId = req.query.ref;  // Capture referrerId from URL
 
-//   res.render('signup', { error: errorMessages, success: successMessages, formData ,referrerId});
-// });
+  res.render('signup', { error: errorMessages, success: successMessages, formData ,referrerId});
+});
 
 // router.post('/signup', async function(req, res, next) {
 //   if (!req.session.isVerified) {
