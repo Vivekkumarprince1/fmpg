@@ -39,10 +39,10 @@
         <input class="input" type="text" id="mobile" name="mobile" value="<%= booking.mobile %>" required><br>
 
         <label for="startDate">Start Date:</label>
-        <input class="input" type="date" id="startDate" name="startDate" value="<%= booking.startDate.toISOString().split('T')[0] %>" required><br>
+        <input class="input" type="date" id="startDate" name="startDate" value="<%= booking.startDate.toISOString().slice(0, 10) %>" required><br>
 
         <label for="endDate">End Date:</label>
-        <input class="input" type="date" id="endDate" name="endDate" value="<%= booking.endDate.toISOString().split('T')[0] %>" required><br>
+        <input class="input" type="date" id="endDate" name="endDate" value="<%= booking.endDate.toISOString().slice(0, 10) %>" required><br>
 
         <label for="specialRequest">Special Request:</label>
         <input class="input" type="text" id="specialRequest" name="specialRequest" value="<%= booking.specialRequest %>"><br>
