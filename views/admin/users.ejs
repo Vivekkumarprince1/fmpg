@@ -1,32 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Users</title>
+    <link rel="stylesheet" href="/css/Management.css">
     <script>
         function confirmAction(action, event) {
-          event.preventDefault(); // Prevent the form from submitting immediately
-          const confirmation = confirm(`Are you sure you want to ${action} this booking?`);
-          if (confirmation) {
-            event.target.submit(); // Submit the form if confirmed
-          }
+            event.preventDefault(); // Prevent the form from submitting immediately
+            const confirmation = confirm(`Are you sure you want to ${action} this booking?`);
+            if (confirmation) {
+                event.target.submit(); // Submit the form if confirmed
+            }
         }
-      </script>
+    </script>
 </head>
+
 <body>
     <h1>Manage Users</h1>
     <a href="/admin/users/add">Add New User</a>
+    <a href="/profile"> back to profile</a>
     <ol>
-        <% users.forEach(user => { %>
-            <li>
-                <%= user.username %> - <%= user.email %> - <%= user.mobile %>
-                <a href="/admin/users/edit/<%= user._id %>">Edit</a>
-                <form action="/admin/users/delete/<%= user._id %>" method="POST" style="display:inline;" onsubmit="confirmAction('delete', event);">
-                    <button type="submit">Delete</button>
-                </form>
-            </li>
-        <% }) %>
+        <table class="customers" border="1">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <% users.forEach(user=> { %>
+
+                <tbody>
+                    <tr>
+                        <td>
+                            <li>
+                                <%= user.username %>
+                            </li>
+                        </td>
+                        <td>
+                            <%= user.email %>
+                        </td>
+                        <td>
+                            <%= user.mobile %>
+                        </td>
+                        <td>
+                            <a href="/admin/users/edit/<%= user._id %>">Edit</a>
+                            <form action="/admin/users/delete/<%= user._id %>" method="POST" style="display:inline;"
+                                onsubmit="confirmAction('delete', event);">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+                <% }) %>
+        </table>
     </ol>
 </body>
+
 </html>
