@@ -427,8 +427,8 @@ router.get('/bookings/edit/:id', isAuthenticated, async (req, res) => {
 
 router.post('/bookings/edit/:id', isAuthenticated, async (req, res) => {
   try {
-    const { user, room, mobile, specialRequest } = req.body;
-    await Booking.findByIdAndUpdate(req.params.id, { user, room, mobile, specialRequest });
+    const { user, room, mobile, specialRequest,startDate,endDate } = req.body;
+    await Booking.findByIdAndUpdate(req.params.id, { user, room, mobile, specialRequest,startDate,endDate });
     res.redirect('/admin/bookings');
   } catch (err) {
     console.error(err);
