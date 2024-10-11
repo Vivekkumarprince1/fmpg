@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Property</title>
+    <link rel="stylesheet" href="../..//css/management.css">
     <style>
         .input-group {
             margin-bottom: 10px;
@@ -11,38 +12,39 @@
     </style>
 </head>
 <body>
+    <div class="form">
     <h1>Add Property</h1>
-    <form action="/admin/properties/add" method="POST">
+    <form class="add" action="/admin/properties/add" method="POST">
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br>
+        <input type="text" id="name" class="input" name="name" required><br>
 
         <label>Locations:</label>
         <div id="location-container">
             <div class="input-group">
-                <input type="text" name="locations[]" required>
+                <input type="text" name="locations[]" class="input" required>
                 <button type="button" onclick="addLocationField()">+</button>
             </div>
         </div>
 
         <label for="type">Type:</label>
-        <input type="text" id="type" name="type" required><br>
+        <input type="text" class="select" id="type" name="type" required><br>
 
         <label for="map">Map:</label>
-        <input type="text" id="map" name="map"><br>
+        <input type="text" id="map" class="input" name="map"><br>
 
 
         <label for="owner">owner</label>
-        <input type="text" id="owner" name="owner" required><br>
+        <input type="text" class="input" id="owner" name="owner" required><br>
 
 
         <label for="description">Description:</label>
-        <textarea id="description" name="description" required></textarea><br>
+        <textarea id="description" class="input" name="description" required></textarea><br>
 
         <!-- Image Inputs -->
         <label>Images:</label>
         <div id="image-container">
             <div class="input-group">
-                <input type="text" name="images[]" required>
+                <input type="text" class="input" name="images[]" required>
                 <button type="button" onclick="addImageField()">+</button>
             </div>
         </div>
@@ -51,7 +53,7 @@
         <label>Amenities:</label>
         <div id="amenity-container">
             <div class="input-group">
-                <input type="text" name="amenities[]" required>
+                <input type="text" class="input" name="amenities[]" required>
                 <button type="button" onclick="addAmenityField()">+</button>
             </div>
         </div>
@@ -73,8 +75,9 @@
             </div>
         </div>
 
-        <button type="submit">Add Property</button>
+        <button class="submit" type="submit">Add Property</button>
     </form>
+</div>
 
     <script>
          // Function to dynamically add image input fields
@@ -82,7 +85,7 @@
             const container = document.getElementById('location-container');
             const newLocationInput = document.createElement('div');
             newLocationInput.className = 'input-group';
-            newLocationInput.innerHTML = '<input type="text" name="Location[]" required><button type="button" onclick="removeField(this)">-</button>';
+            newLocationInput.innerHTML = '<input type="text" class="input" name="Location[]" required><button type="button" onclick="removeField(this)">-</button>';
             container.appendChild(newLocationInput);
         }
 
@@ -93,7 +96,7 @@
             const container = document.getElementById('image-container');
             const newImageInput = document.createElement('div');
             newImageInput.className = 'input-group';
-            newImageInput.innerHTML = '<input type="text" name="images[]" required><button type="button" onclick="removeField(this)">-</button>';
+            newImageInput.innerHTML = '<input type="text" class="input" name="images[]" required><button type="button" onclick="removeField(this)">-</button>';
             container.appendChild(newImageInput);
         }
 
@@ -102,7 +105,7 @@
             const container = document.getElementById('amenity-container');
             const newAmenityInput = document.createElement('div');
             newAmenityInput.className = 'input-group';
-            newAmenityInput.innerHTML = '<input type="text" name="amenities[]" required><button type="button" onclick="removeField(this)">-</button>';
+            newAmenityInput.innerHTML = '<input type="text" class="input" name="amenities[]" required><button type="button" onclick="removeField(this)">-</button>';
             container.appendChild(newAmenityInput);
         }
 

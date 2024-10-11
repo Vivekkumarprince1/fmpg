@@ -53,7 +53,13 @@
                             <%= property.name %>
                         </td>
                         <td>
-                            <%= property.location %>
+                            <ul>
+                            <% property.locations.forEach(location=> { %>
+                                <li>
+                                    <%= location %>
+                                </li>
+                                <% }) %>
+                            </ul>
                         </td>
                         <td>
                             <%= property.type %>

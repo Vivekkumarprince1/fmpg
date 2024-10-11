@@ -4,19 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Booking</title>
+    <link rel="stylesheet" href="/css/management.css">
 </head>
 <body>
+    <div class="form">
     <h1>Edit Booking</h1>
-    <form action="/admin/bookings/edit/<%= booking._id %>" method="POST">
+    <form class="add" action="/admin/bookings/edit/<%= booking._id %>" method="POST">
         <label for="user">User:</label>
-        <select id="user" name="user" required>
+        <select class="select" id="user" name="user" required>
             <% users.forEach(user => { %>
                 <option value="<%= user._id %>" <%= booking.user._id.equals(user._id) ? 'selected' : '' %>><%= user.username %></option>
             <% }) %>
         </select><br>
 
         <label for="property">Property:</label>
-        <select id="property" name="property" required>
+        <select class="select" id="property" name="property" required>
             <% properties.forEach(property => { %>
                 <option value="<%= property._id %>" 
                     <%= (booking.room && booking.room.property && booking.room.property._id && booking.room.property._id.equals(property._id)) ? 'selected' : '' %>>
@@ -27,27 +29,27 @@
         
 
         <label for="room">Room:</label>
-        <select id="room" name="room" required>
+        <select class="select" id="room" name="room" required>
             <% rooms.forEach(room => { %>
                 <option value="<%= room._id %>" <%= booking.room._id.equals(room._id) ? 'selected' : '' %>><%= room.type %></option>
             <% }) %>
         </select><br>
 
         <label for="mobile">Mobile:</label>
-        <input type="text" id="mobile" name="mobile" value="<%= booking.mobile %>" required><br>
+        <input class="input" type="text" id="mobile" name="mobile" value="<%= booking.mobile %>" required><br>
 
         <label for="startDate">Start Date:</label>
-        <input type="date" id="startDate" name="startDate" value="<%= booking.startDate.toISOString().split('T')[0] %>" required><br>
+        <input class="input" type="date" id="startDate" name="startDate" value="<%= booking.startDate.toISOString().split('T')[0] %>" required><br>
 
         <label for="endDate">End Date:</label>
-        <input type="date" id="endDate" name="endDate" value="<%= booking.endDate.toISOString().split('T')[0] %>" required><br>
+        <input class="input" type="date" id="endDate" name="endDate" value="<%= booking.endDate.toISOString().split('T')[0] %>" required><br>
 
         <label for="specialRequest">Special Request:</label>
-        <input type="text" id="specialRequest" name="specialRequest" value="<%= booking.specialRequest %>"><br>
+        <input class="input" type="text" id="specialRequest" name="specialRequest" value="<%= booking.specialRequest %>"><br>
 
-        <button type="submit">Save Changes</button>
+        <button class="submit" type="submit">Save Changes</button>
     </form>
-
+</div>
     <script>
         // Update rooms based on selected property (for editing)
         document.getElementById('property').addEventListener('change', async function() {
