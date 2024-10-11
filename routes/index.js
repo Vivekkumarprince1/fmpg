@@ -289,21 +289,6 @@ router.get('/dashboard', isLoggedIn, (req, res) => {
   res.render('admin/dashboard', { admin: req.user });
 });
 
-// router.post('/register', function(req, res) {
-//   const { username, email, mobile} = req.body;
-//   const userData = new userModel({ username, email, mobile });
-
-//   userModel.register(userData, req.body.password)
-//     .then(function(){
-//       passport.authenticate("local")(req, res, function() {
-//         res.redirect("/profile");
-//       })
-//     })
-//     .catch(function(err) {
-//       console.error(err);
-//       res.redirect("/login");
-//     });
-// });
 
 router.post('/login', function(req, res, next) {
   passport.authenticate('local', { usernameField: 'email' }, function(err, user, info) {
@@ -462,8 +447,6 @@ router.get('/signup', function(req, res) {
 //   }
 // }
 
-
-
 //     let errorMessages = [];
 
 //     // Collect all existing conflicts
@@ -596,56 +579,6 @@ router.post('/signup', async function(req, res, next) {
     return res.redirect('/signup');
   }
 });
-
-
-
-
-
-
-// router.post('/signup', async function (req, res, next) {
-//   const { username, email, mobile, password } = req.body;
-//   const referrerId = req.query.ref;  // Get referrerId from the query parameters
-
-//   if (!req.session.isVerified) {
-//     req.session.error = 'OTP verification required';
-//     return res.redirect('/signup');
-//   }
-
-//   try {
-//     const user = new User({ username, email, mobile });
-
-//     // Assign 50 credits on signup
-//     user.referralCredits = 50;
-
-//     // Check if referral link was used
-//     if (referrerId) {
-//       const referrer = await User.findById(referrerId);
-//       if (referrer) {
-//         user.referredBy = referrer._id;
-//         // Reward referrer with additional credits
-//         referrer.referralCredits += 10;  // Adjust as necessary for referrer reward
-//         await referrer.save();
-//       }
-//     }
-
-//     User.register(user, password, (err, user) => {
-//       if (err) {
-//         req.session.error = err.message;
-//         return res.redirect('/signup');
-//       }
-
-//       req.logIn(user, (err) => {
-//         if (err) return next(err);
-//         req.session.success = 'Successfully registered!';
-//         res.redirect('/');
-//       });
-//     });
-//   } catch (err) {
-//     req.session.error = 'Registration error: ' + err.message;
-//     return res.redirect('/signup');
-//   }
-// });
-
 
 
 module.exports = router;

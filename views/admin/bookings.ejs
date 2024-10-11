@@ -1,67 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Bookings</title>
-    <style>
-    </style>
+    <link rel="stylesheet" href="../..//css/Management.css">
     <script>
-       function confirmAction(action, event) {
-  event.preventDefault(); // Prevent the form from submitting immediately
-  const confirmation = confirm(`Are you sure you want to ${action} this booking?`);
-  if (confirmation) {
-    event.target.submit(); // Submit the form if confirmed
-  }
-}
-      </script>
+        function confirmAction(action, event) {
+            event.preventDefault(); // Prevent the form from submitting immediately
+            const confirmation = confirm(`Are you sure you want to ${action} this booking?`);
+            if (confirmation) {
+                event.target.submit(); // Submit the form if confirmed
+            }
+        }
+    </script>
 </head>
+
 <body>
     <h1>Manage Bookings</h1>
-    <a href="/admin/bookings/add">Add New Booking</a>
+    <a href="/admin/bookings/add">Add New Booking</a><br>
+    <a href="/profile"> back to profile</a>
+
     <ol>
-        <table border="1" style="width: 100%; text-align: center;">
-            <thead>
+    <table border="1" style="width: 100%; text-align: center;" class="customers">
+        <thead>
+            <tr>
+                <th>user</th>
+                <th>Booking ID</th>
+                <th>Username</th>
+                <th>mobile</th>
+                <th>Room Type</th>
+                <th>Start-Date</th>
+                <th>End-Date</th>
+                <th>Request</th>
+                <th>Property</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% bookings.forEach(booking=> { %>
                 <tr>
-                    <tr>
-                        <th>User</th>
-                        <th>Booking ID</th>
-                        <th>Username</th>
-                        <th>mobile</th>
-                        <th>Room Type</th>
-                        <th>Start-Date</th>
-                        <th>End-Date</th>
-                        <th>Request</th>
-                        <th>Property owner</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </tr>
-            </thead>
-            <tbody>   
-                <% bookings.forEach(booking => { %>
-                    <tr>
-                        <td><%= booking.user ? booking.user.username : 'N/A' %></td> <!-- User (populated) -->
-                        <td><%= booking._id %></td> <!-- Booking ID -->
-                        <td><%= booking.username %></td> <!-- Username -->
-                        <td><%= booking.mobile %></td> <!-- Mobile -->
-                        <td><%= booking.room ? booking.room.type : 'N/A' %></td> Room Type (populated)
-                        <td><%= booking.startDate.toDateString() %></td> <!-- Start-Date -->
-                        <td><%= booking.endDate.toDateString() %></td> <!-- End-Date -->
-                        <td><%= booking.specialRequest %></td> <!-- Special Request -->
-                        <td><%= booking.propertyID ? booking.propertyID : 'N/A' %></td> <!-- Property (populated) -->
-                        <td><%= booking.status %></td> <!-- Status -->
+                    <td>
+                    <li><%= booking.user ? booking.user.username : 'N/A' %></td> <!-- User (populated) --></li>
+                    </td>
+                    <td>
+                        <%= booking._id %>
+                    </td> <!-- Booking ID -->
+                    <td>
+                        <%= booking.username %>
+                    </td> <!-- Username -->
+                    <td>
+                        <%= booking.mobile %>
+                    </td> <!-- Mobile -->
+                    <td>
+                        <%= booking.room ? booking.room.type : 'N/A' %>
+                    </td> <!--Room Type (populated)-->
+                    <td>
+                        <%= booking.startDate.toDateString() %>
+                    </td> <!-- Start-Date -->
+                    <td>
+                        <%= booking.endDate.toDateString() %>
+                    </td> <!-- End-Date -->
+                    <td>
+                        <%= booking.specialRequest %>
+                    </td> <!-- Special Request -->
+                    <td>
+                        <%= booking.propertyID.name ? booking.propertyID.name : 'N/A' %>
+                    </td> <!-- Property (populated) -->
+                    <td>
+                        <%= booking.status %>
+                    </td> <!-- Status -->
                     <td>
                         <a href="/admin/booking/view/<%= booking._id %>">view</a>
                         <a href="/admin/bookings/edit/<%= booking._id %>"> Edit </a>
-                        <form action="/admin/bookings/delete/<%= booking._id %>" method="POST" style="display:inline;" onsubmit="confirmAction('delete', event);">
+                        <form action="/admin/bookings/delete/<%= booking._id %>" method="POST" style="display:inline;"
+                            onsubmit="confirmAction('delete', event);">
                             <button type="submit"> Delete </button>
                         </form>
                     </td>
                 </tr>
                 <% }) %>
-            </tbody>
-        </table>
-    </ol>
+        </tbody>
+    </table>
+</ol>
 </body>
+
 </html>
