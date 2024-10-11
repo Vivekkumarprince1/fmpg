@@ -4,50 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Property</title>
+    <link rel="stylesheet" href="/css/management.css">
     <style>
         .input-group {
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+        
     </style>
 </head>
 <body>
+    <div class="form">
     <h1>Edit Property</h1>
-    <form action="/admin/properties/edit/<%= property._id %>" method="POST">
+    <form class="add" action="/admin/properties/edit/<%= property._id %>" method="POST">
         <!-- Property Fields -->
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="<%= property.name %>" required><br>
+        <input class="input" type="text" id="name" name="name" value="<%= property.name %>" required><br>
 
-        <!-- <label for="location">Location:</label>
-        <input type="text" id="location" name="location" value="<%= property.location %>" required><br> -->
+        
 
             <!-- Location Section -->
             <label>Locations:</label>
             <div id="location-container">
                 <% if (property.locations) { %>
                     <% property.locations.forEach((location, index) => { %>
-                        <div class="input-group">
-                            <input type="text" name="locations[]" value="<%= location %>" required>
+                        <div class="input-group" style="display: flex;" >
+                            <input class="input" type="text" name="locations[]" value="<%= location %>" required>
                             <button type="button" onclick="removeField(this)">-</button>
                         </div>
                     <% }) %>
                 <% } %>
             </div>
-            <button type="button" onclick="addLocationField()">Add Location</button><br>
+            <button class="" type="button" onclick="addLocationField()">Add Location</button><br>
         <!-- End Location Section --> 
 
 
         <label for="type">Type:</label>
-        <input type="text" id="type" name="type" value="<%= property.type %>" required><br>
+        <input class="select" type="text" id="type" name="type" value="<%= property.type %>" required><br>
 
         <label for="map">Map:</label>
-        <input type="text" id="map" name="map" value="<%= property.map %>"><br>
+        <input class="input" type="text" id="map" name="map" value="<%= property.map %>"><br>
 
         <label for="description">Description:</label>
-        <textarea id="description" name="description" required><%= property.description %></textarea><br>
+        <textarea class="input" id="description" name="description" required><%= property.description %></textarea><br>
 
         <!-- Owner Section -->
         <label for="owner">Owner:</label>
-        <input type="text" id="owner" name="owner" value="<%= property.owner %>" required><br>
+        <input class="input" type="text" id="owner" name="owner" value="<%= property.owner %>" required><br>
 
 
         <!-- Images Section -->
@@ -55,7 +60,7 @@
         <div id="image-container">
             <% property.images.forEach((image, index) => { %>
                 <div class="input-group">
-                    <input type="text" name="images[]" value="<%= image %>" required>
+                    <input class="input" type="text" name="images[]" value="<%= image %>" required>
                     <button type="button" onclick="removeField(this)">-</button>
                 </div>
             <% }) %>
@@ -67,7 +72,7 @@
         <div id="amenity-container">
             <% property.amenities.forEach((amenity, index) => { %>
                 <div class="input-group">
-                    <input type="text" name="amenities[]" value="<%= amenity %>" required>
+                    <input class="input" type="text" name="amenities[]" value="<%= amenity %>" required>
                     <button type="button" onclick="removeField(this)">-</button>
                 </div>
             <% }) %>
@@ -89,16 +94,16 @@
             <% }) %>
         </div>
         <button type="button" onclick="addRoomField()">Add Room</button><br>
-        <button type="submit">Save Changes</button>
+        <button class="submit" type="submit">Save Changes</button>
     </form>
-
+</div>
     <script>
         // Add new location input field
 function addLocationField() {
     const container = document.getElementById('location-container');
     const newLocationInput = document.createElement('div');
     newLocationInput.className = 'input-group';
-    newLocationInput.innerHTML = '<input type="text" name="locations[]" placeholder="Add new location" required><button type="button" onclick="removeField(this)">-</button>';
+    newLocationInput.innerHTML = '<input type="text" class="input" name="locations[]" placeholder="Add new location" required><button type="button" onclick="removeField(this)">-</button>';
     container.appendChild(newLocationInput);
 }
 
@@ -110,7 +115,7 @@ function addLocationField() {
             const container = document.getElementById('image-container');
             const newImageInput = document.createElement('div');
             newImageInput.className = 'input-group';
-            newImageInput.innerHTML = '<input type="text" name="images[]" placeholder="Add new image" required><button type="button" onclick="removeField(this)">-</button>';
+            newImageInput.innerHTML = '<input type="text" class="input" name="images[]" placeholder="Add new image" required><button type="button" onclick="removeField(this)">-</button>';
             container.appendChild(newImageInput);
         }
 
@@ -119,7 +124,7 @@ function addLocationField() {
             const container = document.getElementById('amenity-container');
             const newAmenityInput = document.createElement('div');
             newAmenityInput.className = 'input-group';
-            newAmenityInput.innerHTML = '<input type="text" name="amenities[]" placeholder="Add new amenity" required><button type="button" onclick="removeField(this)">-</button>';
+            newAmenityInput.innerHTML = '<input type="text" class="input" name="amenities[]" placeholder="Add new amenity" required><button type="button" onclick="removeField(this)">-</button>';
             container.appendChild(newAmenityInput);
         }
 

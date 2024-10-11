@@ -5,58 +5,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Booking</title>
+    <link rel="stylesheet" href="../..//css/management.css">
 </head>
 
 <body>
-    <h1>Add Booking</h1>
-    <form action="/admin/bookings/add" method="POST">
-        <label for="user">User:</label>
-        <select id="user" name="user" required>
-            <option value="" disabled selected>Select a user</option>
-            <% users.forEach(user=> { %>
-                <option value="<%= user._id %>" data-username="<%= user.username %>">
-                    <%= user.username %>
-                </option>
-                <% }) %>
-        </select><br>
+    <div class="form">
+        <h1>Add Booking</h1>
+        <form class="add" action="/admin/bookings/add" method="POST">
+            <label for="user">User:</label>
+            <select id="user" class="select" name="user" required>
+                <option value="" disabled selected>Select a user</option>
+                <% users.forEach(user=> { %>
+                    <option value="<%= user._id %>" data-username="<%= user.username %>">
+                        <%= user.username %>
+                    </option>
+                    <% }) %>
+            </select><br>
 
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br>
+            <label for="username">Username:</label>
+            <input type="text" class="input" id="username" name="username" required><br>
 
-        <label for="property">Property:</label>
-        <select id="property" name="propertyID" required>
-            <option value="" disabled selected>Select a property</option>
-            <% properties.forEach(property=> { %>
-                <option value="<%= property._id %>">
-                    <%= property.name %>
-                </option>
-                <% }) %>
-        </select><br>
+            <label for="property">Property:</label>
+            <select id="property" class="select" name="propertyID" required>
+                <option value="" disabled selected>Select a property</option>
+                <% properties.forEach(property=> { %>
+                    <option value="<%= property._id %>">
+                        <%= property.name %>
+                    </option>
+                    <% }) %>
+            </select><br>
 
-        <label for="room">Room:</label>
-        <select id="room" name="room" required>
-            <option value="" disabled selected>Select a room</option>
-            <% rooms.forEach(room=> { %>
-                <option value="<%= room._id %>">
-                    <%= room.type %>
-                </option>
-                <% }) %>
-        </select><br>
+            <label for="room">Room:</label>
+            <select id="room" class="select" name="room" required>
+                <option value="" disabled selected>Select a room</option>
+                <% rooms.forEach(room=> { %>
+                    <option value="<%= room._id %>">
+                        <%= room.type %>
+                    </option>
+                    <% }) %>
+            </select><br>
 
-        <label for="mobile">Mobile:</label>
-        <input type="text" id="mobile" name="mobile" required><br>
+            <label for="mobile">Mobile:</label>
+            <input type="text" class="select" id="mobile" name="mobile" required><br>
+<div class="dates">
+            <label for="startDate">Start Date:</label>
+            <input class="input" type="date" id="startDate" name="startDate" required><br>
+ 
+            <div class="enddate">
+                <label for="endDate">End Date:</label>
+                <input class="input" type="date" id="endDate" name="endDate" required><br></div>
+            </div>
 
-        <label for="startDate">Start Date:</label>
-        <input type="date" id="startDate" name="startDate" required><br>
+            <label for="specialRequest">Special Request:</label>
+            <input type="text" class="input" id="specialRequest" name="specialRequest"><br>
 
-        <label for="endDate">End Date:</label>
-        <input type="date" id="endDate" name="endDate" required><br>
-
-        <label for="specialRequest">Special Request:</label>
-        <input type="text" id="specialRequest" name="specialRequest"><br>
-
-        <button type="submit">Add Booking</button>
-    </form>
+            <button class="submit" type="submit">Add Booking</button>
+        </form>
+    </div>
 
     <script>
         // Auto-fill the username field based on selected user
