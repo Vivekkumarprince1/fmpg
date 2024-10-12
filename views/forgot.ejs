@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password</title>
-    <link rel="stylesheet" href="../stylesheets/authstyle.css">
+    <link rel="stylesheet" href="..//css/management.css">
     <link rel="icon" href="img/logo.png" type="image/icon type">
 </head>
 <body>
-    <div class="container">
+    <div class="container form">
         <h1>Forgot Password</h1>
-        <form action="/forgot" method="POST">
+        <form class="add" action="/forgot" method="POST">
             <div class="form-group">
                 <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" required>
+                <input class="input" type="email" id="email" name="email" required>
             </div>
-            <button type="submit">Request Password Reset</button>
+            <button class="submit" type="submit">Request Password Reset</button>
         </form>
         <p><a href="/login">Back to Login</a></p>
     </div>

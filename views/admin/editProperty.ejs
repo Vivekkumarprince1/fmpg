@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,100 +13,117 @@
             align-items: center;
             gap: 10px;
         }
-        
     </style>
 </head>
+
 <body>
     <div class="form">
-    <h1>Edit Property</h1>
-    <form class="add" action="/admin/properties/edit/<%= property._id %>" method="POST">
-        <!-- Property Fields -->
-        <label for="name">Name:</label>
-        <input class="input" type="text" id="name" name="name" value="<%= property.name %>" required><br>
+        <h1>Edit Property</h1>
+        <form class="add" action="/admin/properties/edit/<%= property._id %>" method="POST">
+            <!-- Property Fields -->
+            <label for="name">Name:</label>
+            <input class="input" type="text" id="name" name="name" value="<%= property.name %>" required><br>
 
-        
+
 
             <!-- Location Section -->
             <label>Locations:</label>
             <div id="location-container">
                 <% if (property.locations) { %>
-                    <% property.locations.forEach((location, index) => { %>
-                        <div class="input-group" style="display: flex;" >
+                    <% property.locations.forEach((location, index)=> { %>
+                        <div class="input-group" style="display: flex;">
                             <input class="input" type="text" name="locations[]" value="<%= location %>" required>
                             <button type="button" onclick="removeField(this)">-</button>
                         </div>
-                    <% }) %>
-                <% } %>
+                        <% }) %>
+                            <% } %>
             </div>
             <button class="" type="button" onclick="addLocationField()">Add Location</button><br>
-        <!-- End Location Section --> 
+            <!-- End Location Section -->
 
 
-        <label for="type">Type:</label>
-        <input class="select" type="text" id="type" name="type" value="<%= property.type %>" required><br>
+            <!-- <label for="type">Type:</label>
+        <input class="select" type="text" id="type" name="type" value="<%= property.type %>" required><br> -->
 
-        <label for="map">Map:</label>
-        <input class="input" type="text" id="map" name="map" value="<%= property.map %>"><br>
+            <label for="type">Type:</label>
+            <select class="select" id="type" name="type" required>
+                <option value="" disabled>Select a type</option>
+                <option value="PG" <%=property.type==='PG' ? 'selected' : '' %>>PG</option>
+                <option value="Hostel" <%=property.type==='Hostel' ? 'selected' : '' %>>Hostel</option>
+                <option value="Flat" <%=property.type==='Flat' ? 'selected' : '' %>>Flat</option>
+                <option value="PG with Mess" <%=property.type==='PG with Mess' ? 'selected' : '' %>>PG with Mess
+                </option>
+            </select><br>
 
-        <label for="description">Description:</label>
-        <textarea class="input" id="description" name="description" required><%= property.description %></textarea><br>
 
-        <!-- Owner Section -->
-        <label for="owner">Owner:</label>
-        <input class="input" type="text" id="owner" name="owner" value="<%= property.owner %>" required><br>
+            <label for="map">Map:</label>
+            <input class="input" type="text" id="map" name="map" value="<%= property.map %>"><br>
+
+            <label for="description">Description:</label>
+            <textarea class="input" id="description" name="description"
+                required><%= property.description %></textarea><br>
+
+            <!-- Owner Section -->
+            <label for="owner">Owner:</label>
+            <input class="input" type="text" id="owner" name="owner" value="<%= property.owner %>" required><br>
 
 
-        <!-- Images Section -->
-        <label>Images:</label>
-        <div id="image-container">
-            <% property.images.forEach((image, index) => { %>
-                <div class="input-group">
-                    <input class="input" type="text" name="images[]" value="<%= image %>" required>
-                    <button type="button" onclick="removeField(this)">-</button>
-                </div>
-            <% }) %>
-        </div>
-        <button type="button" onclick="addImageField()">Add Image</button><br>
+            <!-- Images Section -->
+            <label>Images:</label>
+            <div id="image-container">
+                <% property.images.forEach((image, index)=> { %>
+                    <div class="input-group">
+                        <input class="input" type="text" name="images[]" value="<%= image %>" required>
+                        <button type="button" onclick="removeField(this)">-</button>
+                    </div>
+                    <% }) %>
+            </div>
+            <button type="button" onclick="addImageField()">Add Image</button><br>
 
-        <!-- Amenities Section -->
-        <label>Amenities:</label>
-        <div id="amenity-container">
-            <% property.amenities.forEach((amenity, index) => { %>
-                <div class="input-group">
-                    <input class="input" type="text" name="amenities[]" value="<%= amenity %>" required>
-                    <button type="button" onclick="removeField(this)">-</button>
-                </div>
-            <% }) %>
-        </div>
-        <button type="button" onclick="addAmenityField()">Add Amenity</button><br>
+            <!-- Amenities Section -->
+            <label>Amenities:</label>
+            <div id="amenity-container">
+                <% property.amenities.forEach((amenity, index)=> { %>
+                    <div class="input-group">
+                        <input class="input" type="text" name="amenities[]" value="<%= amenity %>" required>
+                        <button type="button" onclick="removeField(this)">-</button>
+                    </div>
+                    <% }) %>
+            </div>
+            <button type="button" onclick="addAmenityField()">Add Amenity</button><br>
 
-        <!-- Rooms Section -->
-        <label>Rooms:</label>
-        <div id="room-container">
-            <% property.rooms.forEach((room, index) => { %>
-                <div class="input-group">
-                    <input type="text" name="rooms[number][]" value="<%= room.number %>" placeholder="Room Number" required>
-                    <input type="text" name="rooms[type][]" value="<%= room.type %>" placeholder="Room Type" required>
-                    <input type="number" name="rooms[price][]" value="<%= room.price %>" placeholder="Room Price" required>
-                    <input type="number" name="rooms[capacity][]" value="<%= room.capacity %>" placeholder="Room Capacity" required>
-                    <input type="checkbox" name="rooms[available][]" <%= room.available ? 'checked' : '' %>> Available
-                    <button type="button" onclick="removeRoomField(this)">-</button>
-                </div>
-            <% }) %>
-        </div>
-        <button type="button" onclick="addRoomField()">Add Room</button><br>
-        <button class="submit" type="submit">Save Changes</button>
-    </form>
-</div>
+            <!-- Rooms Section -->
+            <label>Rooms:</label>
+            <div id="room-container">
+                <% property.rooms.forEach((room, index)=> { %>
+                    <div class="input-group">
+                        <input type="text" name="rooms[number][]" value="<%= room.number %>" placeholder="Room Number"
+                            required>
+                        <input type="text" name="rooms[type][]" value="<%= room.type %>" placeholder="Room Type"
+                            required>
+                        <input type="number" name="rooms[price][]" value="<%= room.price %>" placeholder="Room Price"
+                            required>
+                        <input type="number" name="rooms[capacity][]" value="<%= room.capacity %>"
+                            placeholder="Room Capacity" required>
+                        <input type="checkbox" name="rooms[available][]" <%=room.available ? 'checked' : '' %>>
+                        Available
+                        <button type="button" onclick="removeRoomField(this)">-</button>
+                    </div>
+                    <% }) %>
+            </div>
+            <button type="button" onclick="addRoomField()">Add Room</button><br>
+            <button class="submit" type="submit">Save Changes</button>
+        </form>
+    </div>
     <script>
         // Add new location input field
-function addLocationField() {
-    const container = document.getElementById('location-container');
-    const newLocationInput = document.createElement('div');
-    newLocationInput.className = 'input-group';
-    newLocationInput.innerHTML = '<input type="text" class="input" name="locations[]" placeholder="Add new location" required><button type="button" onclick="removeField(this)">-</button>';
-    container.appendChild(newLocationInput);
-}
+        function addLocationField() {
+            const container = document.getElementById('location-container');
+            const newLocationInput = document.createElement('div');
+            newLocationInput.className = 'input-group';
+            newLocationInput.innerHTML = '<input type="text" class="input" name="locations[]" placeholder="Add new location" required><button type="button" onclick="removeField(this)">-</button>';
+            container.appendChild(newLocationInput);
+        }
 
 
 
@@ -158,4 +176,5 @@ function addLocationField() {
         }
     </script>
 </body>
+
 </html>

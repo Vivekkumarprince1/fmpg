@@ -62,7 +62,8 @@ router.get('/properties', isAuthenticated, async (req, res) => {
 
 // Add a new property
 router.get('/properties/add', isAuthenticated, (req, res) => {
-  res.render('admin/addProperty');
+  const propertyTypes = ['PG', 'Hostel', 'Flat', 'PG with Mess'];
+  res.render('admin/addProperty',{propertyTypes});
 });
 
 router.post('/properties/add', isAuthenticated, async (req, res) => {

@@ -13,7 +13,7 @@ const { type } = require('os');
     required: true, // Array of stringsrequired: true
   },
   type: {
-    type: String,
+    type: String, enum:['PG','Hostel','Flat','PG with Mess'],
     required: true
   },
   images: {

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="POST" action="https://securegw-stage.paytm.in/theia/processTransaction" name="paytm">
+        <input type="hidden" name="MID" value="YOUR_MERCHANT_ID">
+        <input type="hidden" name="ORDER_ID" value="ORDERID_98765">
+        <input type="hidden" name="CUST_ID" value="CUSTOMER_ID">
+        <input type="hidden" name="INDUSTRY_TYPE_ID" value="Retail">
+        <input type="hidden" name="CHANNEL_ID" value="WEB">
+        <input type="hidden" name="TXN_AMOUNT" value="500">
+        <input type="hidden" name="WEBSITE" value="WEBSTAGING">
+        <input type="hidden" name="CALLBACK_URL" value="http://localhost:3000/callback">
+        <input type="hidden" name="CHECKSUMHASH" value="GENERATED_CHECKSUM_FROM_BACKEND">
+        <input type="submit" value="Pay Now">
+    </form>
+    <script type="application/javascript" crossorigin="anonymous" src="https://securegw-stage.paytm.in/merchantpgpui/checkoutjs/merchants/YOUR_MERCHANT_ID.js"></script>
+
+<button id="pay-button">Pay with Paytm UPI</button>
+
+<script>
+    document.getElementById('pay-button').addEventListener('click', function() {
+        var config = {
+            "root": "",
+            "flow": "DEFAULT",
+            "data": {
+                "orderId": "ORDERID_98765",  // Replace with Order ID from backend
+                "token": "GENERATED_TXN_TOKEN",  // Replace with txnToken from backend
+                "tokenType": "TXN_TOKEN",
+                "amount": "500"
+            },
+            "handler": {
+                "notifyMerchant": function(eventName, data) {
+                    console.log("eventName => ", eventName);
+                    console.log("data => ", data);
+                }
+            }
+        };
+        window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
+            // after Paytm SDK is initialized, invoke the checkout
+            window.Paytm.CheckoutJS.invoke();
+        }).catch(function onError(error) {
+            console.log("Error => ", error);
+        });
+    });
+</script>
+    
+</body>
+</html>

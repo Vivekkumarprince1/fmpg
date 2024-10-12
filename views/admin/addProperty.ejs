@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,77 +12,88 @@
         }
     </style>
 </head>
+
 <body>
     <div class="form">
-    <h1>Add Property</h1>
-    <form class="add" action="/admin/properties/add" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" id="name" class="input" name="name" required><br>
+        <h1>Add Property</h1>
+        <form class="add" action="/admin/properties/add" method="POST">
+            <label for="name">Name:</label>
+            <input type="text" id="name" class="input" name="name" required><br>
 
-        <label>Locations:</label>
-        <div id="location-container">
-            <div class="input-group">
-                <input type="text" name="locations[]" class="input" required>
-                <button type="button" onclick="addLocationField()">+</button>
+            <label>Locations:</label>
+            <div id="location-container">
+                <div class="input-group">
+                    <input type="text" name="locations[]" class="input" required>
+                    <button type="button" onclick="addLocationField()">+</button>
+                </div>
             </div>
-        </div>
 
-        <label for="type">Type:</label>
-        <input type="text" class="select" id="type" name="type" required><br>
+            <!-- <label for="type">Type:</label>
+        <input type="text" class="select" id="type" name="type" required><br> -->
 
-        <label for="map">Map:</label>
-        <input type="text" id="map" class="input" name="map"><br>
+            <label for="type">Type:</label>
+            <select class="select" id="type" name="type" required>
+                <option value="" disabled selected>Select a type</option>
+                <% propertyTypes.forEach(function(type) { %>
+                    <option value="<%= type %>">
+                        <%= type %>
+                    </option>
+                    <% }) %>
+            </select><br>
+
+            <label for="map">Map:</label>
+            <input type="text" id="map" class="input" name="map"><br>
 
 
-        <label for="owner">owner</label>
-        <input type="text" class="input" id="owner" name="owner" required><br>
+            <label for="owner">owner</label>
+            <input type="text" class="input" id="owner" name="owner" required><br>
 
 
-        <label for="description">Description:</label>
-        <textarea id="description" class="input" name="description" required></textarea><br>
+            <label for="description">Description:</label>
+            <textarea id="description" class="input" name="description" required></textarea><br>
 
-        <!-- Image Inputs -->
-        <label>Images:</label>
-        <div id="image-container">
-            <div class="input-group">
-                <input type="text" class="input" name="images[]" required>
-                <button type="button" onclick="addImageField()">+</button>
+            <!-- Image Inputs -->
+            <label>Images:</label>
+            <div id="image-container">
+                <div class="input-group">
+                    <input type="text" class="input" name="images[]" required>
+                    <button type="button" onclick="addImageField()">+</button>
+                </div>
             </div>
-        </div>
 
-        <!-- Amenity Inputs -->
-        <label>Amenities:</label>
-        <div id="amenity-container">
-            <div class="input-group">
-                <input type="text" class="input" name="amenities[]" required>
-                <button type="button" onclick="addAmenityField()">+</button>
+            <!-- Amenity Inputs -->
+            <label>Amenities:</label>
+            <div id="amenity-container">
+                <div class="input-group">
+                    <input type="text" class="input" name="amenities[]" required>
+                    <button type="button" onclick="addAmenityField()">+</button>
+                </div>
             </div>
-        </div>
 
-        <!-- Room Inputs -->
-        <label>Rooms:</label>
-        <div id="room-container">
-            <div class="input-group">
-                <input type="text" name="rooms[0][number]" placeholder="Room Number" required>
-                <input type="text" name="rooms[0][type]" placeholder="Room Type" required>
-                <input type="number" name="rooms[0][price]" placeholder="Price" required>
-                <input type="number" name="rooms[0][capacity]" placeholder="nober of room available" required>
+            <!-- Room Inputs -->
+            <label>Rooms:</label>
+            <div id="room-container">
+                <div class="input-group">
+                    <input type="text" name="rooms[0][number]" placeholder="Room Number" required>
+                    <input type="text" name="rooms[0][type]" placeholder="Room Type" required>
+                    <input type="number" name="rooms[0][price]" placeholder="Price" required>
+                    <input type="number" name="rooms[0][capacity]" placeholder="nober of room available" required>
 
-                <select name="rooms[0][available]" required>
-                    <option value="true">Available</option>
-                    <option value="false">Not Available</option>
-                </select>
-                <button type="button" onclick="addRoomField()">+</button>
+                    <select name="rooms[0][available]" required>
+                        <option value="true">Available</option>
+                        <option value="false">Not Available</option>
+                    </select>
+                    <button type="button" onclick="addRoomField()">+</button>
+                </div>
             </div>
-        </div>
 
-        <button class="submit" type="submit">Add Property</button>
-    </form>
-</div>
+            <button class="submit" type="submit">Add Property</button>
+        </form>
+    </div>
 
     <script>
-         // Function to dynamically add image input fields
-         function addLocationField() {
+        // Function to dynamically add image input fields
+        function addLocationField() {
             const container = document.getElementById('location-container');
             const newLocationInput = document.createElement('div');
             newLocationInput.className = 'input-group';
@@ -129,7 +141,7 @@
             container.appendChild(newRoomInput);
         }
 
-        
+
         // Generic function to remove an input field
         function removeField(button) {
             const container = button.parentNode.parentNode;
@@ -137,4 +149,5 @@
         }
     </script>
 </body>
+
 </html>
