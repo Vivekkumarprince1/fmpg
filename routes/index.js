@@ -11,7 +11,6 @@ const Booking = require('../models/Booking');
 // const properties= require('../models/Property');
 const Property = require('../models/Property');
 const flash=require('connect-flash');
-// passport.use(new localStrategy(userModel.authenticate()));
 const crypto = require('crypto'); // Built-in Node.js module
 const nodemailer = require('nodemailer'); // External package
 
@@ -80,6 +79,22 @@ router.get('/api/bookings', (req, res) => {
 
 router.get('/TermsAndConditions', function(req, res, next) {
   res.render('TermsAndConditions',{ page: 'TermsAndConditions', title: 'TermsAndConditions' });
+});
+router.get('/referandearn', isLoggedIn, async function(req, res, next) {
+  const user = await userModel.findOne({ email: req.session.passport.user });
+    if (!user.referralLink) {
+      // If for some reason the referral link is not set, regenerate it
+      user.referralLink = `https://www.fmpg.in/signup?ref=${user._id}`;
+      await user.save();
+    }
+  res.render('referandearn',{ page: 'referandearn', title: 'referandearn',user });
+});
+router.get('/TermsAndConditions', function(req, res, next) {
+  res.render('TermsAndConditions',{ page: 'TermsAndConditions', title: 'TermsAndConditions' });
+});
+
+router.get('/TermsofService', function(req, res, next) {
+  res.render('TermsofService',{ page: 'TermsofService', title: 'Terms of Service' });
 });
 
 router.get('/privacypolicy', function(req, res, next) {
@@ -306,6 +321,15 @@ router.post('/login', function(req, res, next) {
     });
   })(req, res, next);
 });
+
+// Get form to create a new owner
+router.get('/newOwner', isLoggedIn, async (req, res) => {
+  const user = await userModel.findOne({
+    email: req.session.passport.user
+  });
+  res.render('newOwner', { user });  // Pass 'user' as an object
+});
+
 
 
 

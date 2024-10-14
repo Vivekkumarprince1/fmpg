@@ -41,6 +41,16 @@
                     <% }) %>
             </select><br>
 
+            <label for="gender">Type:</label>
+            <select class="select" id="gender" name="gender" required>
+                <option value="" disabled selected>Select a type</option>
+                <% propertyTypes.forEach(function(gender) { %>
+                    <option value="<%= gender %>">
+                        <%= gender %>
+                    </option>
+                    <% }) %>
+            </select><br>
+
             <label for="map">Map:</label>
             <input type="text" id="map" class="input" name="map"><br>
 

@@ -22,7 +22,6 @@ const ownerRoutes = require('./routes/ownerroutes');
 const bookingRoutes = require('./routes/bookingroutes'); 
 
 
-
 var app = express();
 
 // view engine setup
