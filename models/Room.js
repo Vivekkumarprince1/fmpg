@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 
 const RoomSchema = new mongoose.Schema({
+ owner: { type: mongoose.Schema.Types.ObjectId, ref: 'Owner' }, // Reference to Owner model
   property: { type: mongoose.Schema.Types.ObjectId, ref: 'Property' },
   number: { type: String, required: true },
   capacity: {

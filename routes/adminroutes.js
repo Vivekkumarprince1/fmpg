@@ -111,11 +111,12 @@ router.post('/properties/add', isAuthenticated, async (req, res) => {
 
 
     // Create property
-    const { name, location, type, map, owner, description } = req.body;
+    const { name, location, type,gender, map, owner, description } = req.body;
     const newProperty = new Property({
       name,
       location,
       type,
+      gender,
       images: Array.isArray(images) ? images : [images],
       map,
       amenities: Array.isArray(amenities) ? amenities : [amenities],
