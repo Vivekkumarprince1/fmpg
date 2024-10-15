@@ -43,34 +43,23 @@ router.get('/newOwner', (req, res) => {
 
 // Set storage engine for multer
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        // Get the property name from the form submission
-        const propertyName = req.body.propertyName;
-        // Define the folder path dynamically
-        const folderPath = `public/PG-photos/${propertyName}`;
-        
-        // Check if the folder exists, if not, create it
-        fs.access(folderPath, (err) => {
-            if (err) {
-                // If the folder doesn't exist, create it
-                fs.mkdir(folderPath, { recursive: true }, (err) => {
-                    if (err) {
-                        console.error('Error creating folder:', err);
-                        return cb(err);
-                    }
-                    // Folder created successfully
-                    cb(null, folderPath); // Use the folder as the destination
-                });
-            } else {
-                // Folder already exists
-                cb(null, folderPath); // Use the existing folder as the destination
-            }
-        });
-    },
-    filename: (req, file, cb) => {
-        // Name the file with the fieldname and current timestamp + the original extension
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
+  destination: (req, file, cb) => {
+      const folderPath = `public/PG-photos/${req.body.propertyName}`;
+      
+      fs.mkdir(folderPath, { recursive: true }, (err) => {
+          if (err) return cb(err);
+          cb(null, folderPath);
+      });
+  },
+  filename: (req, file, cb) => {
+      const folderPath = `public/PG-photos/${req.body.propertyName}`;
+
+      fs.readdir(folderPath, (err, files) => {
+          if (err) return cb(err);
+          const imageCount = files.filter(f => f.startsWith(file.fieldname)).length + 1;
+          cb(null, `${file.fieldname}-${imageCount}${path.extname(file.originalname)}`);
+      });
+  }
 });
 
 // Initialize multer for multiple uploads (limit to 5 files)
@@ -92,14 +81,15 @@ const upload = multer({
 
 
 // Route to handle form submission with multiple file uploads
-router.post('/newOwner', upload.array('ownerImages', 5), async (req, res) => {
+router.post('/newOwner', upload.array('images'), async (req, res) => {
   try {
-      console.log(req.body); // Debugging: log the request body to check if all fields are present
-      const { ownerName, contactNumber, userId, email, propertyName, type, address, location, landmark, gender, amenities, rules, securityDeposit,description} = req.body;
+      const { owner, contactNumber, userId, email, propertyName, type, address, location, landmark, gender, amenities, rules, securityDeposit,description} = req.body;
 
-      if (req.files.length < 5) {
-          return res.status(400).send('You must upload at least 5 files.');
-      }
+
+      if (req.files.length < 1) { // Minimum of 1 file required
+        return res.status(400).send('You must upload at least 1 file.');
+    }
+
 
       // Get the paths of the uploaded files
       const imagePaths = req.files.map(file => file.path);
@@ -136,7 +126,7 @@ for (const roomData of roomsData) {
 
       // Create new Owner object and save in MongoDB
       const newOwner = new Owner({
-          ownerName,
+          owner,
           contactNumber,
           userId,
           email,
@@ -151,7 +141,7 @@ for (const roomData of roomsData) {
           rules,
           securityDeposit,
           description,
-          ownerImages: imagePaths // Save the array of image paths
+          images: imagePaths // Save the array of image paths
       });
 
       await newOwner.save();
@@ -162,63 +152,6 @@ for (const roomData of roomsData) {
       res.status(500).send('Server Error');
   }
 });
-
-
-
-
-
-// Get a specific owner by ID
-router.get('/owners/:id', async (req, res) => {
-  try {
-      const owner = await Owner.findById(req.params.id);
-      if (!owner) {
-          return res.status(404).send('Owner not found');
-      }
-      res.render('ownerDetails', { owner });
-  } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
-  }
-});
-
-// Update owner information
-router.get('/owners/:id/edit', async (req, res) => {
-  try {
-      const owner = await Owner.findById(req.params.id);
-      if (!owner) {
-          return res.status(404).send('Owner not found');
-      }
-      res.render('editOwner', { owner });
-  } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
-  }
-});
-
-router.post('/owners/:id', async (req, res) => {
-  try {
-      const owner = await Owner.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-      if (!owner) {
-          return res.status(404).send('Owner not found');
-      }
-      res.redirect(`/owners/${req.params.id}`);
-  } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
-  }
-});
-
-// Delete owner
-router.post('/owners/:id/delete', async (req, res) => {
-  try {
-      await Owner.findByIdAndDelete(req.params.id);
-      res.redirect('/owners');
-  } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
-  }
-});
-
 
 
 // Get all bookings for the property owner
@@ -343,8 +276,6 @@ router.post('/bookings/:id/accept', ensureOwner, async (req, res) => {
   }
 });
 
-
-
 router.post('/bookings/:id/decline', ensureOwner, async (req, res) => {
   try {
     const bookingId = req.params.id;
@@ -374,7 +305,5 @@ router.post('/bookings/:id/decline', ensureOwner, async (req, res) => {
     res.status(500).send('Error confirming booking');
   }
 });
-
-
 
 module.exports = router;
