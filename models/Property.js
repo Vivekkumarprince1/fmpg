@@ -4,31 +4,13 @@ const { type } = require('os');
 
 // Define the schemaconst
  propertySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  locations: {
-    type: [String],
-    required: true, // Array of stringsrequired: true
-  },
-  type: {
-    type: String, enum:['PG','Hostel','Flat','PG with Mess'],
-    required: true
-  },
-  images: {
-    type: [String], // Array of strings, assuming URLs or file pathsrequired: true
-  },
-  map: {
-    type: String// Assuming this is a URL or a string representing map info
-  },
-  amenities: {
-    type: [String], // Array of strings, e.g., 'WiFi', 'Parking'required: true
-  },
-  description: {
-    type: String,
-    required: true
-  },
+  name: {type: String,required: true},
+  locations: {type: [String],required: true, },
+  type: {type: String, enum:['PG','Hostel','Flat','PG with Mess'],required: true},
+  images: {type: [String],},
+  map: {type: String},
+  amenities: {type: [String]},
+  description: {type: String,required: true},
   rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'room' }],
   owner: { type: String,require:true },
   gender: { type: String, enum: ['male', 'female', 'unisex'] },

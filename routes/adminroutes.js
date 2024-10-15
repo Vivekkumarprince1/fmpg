@@ -18,6 +18,23 @@ router.get('/users', isAuthenticated, async (req, res) => {
   res.render('admin/users', { users });
 });
 
+const Owner = require('../models/owner');
+
+// Route to display all owners on the admin page
+router.get('/newOwnerrequest', async (req, res) => {
+  try {
+    // Fetch all owners from the database and populate the rooms field
+    const owners = await Owner.find().populate('rooms').exec();
+
+    // Render the admin page with owner data
+    res.render('admin/newOwnerrequest', { owners });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+});
+
+
 // Add a new user
 router.get('/users/add', isAuthenticated, (req, res) => {
   res.render('admin/addUser');
@@ -483,8 +500,6 @@ router.get('/messages', async (req, res) => {
       res.status(500).send('Internal server error.');
   }
 });
-
-
 
 
 function isAuthenticated(req, res, next) {

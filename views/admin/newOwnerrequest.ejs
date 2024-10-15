@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Owner Listings</title>
+    <link rel="stylesheet" href="../..//css/management.css">
+</head>
+<body>
+    <!-- <div class="form"> -->
+    <h1>Owner Listings</h1>
+
+    <table border="1" style="width: 100%; text-align: center;" class="customers">
+        <thead>
+            <tr>
+                <th rowspan="2">Owner Name</th>
+                <th rowspan="2">Email</th>
+                <th rowspan="2">Contact Number</th>
+                <th rowspan="2">Property Name</th>
+                <th rowspan="2">Type</th>
+                <th rowspan="2">Location</th>
+                <th colspan="4">Rooms</th>
+                <th rowspan="2">Security Deposit</th>
+                <th rowspan="2">Rules</th>
+                <th rowspan="2">Amenities</th>
+                <th rowspan="2">Description</th>
+                <th rowspan="2">Images</th>
+            </tr>
+            <tr>
+                <th>Room Number</th>
+                <th>Type</th>
+                <th>Capacity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% owners.forEach(owner => { %>
+                <tr>
+                    <td><%= owner.owner %></td>
+                    <td><%= owner.email %></td>
+                    <td><%= owner.contactNumber %></td>
+                    <td><%= owner.propertyName %></td>
+                    <td><%= owner.type %></td>
+                    <td><%= owner.location %></td>
+                    
+                    <% owner.rooms.forEach(room => { %>
+                        <td><%= room.number %></td>
+                        <td><%= room.type %></td>
+                        <td><%= room.capacity %></td>
+                        <td><%= room.price %></td>
+                    <% }) %>
+                   
+                    <td><%= owner.securityDeposit %></td>
+                    <td><%= owner.rules %></td>
+                    <td>
+                        <ul>
+                            <% owner.amenities.forEach(amenity => { %>
+                                <li><%= amenity %></li>
+                            <% }) %>
+                        </ul>
+                    </td>
+                    <td><%= owner.description %></td>
+                    <td>
+                        <ul>
+                            <% owner.images.forEach(image => { %>
+                                <li>
+                                    <a href="/<%= image.replace('public/', '') %>" target="_blank">
+                                        <%= image.split('/').pop() %> <!-- Display only the image name -->
+                                    </a>
+                                </li>
+                            <% }) %>
+                        </ul>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
