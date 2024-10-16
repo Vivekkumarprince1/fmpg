@@ -13,8 +13,8 @@
         <h1>Add New PG Owner</h1>
 
         <form class="add" action="owner/newOwner" method="POST" enctype="multipart/form-data">
-            <label for="owner">Owner Name:</label><br>
-            <input class="input" type="text" id="owner" name="owner" required><br><br>
+            <label for="ownerName">Owner Name:</label><br>
+            <input class="input" type="text" id="ownerName" name="ownerName" required><br><br>
 
             <!-- <label for="userId">Owner userId:</label><br> -->
             <input type="hidden" id="userId" name="userId" value="<%= user ? user._id : '' %>" required>
@@ -37,8 +37,26 @@
 
             <label for="address">Address:</label><br>
             <input class="input" type="text" id="address" name="address" required><br><br>
-            <label for="location">Location</label><br>
-            <input class="input" type="text" id="location" name="location" required><br><br>
+
+            <label for="map">Google Map link</label><br>
+            <input class="input" type="text" id="map" name="map" required><br><br>
+
+            <label for="locations">Locations</label>
+            <div id="location-container">
+                <div class="input-group">
+                    <p>Eg:distance from nearest bus stand :- 1.3km</p>
+                    <input class="input" type="text" id="location" name="locations[]"
+                        placeholder="Eg:Delhi bus stand :- 15.6km" required>
+                    <input class="input" type="text" id="location" name="locations[]"
+                        placeholder="Eg:New Delhi Railway Station:- 12km" required>
+                    <input class="input" type="text" id="location" name="locations[]" placeholder="Eg:Landmark:-0.5km"
+                        required>
+                </div>
+            </div>
+            <button type="button" onclick="addLocationField()">+</button>
+            <br><br>
+
+
             <label for="landmark">Landmark</label><br>
             <input class="input" type="text" id="landmark" name="landmark" required><br><br>
 
@@ -61,10 +79,10 @@
                 <option value="female">Female</option>
                 <option value="unisex">Unisex</option>
             </select><br><br>
+
             <label>Rooms:</label>
             <div id="room-container">
                 <div class="input-group">
-                    <input type="text" name="rooms[0][number]" placeholder="Room Number" required>
                     <!-- <input type="text" name="rooms[0][type]" placeholder="Room Type" required> -->
                     <select name="rooms[0][type]">
                         <option value="">Select your room type</option>
@@ -74,7 +92,8 @@
                         <option value="morethanthree">More than Three</option>
                     </select>
                     <input type="number" name="rooms[0][price]" placeholder="Price" required>
-                    <input type="number" name="rooms[0][capacity]" placeholder="nober of room available" required>
+                    <input type="number" name="rooms[0][capacity]" placeholder="Total no of Rooms" required>
+                    <input type="number" name="rooms[0][availableRooms]" placeholder="Number of available Rooms" required>
 
                     <select name="rooms[0][available]" required>
                         <option value="true">Available</option>
@@ -103,6 +122,16 @@
             <label for="description">Description: that you want to show on you main page</label><br>
             <textarea id="description" class="input" name="description" required></textarea><br>
 
+            <label for="additionalDetails">Additional Details </label><br>
+            <textarea id="additionalDetails" class="input" name="additionalDetails" required></textarea><br>
+
+            <label for="tenantContract">Upload copy of Tenant Contract</label><br>
+            <div id="tenantContract-container">
+                <div class="input-group">
+                    <input type="file" id="tenantContract" name="tenantContract" accept=".jpg, .jpeg, .png, .pdf">
+                </div>
+            </div>
+
             <input type="checkbox" value="TermsofService" required>Agree to <a href="TermsofService">Terms of
                 Service</a>
 
@@ -120,6 +149,17 @@
             container.appendChild(newImageInput);
         }
 
+        // Function to dynamically add location input fields
+        function addLocationField() {
+            const container = document.getElementById('location-container');
+            const newLocationInput = document.createElement('div');
+            newLocationInput.className = 'input-group';
+            newLocationInput.innerHTML = `
+        <input type="text" class="input" name="locations[]" required><button type="button" onclick="removeField(this)">-</button>`;
+            container.appendChild(newLocationInput);
+        }
+
+        // Function to dynamically add amenities input fields
 
         function addAmenityField() {
             const container = document.getElementById('amenity-container');

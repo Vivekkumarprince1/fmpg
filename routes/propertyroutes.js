@@ -48,7 +48,6 @@ router.get('/:id', async (req, res) => {
 });
 
 
-// Get all properties
 // Get all properties and render the cards on the frontend
 router.get('/properties', async (req, res) => {
   try {
