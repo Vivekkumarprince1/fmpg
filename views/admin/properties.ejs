@@ -43,15 +43,18 @@
                 <% properties.forEach(property=> { %>
 
                     <tr>
+                        <td>
+                            <li>
+                                <%= property.propertyName %>
+                            </li>
+                        </td>
 
                         <td>
                             <li>
                                 <%= property._id %>
                             </li>
                         </td>
-                        <td>
-                            <%= property.name %>
-                        </td>
+                        <!--  -->
                         <td>
                             <ul>
                             <% property.locations.forEach(location=> { %>
@@ -91,7 +94,11 @@
                                 style="display:inline;" onsubmit="confirmAction('delete', event);">
                                 <button type="submit">Delete</button>
                             </form>
-                        </td>
+
+                            <a class="btn" href="/admin/view/<%= property._id %>? owner._id=<%= property._id %>">
+                                <button>View</button>
+                              </a>
+                              </td>
                     </tr>
 
                     <% }) %>

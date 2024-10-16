@@ -10,6 +10,9 @@ const { response } = require('../app');
 const User=require('../models/users');
 const mongoose = require('mongoose');
 const Contact = require('../models/Contact'); // Adjust the path based on your folder structure
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 
 // View all users
@@ -33,6 +36,90 @@ router.get('/newOwnerrequest', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+// Confirm route - Convert Owner to Property and delete from Owner collection
+router.post('/confirm/:ownerId', async (req, res) => {
+  try {
+    // Find the owner by ID
+    const owner = await Owner.findById(req.params.ownerId);
+    if (!owner) {
+      return res.status(404).send('Owner not found');
+    }
+
+    // Extract relevant data from owner to create a new property
+    const newProperty = new Property({
+      propertyName: owner.propertyName,
+      locations: owner.locations,
+      type: owner.type,
+      gender: owner.gender,
+      landmark: owner.landmark,
+      additionalDetails: owner.additionalDetails,
+      address: owner.address,
+      contactNumber: owner.contactNumber,
+      email: owner.email,
+      securityDeposit: owner.securityDeposit,
+      rules: owner.rules,
+      images: owner.images, // Use the owner's uploaded images
+      map: owner.map,
+      amenities: owner.amenities,
+      description: owner.description,
+      rooms: owner.rooms, // Assuming the owner has rooms data
+      ownerName: owner.ownerName,
+      tenantContract: owner.tenantContract, // Use the owner's tenant contract if uploaded
+    });
+
+    // Save the new property in the Property collection
+    await newProperty.save();
+
+    // Optionally, update the owner's user role to 'owner' if the user exists
+    const user = await User.findOne({ email: owner.email });
+    if (user) {
+      user.role = 'owner';
+      await user.save(); // Update and save the user role
+    }
+
+    // Remove the owner from the Owner collection
+    await Owner.findByIdAndDelete(req.params.ownerId);
+
+    // Redirect or send success response
+    req.session.success = 'Owner confirmed and added as a property';
+    res.redirect('/admin/properties');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+
+// Cancel owner request
+router.post('/cancel/:id', async (req, res) => {
+  try {
+      const ownerId = req.params.id;
+      await Owner.findByIdAndUpdate(ownerId, { status: 'Canceled' });
+      res.redirect('/newOwnerrequest'); // Redirect back to the owner listings
+  } catch (err) {
+      console.error(err);
+      res.status(500).send('Server Error');
+  }
+});
+
+// View owner details
+router.get('/view/:id', async (req, res) => {
+  try {
+      const ownerId = req.params.id;
+      console.log(ownerId);
+      const owner = await Owner.findById(ownerId).populate('rooms') || await Property.findById(ownerId).populate('rooms');
+      if (!owner) {
+          return res.status(404).send('Owner not found');
+      }
+      res.render('admin/viewOwner', { owner }); // Render a new page with owner details
+  } catch (err) {
+      console.error(err);
+      res.status(500).send('Server Error');
+  }
+});
+
+
 
 
 // Add a new user
@@ -83,12 +170,72 @@ router.get('/properties/add', isAuthenticated, (req, res) => {
   res.render('admin/addProperty',{propertyTypes});
 });
 
-router.post('/properties/add', isAuthenticated, async (req, res) => {
+
+
+// Set storage engine for multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      const folderPath = `public/PG-photos/${req.body.propertyName}`;
+      
+      fs.mkdir(folderPath, { recursive: true }, (err) => {
+          if (err) return cb(err);
+          cb(null, folderPath);
+      });
+  },
+  filename: (req, file, cb) => {
+      const folderPath = `public/PG-photos/${req.body.propertyName}`;
+
+      fs.readdir(folderPath, (err, files) => {
+          if (err) return cb(err);
+          const imageCount = files.filter(f => f.startsWith(file.fieldname)).length + 1;
+          cb(null, `${file.fieldname}-${imageCount}${path.extname(file.originalname)}`);
+      });
+  }
+});
+
+// Initialize multer for multiple file fields (images and tenantContract)
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 12 * 1024 * 1024 }, // Limit: 12MB per file
+    fileFilter: (req, file, cb) => {
+        const filetypes = /jpeg|jpg|png|pdf/;
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = filetypes.test(file.mimetype);
+
+        if (mimetype && extname) {
+            return cb(null, true);
+        } else {
+            cb('Error: Only images (jpg, jpeg, png) and PDFs are allowed!');
+        }
+    }
+});
+
+// Use upload.fields to handle both images and tenantContract
+const uploadFields = upload.fields([
+  { name: 'images', maxCount: 5 },  // Allow multiple images
+  { name: 'tenantContract', maxCount: 1 } // Allow only one tenant contract
+]);
+
+
+
+
+router.post('/properties/add', uploadFields,isAuthenticated, async (req, res) => {
   try {
     console.log(req.body); // Log the entire request body
+    console.log(req.files); // Log uploaded files for debugging
 
-    const images = req.body['images[]'];
-    const amenities = req.body['amenities[]'];
+    // Get the paths of the uploaded images
+    const imagePaths = req.files['images'] ? req.files['images'].map(file => `PG-photos/${req.body.propertyName}/${file.filename}`) : [];
+
+    // Get the path of the uploaded tenantContract
+    const tenantContractPath = req.files['tenantContract'] ? req.files['tenantContract'][0].path : null;
+
+    // Validate that at least 1 image has been uploaded
+    if (imagePaths.length < 1) {
+      return res.status(400).send('You must upload at least 1 image.');
+    }
+
+
 
     // Extract room data
     const roomsData = [];
@@ -105,6 +252,8 @@ router.post('/properties/add', isAuthenticated, async (req, res) => {
         }
       }
     }
+    // Extract room data directly as an array
+    // const roomsData = req.body.rooms;
 
     // Check if roomsData is an array
     if (!Array.isArray(roomsData)) {
@@ -116,11 +265,12 @@ router.post('/properties/add', isAuthenticated, async (req, res) => {
     const rooms = [];
     for (const roomData of roomsData) {
       const room = new Room({
-        number: roomData.number,
+        // number: roomData.number,
         type: roomData.type,
         price: roomData.price,
         available: roomData.available === 'true', // Convert
-        capacity: roomData.capacity,// string to boolean
+        capacity: roomData.capacity,
+        availableRooms: roomData.availableRooms,
       });
       await room.save();
       rooms.push(room._id); // Save the room ID to the property
@@ -128,27 +278,36 @@ router.post('/properties/add', isAuthenticated, async (req, res) => {
 
 
     // Create property
-    const { name, location, type,gender, map, owner, description } = req.body;
+    const { propertyName, locations, type, gender,amenities, map, ownerName, description, rules, landmark, address, contactNumber, email,securityDeposit, additionalDetails} = req.body;
     const newProperty = new Property({
-      name,
-      location,
+      propertyName,
+      locations,
       type,
       gender,
-      images: Array.isArray(images) ? images : [images],
+      landmark,
+      additionalDetails,
+      address,
+      contactNumber,
+      email,
+      securityDeposit,
+      rules,
+      images: imagePaths ,
       map,
       amenities: Array.isArray(amenities) ? amenities : [amenities],
       description,
       rooms, // Add room references to property
-      owner,
+      ownerName,
+      tenantContract:tenantContractPath,
     });
 
     // Check if the owner exists and update their role
-    const user = await User.findOne({ username: owner });
+    const user = await User.findOne({ email: req.body.email });
+
     if (user) {
       user.role = 'owner'; // Update role to owner
       await user.save(); // Save the updated user
     } else {
-      // return res.status(404).send('Owner username does not exist');
+      return res.status(404).send('Owner username does not exist');
     }
 
     await newProperty.save();
@@ -181,71 +340,89 @@ router.get('/properties/edit/:id', isAuthenticated, async (req, res) => {
 });
 
 
-router.post('/properties/edit/:id', isAuthenticated, async (req, res) => {
+router.post('/properties/edit/:id', uploadFields, isAuthenticated, async (req, res) => {
   try {
-    // Retrieve the property from the database
     const property = await Property.findById(req.params.id).populate('rooms');
-
     if (!property) {
       return res.status(404).send('Property not found');
     }
 
     // Extract property details from the request body
-    const { name, location, type, map, description, owner } = req.body;
-    let images = req.body['images[]'] || [];
-    let amenities = req.body['amenities[]'] || [];
+    const { propertyName, locations, type, gender, map, ownerName, description, rules, landmark, address, contactNumber, email, securityDeposit, additionalDetails } = req.body;
 
-    // Ensure images and amenities are arrays
-    if (!Array.isArray(images)) images = [images];
-    if (!Array.isArray(amenities)) amenities = [amenities];
+    // Handle uploaded images
+    let images = req.body.existingImages || property.images; // If no new images are uploaded, use existing ones
+    if (!Array.isArray(images)) images = [images]; // Ensure it's an array even if it's a single value
 
-    // Extract room data from the request body
-    const roomNumbers = req.body['rooms[number][]'] || [];
-    const rooms = req.body['rooms[type][]'] || [];
-    const roomPrices = req.body['rooms[price][]'] || [];
-    const roomCapacities = req.body['rooms[capacity][]'] || [];
-    const roomAvailabilities = req.body['rooms[available][]'] || [];
+    if (req.files && req.files['images']) {
+      // Append new image paths to the existing images
+      const newImagePaths = req.files['images'].map(file => `PG-photos/${propertyName}/${file.filename}`);
+      images = images.concat(newImagePaths);
+    }
 
-    // Initialize roomsData array
-    const roomsData = [];
+    // Handle uploaded tenant contract
+    const tenantContractPath = req.files['tenantContract'] ? req.files['tenantContract'][0].path : property.tenantContract;
 
-    // Process each room
-    for (let i = 0; i < roomNumbers.length; i++) {
-      const roomData = {
-        number: roomNumbers[i],
-        type: rooms[i],
-        price: roomPrices[i],
-        capacity: roomCapacities[i],
-        available: roomAvailabilities[i] === 'on'
-      };
+    // Handle room updates
+    // Handle rooms
+    const roomUpdates = req.body.rooms || [];
+    const updatedRooms = [];
 
-      // Check if the room already exists
-      const existingRoom = await Room.findOne({ number: roomData.number, property: req.params.id });
-
-      if (existingRoom) {
-        // Update the existing room if it belongs to this property
-        await Room.findByIdAndUpdate(existingRoom._id, roomData);
-        roomsData.push(existingRoom._id); // Track updated room ID
+    for (let i = 0; i < roomUpdates.length; i++) {
+      const roomData = roomUpdates[i];
+      if (roomData.id) {
+        // Update existing room
+        await Room.findByIdAndUpdate(roomData.id, {
+          type: roomData.type,
+          price: roomData.price,
+          capacity: roomData.capacity,
+          availableRooms: roomData.availableRooms,
+          available: roomData.available === 'true'
+        });
+        updatedRooms.push(roomData.id);
       } else {
-        // Create a new room and associate it with the property
-        const newRoom = new Room({ ...roomData, property: req.params.id }); // Associate with property
+        // Create new room
+        const newRoom = new Room({
+          type: roomData.type,
+          price: roomData.price,
+          capacity: roomData.capacity,
+          availableRooms: roomData.availableRooms,
+          available: roomData.available === 'true'
+        });
         await newRoom.save();
-        roomsData.push(newRoom._id); // Track newly created room ID
+        updatedRooms.push(newRoom._id);
       }
     }
 
-    // Check if the owner exists and update their role
-   const user = await User.findOne({ username: owner });
-   if (user) {
-     user.role = 'owner'; // Update role to owner
-     await user.save(); // Save the updated user
-   } else {
-     // return res.status(404).send('Owner username does not exist');
-   }
+    // Remove rooms that are no longer in the form
+    const existingRoomIds = property.rooms.map(room => room._id.toString());
+    const updatedRoomIds = updatedRooms.map(roomId => roomId.toString());
+    const roomsToDelete = existingRoomIds.filter(roomId => !updatedRoomIds.includes(roomId));
+
+    for (const roomId of roomsToDelete) {
+      await Room.findByIdAndDelete(roomId); // Delete rooms that were removed in the form
+    }
 
     // Update property with new data
     const updatedProperty = {
-      name, location, type, map, description, images, amenities, rooms: roomsData, owner // Adding owner
+      propertyName,
+      locations,
+      type,
+      gender,
+      map,
+      ownerName,
+      description,
+      rules,
+      landmark,
+      address,
+      contactNumber,
+      email,
+      securityDeposit,
+      additionalDetails,
+      images, // Now images contain both existing and new ones
+      amenities: req.body['amenities'] || property.amenities,
+      rooms: updatedRooms,
+      tenantContract: tenantContractPath
     };
 
     await Property.findByIdAndUpdate(req.params.id, updatedProperty);
@@ -254,9 +431,9 @@ router.post('/properties/edit/:id', isAuthenticated, async (req, res) => {
     console.error('Error updating property:', err);
     res.status(500).send('Error updating property');
   }
-
-   
 });
+
+
 
 
 // Delete a property

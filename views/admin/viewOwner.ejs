@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Details</title>
+    <link rel="stylesheet" href="../..//css/management.css">
+</head>
+<body>
+    <h1>Owner Details</h1>
+
+    <div class="owner-details">
+        <h2>Owner Information</h2>
+        <p><strong>Name:</strong> <%= owner.ownerName %></p>
+        <p><strong>Email:</strong> <%= owner.email %></p>
+        <p><strong>Contact Number:</strong> <%= owner.contactNumber %></p>
+        <p><strong>Property Name:</strong> <%= owner.propertyName %></p>
+        <p><strong>Type:</strong> <%= owner.type %></p>
+        <p><strong>Status:</strong> <%= owner.status %></p>
+
+        <h3>Locations</h3>
+        <ul>
+            <% owner.locations.forEach(location => { %>
+                <li><%= location %></li>
+            <% }) %>
+        </ul>
+
+        <h3>Rooms</h3>
+        <table border="1" style="width: 100%; text-align: center;" class="customers">
+            <thead>
+                <tr>
+                    <th>Room Number</th>
+                    <th>Type</th>
+                    <th>Capacity</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% owner.rooms.forEach(room => { %>
+                    <tr>
+                        
+                        <td><%= room.type %></td>
+                        <td><%= room.capacity %></td>
+                        <td><%= room.availableRooms %></td>
+                        <td><%= room.price %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+
+        <h3>Security Deposit</h3>
+        <p><%= owner.securityDeposit %></p>
+
+        <h3>Rules</h3>
+        <p><%= owner.rules %></p>
+
+        <h3>Amenities</h3>
+        <ul>
+            <% owner.amenities.forEach(amenity => { %>
+                <li><%= amenity %></li>
+            <% }) %>
+        </ul>
+
+        <h3>Description</h3>
+        <p><%= owner.description %></p>
+
+        <h3>Additional Details</h3>
+        <p><%= owner.additionalDetails %></p>
+
+        <h3>Tenant Contract</h3>
+        <ul>
+            <% if (owner.tenantContract) { %>
+                <li>
+                    <a href="/<%= owner.tenantContract.replace('public/', '') %>" target="_blank">
+                        <%= owner.tenantContract.split('/').pop() %>
+                    </a>
+                </li>
+            <% } else { %>
+                <li>No Tenant Contract</li>
+            <% } %>
+        </ul>
+
+        <h3>Images</h3>
+        <ul>
+            <% owner.images.forEach(image => { %>
+                <li>
+                    <a href="/<%= image.replace('public/', '') %>" target="_blank">
+                        <%= image.split('/').pop() %>
+                    </a>
+                </li>
+            <% }) %>
+        </ul>
+
+        <div>
+            <a href="/admin/newOwnerrequest"><button>Back to Owner Listings</button></a>
+        </div>
+    </div>
+</body>
+</html>

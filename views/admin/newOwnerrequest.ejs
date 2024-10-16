@@ -14,63 +14,43 @@
     <table border="1" style="width: 100%; text-align: center;" class="customers">
         <thead>
             <tr>
-                <th rowspan="2">Owner Name</th>
-                <th rowspan="2">Email</th>
                 <th rowspan="2">Contact Number</th>
                 <th rowspan="2">Property Name</th>
                 <th rowspan="2">Type</th>
-                <th rowspan="2">Location</th>
-                <th colspan="4">Rooms</th>
-                <th rowspan="2">Security Deposit</th>
-                <th rowspan="2">Rules</th>
-                <th rowspan="2">Amenities</th>
-                <th rowspan="2">Description</th>
-                <th rowspan="2">Images</th>
-            </tr>
-            <tr>
-                <th>Room Number</th>
-                <th>Type</th>
-                <th>Capacity</th>
-                <th>Price</th>
+                <th rowspan="2">Map</th>
+                <th rowspan="2">Tenant Contract</th>
+                <th rowspan="2">Status</th>
+                <th rowspan="2">Actions</th>
             </tr>
         </thead>
         <tbody>
             <% owners.forEach(owner => { %>
                 <tr>
-                    <td><%= owner.owner %></td>
-                    <td><%= owner.email %></td>
+                  
                     <td><%= owner.contactNumber %></td>
                     <td><%= owner.propertyName %></td>
                     <td><%= owner.type %></td>
-                    <td><%= owner.location %></td>
-                    
-                    <% owner.rooms.forEach(room => { %>
-                        <td><%= room.number %></td>
-                        <td><%= room.type %></td>
-                        <td><%= room.capacity %></td>
-                        <td><%= room.price %></td>
-                    <% }) %>
-                   
-                    <td><%= owner.securityDeposit %></td>
-                    <td><%= owner.rules %></td>
+                    <td><%= owner.map %></td>
                     <td>
                         <ul>
-                            <% owner.amenities.forEach(amenity => { %>
-                                <li><%= amenity %></li>
-                            <% }) %>
+                            <% if (owner.tenantContract) { %>
+                                <a href="/<%= owner.tenantContract.replace('public/', '') %>" target="_blank">
+                                    <%= owner.tenantContract.split('/').pop() %> <!-- Display only the file name -->
+                                </a>
+                            <% } else { %>
+                                <li>No Tenant Contract</li> <!-- Display a message if tenantContract is missing -->
+                            <% } %>
                         </ul>
                     </td>
-                    <td><%= owner.description %></td>
+                    <td><%= owner.status %></td>
                     <td>
-                        <ul>
-                            <% owner.images.forEach(image => { %>
-                                <li>
-                                    <a href="/<%= image.replace('public/', '') %>" target="_blank">
-                                        <%= image.split('/').pop() %> <!-- Display only the image name -->
-                                    </a>
-                                </li>
-                            <% }) %>
-                        </ul>
+                        <form action="/admin/confirm/<%= owner._id %>" method="POST" style="display:inline;">
+                            <button class="btn" type="submit">Confirm</button>
+                        </form>
+                        <form action="/cancel/<%= owner._id %>" method="POST" style="display:inline;">
+                            <button class="btn" type="submit">Cancel</button>
+                        </form>
+                        <a class="btn" href="/admin/view/<%= owner._id %>"><button>View</button></a>
                     </td>
                 </tr>
             <% }) %>

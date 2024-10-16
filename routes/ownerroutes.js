@@ -62,10 +62,10 @@ const storage = multer.diskStorage({
   }
 });
 
-// Initialize multer for multiple uploads (limit to 5 files)
+// Initialize multer for multiple file fields (images and tenantContract)
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // Limit: 5MB per file
+    limits: { fileSize: 12 * 1024 * 1024 }, // Limit: 12MB per file
     fileFilter: (req, file, cb) => {
         const filetypes = /jpeg|jpg|png|pdf/;
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
@@ -79,61 +79,67 @@ const upload = multer({
     }
 });
 
+// Use upload.fields to handle both images and tenantContract
+const uploadFields = upload.fields([
+  { name: 'images' },        // For image uploads
+  { name: 'tenantContract', maxCount: 1 } // For tenant contract upload
+]);
 
 // Route to handle form submission with multiple file uploads
-router.post('/newOwner', upload.array('images'), async (req, res) => {
+router.post('/newOwner', uploadFields, async (req, res) => {
   try {
-      const { owner, contactNumber, userId, email, propertyName, type, address, location, landmark, gender, amenities, rules, securityDeposit,description} = req.body;
+      const { ownerName, contactNumber, userId, email, propertyName, type, address, map, locations, landmark, gender, amenities, rules, securityDeposit, description, additionalDetails } = req.body;
 
+       // Get the paths of the uploaded images and store as relative paths
+       const imagePaths = req.files['images'] ? req.files['images'].map(file => `PG-photos/${req.body.propertyName}/${file.filename}`) : [];
 
-      if (req.files.length < 1) { // Minimum of 1 file required
-        return res.status(400).send('You must upload at least 1 file.');
-    }
+      // Get the path of the uploaded tenantContract
+      const tenantContractPath = req.files['tenantContract'] ? req.files['tenantContract'][0].path : null;
 
+      // Validate that at least 1 image has been uploaded
+      if (imagePaths.length < 1) {
+        return res.status(400).send('You must upload at least 1 image.');
+      }
 
-      // Get the paths of the uploaded files
-      const imagePaths = req.files.map(file => file.path);
+      // Extract room data directly as an array
+      const roomsData = req.body.rooms;
 
+      // Check if roomsData is an array
+      if (!Array.isArray(roomsData)) {
+        throw new Error('Rooms data is not in the expected format.');
+      }
 
-    // Extract room data directly as an array
-const roomsData = req.body.rooms;
-
-// Check if roomsData is an array
-if (!Array.isArray(roomsData)) {
-  throw new Error('Rooms data is not in the expected format.');
-}
-
-// Loop over roomsData to create Room instances
-const rooms = [];
-for (const roomData of roomsData) {
-  if (!roomData.number || !roomData.type || !roomData.price || !roomData.capacity) {
-    throw new Error('Room data is missing required fields.');
-  }
-  
-  const room = new Room({
-    number: roomData.number,
-    type: roomData.type,
-    price: roomData.price,
-    capacity: roomData.capacity,
-    available: roomData.available === 'true'
-  });
-  
-  await room.save();
-  rooms.push(room._id); // Save the room ID
-}
-
-
+      // Loop over roomsData to create Room instances
+      const rooms = [];
+      for (const roomData of roomsData) {
+        if (!roomData.type || !roomData.price || !roomData.capacity || !roomData.availableRooms) {
+          throw new Error('Room data is missing required fields.');
+        }
+        
+        const room = new Room({
+          // number: roomData.number,
+          type: roomData.type,
+          price: roomData.price,
+          capacity: roomData.capacity,
+          available: roomData.available === 'true',
+          availableRooms: roomData.availableRooms,
+        });
+        
+        await room.save();
+        rooms.push(room._id); // Save the room ID
+      }
 
       // Create new Owner object and save in MongoDB
       const newOwner = new Owner({
-          owner,
+          ownerName,
           contactNumber,
           userId,
           email,
           propertyName,
           type,
           address,
-          location,
+          map,
+          locations,
           landmark,
           gender,
           rooms,
@@ -141,7 +147,9 @@ for (const roomData of roomsData) {
           rules,
           securityDeposit,
           description,
-          images: imagePaths // Save the array of image paths
+          additionalDetails,
+          tenantContract: tenantContractPath, // Save the tenant contract path
+          images:  imagePaths, // Save the images path
       });
 
       await newOwner.save();
@@ -152,6 +160,7 @@ for (const roomData of roomsData) {
       res.status(500).send('Server Error');
   }
 });
+
 
 
 // Get all bookings for the property owner
