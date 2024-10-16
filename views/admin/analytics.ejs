@@ -1,74 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Reports & Analytics</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Report</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .chart-container {
+    width: 600px;
+    margin: 20px auto;
+    border: 1px solid #ccc; /* Add this for debugging */
+}
+
+    </style>
 </head>
 <body>
+    <h1>Room Booking Service Analysis</h1>
 
-    <div class="container">
-        <h1>Reports & Analytics</h1>
-
-        <div class="row">
-            <div class="col-md-4">
-                <h3>Active Bookings</h3>
-                <p id="activeBookings">Loading...</p>
-            </div>
-            <div class="col-md-4">
-                <h3>Total Bookings</h3>
-                <p id="totalBookings">Loading...</p>
-            </div>
-            <div class="col-md-4">
-                <h3>Total Properties</h3>
-                <p id="totalProperties">Loading...</p>
-            </div>
+    <div id="data" 
+         data-totalBookings="<%= totalBookings%>"
+         data-confirmed="<%= confirmedBookings %>" 
+         data-pending="<%= pendingBookings %>" 
+         data-cancelled="<%= cancelledBookings %>" 
+         data-active="<%= activeBookings %>" 
+         data-single="<%= singleRoomProperties %>" 
+         data-double="<%= doubleRoomProperties %>" 
+         data-male="<%= maleProperties %>" 
+         data-female="<%= femaleProperties %>">
+         
         </div>
 
-        <canvas id="bookingsPerPropertyChart" width="400" height="200"></canvas>
+         
 
+    <div class="chart-container">
+        <canvas id="bookingStatusChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="propertyTypeChart" width="600" height="400"></canvas> <!-- Set width and height -->
+    </div>
+
+    <div class="chart-container">
+        <canvas id="userGenderChart"></canvas>
     </div>
 
     <script>
-        // Fetch analytics data
-        fetch('/admin/analytics')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('activeBookings').innerText = data.activeBookings;
-                document.getElementById('totalBookings').innerText = data.totalBookings;
-                document.getElementById('totalProperties').innerText = data.totalProperties;
+        const dataElement = document.getElementById('data');
+        
+        const confirmedBookings = parseInt(dataElement.getAttribute('data-confirmed'));
+        const pendingBookings = parseInt(dataElement.getAttribute('data-pending'));
+        const cancelledBookings = parseInt(dataElement.getAttribute('data-cancelled'));
+        const activeBookings = parseInt(dataElement.getAttribute('data-active'));
 
-                // Check if bookingsPerProperty is empty or not
-                const bookingsPerProperty = data.bookingsPerProperty;
-                if (bookingsPerProperty.length === 0) {
-                    console.warn('No data available for bookings per property.');
-                }
+        const singleRoomProperties = parseInt(dataElement.getAttribute('data-single'));
+        const doubleRoomProperties = parseInt(dataElement.getAttribute('data-double'));
 
-                // Create chart for bookings per property
-                const ctx = document.getElementById('bookingsPerPropertyChart').getContext('2d');
-                const chart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: bookingsPerProperty.length > 0 ? bookingsPerProperty.map(bp => bp.property) : ['No Data'],
-                        datasets: [{
-                            label: 'Bookings per Property',
-                            data: bookingsPerProperty.length > 0 ? bookingsPerProperty.map(bp => bp.total) : [0],
-                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
+        const maleProperties = parseInt(dataElement.getAttribute('data-male'));
+        const femaleProperties = parseInt(dataElement.getAttribute('data-female'));
+
+        // Debugging logs
+        console.log("Booking Status Data:", confirmedBookings, pendingBookings, cancelledBookings, activeBookings);
+        console.log("Property Type Data:", singleRoomProperties, doubleRoomProperties);
+        console.log("User Gender Data:", maleProperties, femaleProperties);
+
+        const bookingStatusData = {
+            labels: ['Confirmed', 'Pending', 'Cancelled', 'Active'],
+            datasets: [{
+                label: 'Booking Status',
+                data: [confirmedBookings, pendingBookings, cancelledBookings, activeBookings],
+                backgroundColor: ['#4caf50', '#ffeb3b', '#f44336', '#2196f3'],
+                borderWidth: 1
+            }]
+        };
+
+        const propertyTypeData = {
+            labels: ['Single Room', 'Double Room'],
+            datasets: [{
+                label: 'Property Type',
+                data: [singleRoomProperties, doubleRoomProperties],
+                backgroundColor: ['#9c27b0', '#3f51b5'],
+                borderWidth: 1
+            }]
+        };
+
+        const userGenderData = {
+            labels: ['Male Properties', 'Female Properties'],
+            datasets: [{
+                label: 'Property by Gender',
+                data: [maleProperties, femaleProperties],
+                backgroundColor: ['#ff9800', '#e91e63'],
+                borderWidth: 1
+            }]
+        };
+
+        // Creating the charts
+        const bookingStatusChart = new Chart(document.getElementById('bookingStatusChart'), {
+            type: 'bar',
+            data: bookingStatusData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
-                });
-            })
-            .catch(error => console.error('Error fetching analytics data:', error));
+                }
+            }
+        });
+
+        const propertyTypeChart = new Chart(document.getElementById('propertyTypeChart'), {
+            type: 'pie',
+            data: propertyTypeData,
+            options: {
+                responsive: true
+            }
+        });
+
+        const userGenderChart = new Chart(document.getElementById('userGenderChart'), {
+            type: 'doughnut',
+            data: userGenderData,
+            options: {
+                responsive: true
+            }
+        });
     </script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>

@@ -3,14 +3,14 @@ var express = require('express');
 var router = express.Router();
 const userModel = require("../models/users");
 const roomModel = require("../models/Room");
-const Room = require('../models/Room'); 
+const Room = require('../models/Room');
 const passport = require('passport');
 const localStrategy = require("passport-local");
 const { error } = require('console');
-const Booking = require('../models/Booking'); 
+const Booking = require('../models/Booking');
 // const properties= require('../models/Property');
 const Property = require('../models/Property');
-const flash=require('connect-flash');
+const flash = require('connect-flash');
 const crypto = require('crypto'); // Built-in Node.js module
 const nodemailer = require('nodemailer'); // External package
 
@@ -20,7 +20,7 @@ passport.use(new localStrategy({ usernameField: 'email' }, userModel.authenticat
 
 /* GET home page. */
 
-router.get('/', async function(req, res, next) {
+router.get('/', async function (req, res, next) {
   try {
     const success = req.session.message || req.session.success;
 
@@ -39,14 +39,12 @@ router.get('/', async function(req, res, next) {
   }
 });
 
-router.get('/index', function(req, res, next) {
+router.get('/index', function (req, res, next) {
   res.redirect('/');
 });
 
-
-
-router.get('/booking', isLoggedIn, async function(req, res, next) {
-  const user =await userModel.findOne({
+router.get('/booking', isLoggedIn, async function (req, res, next) {
+  const user = await userModel.findOne({
     email: req.session.passport.user
   })
   try {
@@ -57,7 +55,7 @@ router.get('/booking', isLoggedIn, async function(req, res, next) {
     res.status(500).send('Error fetching room');
   }
   console.log("here is it", user);
-  res.render('booking', { user , page: 'booking', title: 'Booking'});
+  res.render('booking', { user, page: 'booking', title: 'Booking' });
 
 });
 
@@ -74,121 +72,73 @@ router.get('/api/bookings', (req, res) => {
   });
 });
 
-
- 
-
-router.get('/TermsAndConditions', function(req, res, next) {
-  res.render('TermsAndConditions',{ page: 'TermsAndConditions', title: 'TermsAndConditions' });
+router.get('/TermsAndConditions', function (req, res, next) {
+  res.render('TermsAndConditions', { page: 'TermsAndConditions', title: 'TermsAndConditions' });
 });
-router.get('/referandearn', isLoggedIn, async function(req, res, next) {
+
+router.get('/referandearn', isLoggedIn, async function (req, res, next) {
   const user = await userModel.findOne({ email: req.session.passport.user });
-    if (!user.referralLink) {
-      // If for some reason the referral link is not set, regenerate it
-      user.referralLink = `https://www.fmpg.in/signup?ref=${user._id}`;
-      await user.save();
-    }
-  res.render('referandearn',{ page: 'referandearn', title: 'referandearn',user });
+  if (!user.referralLink) {
+    // If for some reason the referral link is not set, regenerate it
+    user.referralLink = `https://www.fmpg.in/signup?ref=${user._id}`;
+    await user.save();
+  }
+  res.render('referandearn', { page: 'referandearn', title: 'referandearn', user });
 });
-router.get('/TermsAndConditions', function(req, res, next) {
-  res.render('TermsAndConditions',{ page: 'TermsAndConditions', title: 'TermsAndConditions' });
-});
-
-router.get('/TermsofService', function(req, res, next) {
-  res.render('TermsofService',{ page: 'TermsofService', title: 'Terms of Service' });
+router.get('/TermsAndConditions', function (req, res, next) {
+  res.render('TermsAndConditions', { page: 'TermsAndConditions', title: 'TermsAndConditions' });
 });
 
-router.get('/privacypolicy', function(req, res, next) {
-  res.render('privacypolicy',{ page: 'privacypolicy', title: 'Privacypolicy' });
+router.get('/TermsofService', function (req, res, next) {
+  res.render('TermsofService', { page: 'TermsofService', title: 'Terms of Service' });
 });
 
-router.get('/FAQs', function(req, res, next) {
-  res.render('FAQs',{ page: 'FAQs', title: 'FAQs' });
+router.get('/privacypolicy', function (req, res, next) {
+  res.render('privacypolicy', { page: 'privacypolicy', title: 'Privacypolicy' });
 });
 
-router.get('/about', function(req, res, next) {
-  res.render('about',{ page: 'about', title: 'About Us' });
+router.get('/FAQs', function (req, res, next) {
+  res.render('FAQs', { page: 'FAQs', title: 'FAQs' });
 });
 
+router.get('/about', function (req, res, next) {
+  res.render('about', { page: 'about', title: 'About Us' });
+});
 
-router.get('/readmore', async function(req, res, next) {
+router.get('/readmore', async function (req, res, next) {
   try {
-      const propertyID = req.query.propertyID;  // Use lowercase 'propertyID'
-      
-      // Check if propertyID is defined and is a string before trimming
-      if (!propertyID || typeof propertyID !== 'string') {
-          return res.status(400).json({ error: 'propertyID is required' });
-      }
+    const propertyID = req.query.propertyID;  // Use lowercase 'propertyID'
 
-      const trimmedID = propertyID.trim();  // Now it should be safe to trim
-      console.log(trimmedID);  // Log the trimmed propertyID
-      
-      const property = await Property.findById(trimmedID).populate('rooms');
-      if (!property) {
-          return res.status(404).json({ error: 'Property not found' });
-      }
-      res.render('readmore', { properties: property });
+    // Check if propertyID is defined and is a string before trimming
+    if (!propertyID || typeof propertyID !== 'string') {
+      return res.status(400).json({ error: 'propertyID is required' });
+    }
+
+    const trimmedID = propertyID.trim();  // Now it should be safe to trim
+    console.log(trimmedID);  // Log the trimmed propertyID
+
+    const property = await Property.findById(trimmedID).populate('rooms');
+    if (!property) {
+      return res.status(404).json({ error: 'Property not found' });
+    }
+    res.render('readmore', { properties: property });
   } catch (err) {
-      console.error("Error fetching property:", err);
-      res.status(500).json({ error: err.message });
+    console.error("Error fetching property:", err);
+    res.status(500).json({ error: err.message });
   }
 });
 
-
-router.get('/404', function(req, res, next) {
-  res.render('404',{ page: '404', title: '404' });
+router.get('/404', function (req, res, next) {
+  res.render('404', { page: '404', title: '404' });
 });
 
-router.get('/contact', function(req, res, next) {
-  res.render('contact',{ page: 'contact', title: 'Contact Us' });
+router.get('/contact', function (req, res, next) {
+  res.render('contact', { page: 'contact', title: 'Contact Us' });
 });
 
-router.get('/destination', function(req, res, next) {
-  res.render('destination',{ page: 'destination', title: 'Destination' });
+router.get('/destination', function (req, res, next) {
+  res.render('destination', { page: 'destination', title: 'Destination' });
 });
-
-
-// router.get('/search-page', async function(req, res, next) {
-//   try {
-//     const { gender = 'all', sort = '', lat, lng } = req.query;
-
-//   // Initialize query with optional gender filter
-//   let query = {};
-//   if (gender && gender !== 'all') {
-//     query.gender = gender;
-//   }
-//     // Fetch all properties and populate rooms correctly
-//     const properties = await Property.find().populate('rooms'); 
-
-//     if (sort === 'low-to-high') {
-//       properties = properties.sort((a, b) => a.rooms[0]?.price - b.rooms[0]?.price);
-//     } else if (sort === 'high-to-low') {
-//       properties = properties.sort((a, b) => b.rooms[0]?.price - a.rooms[0]?.price);
-//     } else if (sort === 'distance' && lat && lng) {
-//       properties = properties.map(property => {
-//         property.distance = getDistanceFromLatLonInKm(lat, lng, property.lat, property.lng);
-//         return property;
-//       });
-//       properties.sort((a, b) => a.distance - b.distance); // Sort by nearest distance
-//     }
-
-//     // Iterate over each property and its rooms
-//     properties.forEach(property => {
-//       if (property.rooms && property.rooms.length > 0) {
-//         property.rooms.forEach((room, index) => {
-//           console.log(`Room ${index + 1} price: ${room.price}`); // Log price of each room for each property
-//         });
-//       } else {
-//         console.log("No rooms found for this property");
-//       }
-//     });
-
-//     // Pass the properties array to the view
-//     res.render('search-page', { page: 'search-page', title: 'Search result', properties: properties, gender, sort }); 
-//   } catch (err) {
-//     console.error("Error fetching properties:", err);
-//     res.status(500).json({ error: err.message });
-//   }
-// });
 
 
 // Helper function to calculate distance between two lat/lng points
@@ -198,8 +148,8 @@ const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
   const dLat = deg2rad(lat2 - lat1);
   const dLon = deg2rad(lon2 - lon1);
   const a = Math.sin(dLat / 2) * Math.sin(dLon / 2) +
-            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 };
@@ -208,16 +158,16 @@ const deg2rad = (deg) => deg * (Math.PI / 180);
 
 // Helper function to extract lat/lng from Google Maps URL
 const extractLatLngFromMapUrl = (url) => {
-    const regex = /!2d([-\d.]+)!3d([-\d.]+)/;
-    const match = url.match(regex);
-    if (match) {
-        const lng = parseFloat(match[1]); // Longitude
-        const lat = parseFloat(match[2]); // Latitude
-        return { lat, lng };
-    } else {
-        console.error('No coordinates found in the map URL');
-        return null;
-    }
+  const regex = /!2d([-\d.]+)!3d([-\d.]+)/;
+  const match = url.match(regex);
+  if (match) {
+    const lng = parseFloat(match[1]); // Longitude
+    const lat = parseFloat(match[2]); // Latitude
+    return { lat, lng };
+  } else {
+    console.error('No coordinates found in the map URL');
+    return null;
+  }
 };
 
 // Route to filter and sort properties, including by distance
@@ -252,23 +202,21 @@ router.get('/search-page', async (req, res) => {
       properties.sort((a, b) => a.distance - b.distance); // Sort by nearest distance
     }
 
-    res.render('search-page', { page: 'search-page', title: 'Search result', properties:properties, gender, sort });
+    res.render('search-page', { page: 'search-page', title: 'Search result', properties: properties, gender, sort });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-
-
-router.get('/service', function(req, res, next) {
-  res.render('service',{ page: 'service', title: 'Service' });
+router.get('/service', function (req, res, next) {
+  res.render('service', { page: 'service', title: 'Service' });
 });
 
-router.get('/team', function(req, res, next) {
-  res.render('team',{ page: 'team', title: 'Team' });
+router.get('/team', function (req, res, next) {
+  res.render('team', { page: 'team', title: 'Team' });
 });
 
-router.get('/profile', isLoggedIn, async function(req, res, next) {
+router.get('/profile', isLoggedIn, async function (req, res, next) {
   try {
     const user = await userModel.findOne({ email: req.session.passport.user });
     if (!user.referralLink) {
@@ -279,8 +227,8 @@ router.get('/profile', isLoggedIn, async function(req, res, next) {
     const bookings = await Booking.find({ user: user._id }).populate('room').populate('propertyID').populate({
       path: 'room',
       populate: {
-        path: 'property', 
-        model: 'Property', 
+        path: 'property',
+        model: 'Property',
       }
     });
     if (user.role === 'superadmin' || user.role === 'admin') {
@@ -288,10 +236,10 @@ router.get('/profile', isLoggedIn, async function(req, res, next) {
       return res.render('admin/dashboard', { admin: user });  // Adjust this route if needed
     }
     console.log(user, bookings);
-    
+
     if (user.role === 'owner') {
       req.flash('success', 'Successfully logged in as admin!');
-      return res.render('profile', { user,bookings });  // Adjust this route if needed
+      return res.render('profile', { user, bookings });  // Adjust this route if needed
     }
     res.render("profile", { user, bookings });
   } catch (err) {
@@ -304,24 +252,6 @@ router.get('/dashboard', isLoggedIn, (req, res) => {
   res.render('admin/dashboard', { admin: req.user });
 });
 
-
-router.post('/login', function(req, res, next) {
-  passport.authenticate('local', { usernameField: 'email' }, function(err, user, info) {
-    if (err) { return next(err); }
-    if (!user) {
-      req.session.error = info ? info.message : 'Invalid email or password';
-      return res.redirect('/login');
-    }
-
-    req.logIn(user, function(err) {
-      if (err) { return next(err); }
-      
-      req.session.success = 'Successfully logged in!';
-      return res.redirect('/'); // Redirect to the home page or user-specific page
-    });
-  })(req, res, next);
-});
-
 // Get form to create a new owner
 router.get('/newOwner', isLoggedIn, async (req, res) => {
   const user = await userModel.findOne({
@@ -332,8 +262,7 @@ router.get('/newOwner', isLoggedIn, async (req, res) => {
 
 
 
-
-router.get('/login', function(req, res) {
+router.get('/login', function (req, res) {
   const errorMessages = req.session.error || [];
   const successMessages = req.session.success || [];
 
@@ -343,13 +272,29 @@ router.get('/login', function(req, res) {
 
   console.log("Error messages:", errorMessages);
   console.log("Success messages:", successMessages);
-  
+
   res.render('login', { error: errorMessages, success: successMessages });
 });
 
+router.post('/login', function (req, res, next) {
+  passport.authenticate('local', { usernameField: 'email' }, function (err, user, info) {
+    if (err) { return next(err); }
+    if (!user) {
+      req.session.error = info ? info.message : 'Invalid email or password';
+      return res.redirect('/login');
+    }
 
-router.get('/logout', function(req, res ) {
-  req.logout(function(err) {
+    req.logIn(user, function (err) {
+      if (err) { return next(err); }
+
+      req.session.success = 'Successfully logged in!';
+      return res.redirect('/'); // Redirect to the home page or user-specific page
+    });
+  })(req, res, next);
+});
+
+router.get('/logout', function (req, res) {
+  req.logout(function (err) {
     if (err) { return next(err); }
     res.redirect('/');
   });
@@ -366,8 +311,8 @@ function isLoggedIn(req, res, next) {
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-      user: 'fmpg974@gmail.com', // your email
-      pass: 'fcdz hxcn yktl zzzx', // your app-specific password
+    user: 'fmpg974@gmail.com', // your email
+    pass: 'fcdz hxcn yktl zzzx', // your app-specific password
   },
 });
 
@@ -380,7 +325,7 @@ function generateOTP() {
 router.post('/send-otp', async (req, res) => {
   const email = req.body.email;
   if (!email) {
-      return res.status(400).json({ message: 'Email is required' });
+    return res.status(400).json({ message: 'Email is required' });
   }
 
   // Generate OTP and store it in session
@@ -391,19 +336,19 @@ router.post('/send-otp', async (req, res) => {
 
   // Email options
   const mailOptions = {
-      from: 'fmpg974@gmail.com',
-      to: email,
-      subject: 'Your OTP for Verification',
-      text: `Your OTP is ${otp}. Please do not share this with anyone.`,
+    from: 'fmpg974@gmail.com',
+    to: email,
+    subject: 'Your OTP for Verification',
+    text: `Your OTP is ${otp}. Please do not share this with anyone.`,
   };
 
   // Send the email
   try {
-      await transporter.sendMail(mailOptions);
-      res.status(200).json({ message: 'OTP sent to email' });
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: 'OTP sent to email' });
   } catch (error) {
-      console.error('Error sending email:', error);
-      res.status(500).json({ message: 'Error sending OTP' });
+    console.error('Error sending email:', error);
+    res.status(500).json({ message: 'Error sending OTP' });
   }
 });
 
@@ -413,18 +358,17 @@ router.post('/verify-otp', (req, res) => {
   const sessionOtp = req.session.otp;
 
   if (otp === sessionOtp) {
-      // OTP is correct
-      req.session.isVerified = true;
-      res.status(200).json({ message: 'OTP verified successfully' });
-      req.session.otp = null;  // Clear OTP from session after successful verification
+    // OTP is correct
+    req.session.isVerified = true;
+    res.status(200).json({ message: 'OTP verified successfully' });
+    req.session.otp = null;  // Clear OTP from session after successful verification
   } else {
-      // OTP is incorrect
-      res.status(400).json({ message: 'Invalid OTP' });
+    // OTP is incorrect
+    res.status(400).json({ message: 'Invalid OTP' });
   }
 });
 
-
-router.get('/signup', function(req, res) {
+router.get('/signup', function (req, res) {
   const errorMessages = req.session.error || [];
   const successMessages = req.session.success || [];
   const formData = req.session.formData || {}; // Retrieve form data from session
@@ -434,93 +378,10 @@ router.get('/signup', function(req, res) {
   req.session.success = null;
   const referrerId = req.query.ref;  // Capture referrerId from URL
 
-  res.render('signup', { error: errorMessages, success: successMessages, formData ,referrerId});
+  res.render('signup', { error: errorMessages, success: successMessages, formData, referrerId });
 });
 
-// router.post('/signup', async function(req, res, next) {
-//   if (!req.session.isVerified) {
-//     req.session.error = 'OTP verification required';
-//     return res.redirect('/signup');
-//   }
-
-//   const { username, email, mobile, password } = req.body;
-// const referrerId = req.query.ref;  // Get referrerId from the query parameters
-
-//   try {
-//     // Check if the username, email, or mobile already exists
-//     const existingUsers = await userModel.find({
-//       $or: [
-//         { username: username },
-//         { email: email },
-//         { mobile: mobile }
-//       ]
-//     });
-
-
-
-//     // Assign 50 credits on signup
-//     user.referralCredits = 50;
-
-// if (referrerId) {
-//   const referrer = await userModel.findById(referrerId);
-//   if (referrer) {
-//     user.referredBy = referrer._id;
-//     // Reward referrer with additional credits
-//     referrer.referralCredits += 10;  // Adjust as necessary for referrer reward
-//     await referrer.save();
-//   }
-// }
-
-//     let errorMessages = [];
-
-//     // Collect all existing conflicts
-//     existingUsers.forEach(user => {
-//       if (user.username === username) {
-//         errorMessages.push('Username already exists');
-//       }
-//       if (user.email === email) {
-//         errorMessages.push('Email already exists');
-//       }
-//       if (user.mobile === mobile) {
-//         errorMessages.push('Mobile number already exists');
-//       }
-//     });
-
-//     // If there are errors, return them
-//     if (errorMessages.length > 0) {
-//       req.session.error = errorMessages.join(', ');
-//       return res.redirect('/signup');
-//     }
-
-//     // Register user if no conflict found
-//     const userData = new userModel({ username, email, mobile });
-//     userModel.register(userData, password, function(err, user) {
-//       if (err) {
-//         req.session.error = 'Registration error: ' + err.message;
-//         return res.redirect('/signup');
-//       }
-
-//       req.logIn(user, function(err) {
-//         if (err) {
-//           req.session.error = 'Login error: ' + err.message;
-//           return res.redirect('/signup');
-//         }
-//         req.session.success = 'Successfully registered and logged in!';
-//         return res.redirect('/'); // Redirect to home or a specific page
-//       });
-//     });
-
-//   } catch (err) {
-//     req.session.error = 'Server error: ' + err.message;
-//     return res.redirect('/signup');
-//   }
-// });
-
-
-
-
-
-router.post('/signup', async function(req, res, next) {
+router.post('/signup', async function (req, res, next) {
   if (!req.session.isVerified) {
     req.session.error = 'OTP verification required';
     return res.redirect('/signup');
@@ -562,7 +423,7 @@ router.post('/signup', async function(req, res, next) {
 
     // Register user if no conflict found
     const userData = new userModel({ username, email, mobile });
-    userModel.register(userData, password, async function(err, user) {
+    userModel.register(userData, password, async function (err, user) {
       if (err) {
         req.session.error = 'Registration error: ' + err.message;
         return res.redirect('/signup');
@@ -588,7 +449,7 @@ router.post('/signup', async function(req, res, next) {
       // Save the user with the referredBy field
       await user.save(); // Ensure user is saved with the referredBy field
 
-      req.logIn(user, function(err) {
+      req.logIn(user, function (err) {
         if (err) {
           req.session.error = 'Login error: ' + err.message;
           return res.redirect('/signup');
