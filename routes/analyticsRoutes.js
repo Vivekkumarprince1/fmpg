@@ -8,7 +8,7 @@ const User = require('../models/users');
 // Google Analytics API Setup
 const analytics = google.analyticsreporting('v4');
 const googleAuth = new google.auth.GoogleAuth({
-    keyFile: 'a.json', // Update with your service account key file path
+    // keyFile: 'a.json', // Update with your service account key file path
     scopes: 'https://www.googleapis.com/auth/analytics.readonly',
 });
 
