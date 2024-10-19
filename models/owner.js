@@ -4,7 +4,7 @@ const Property = require('./Property');
 
 const ownerSchema = new mongoose.Schema({
     ownerName: { type: String, required: true },
-    userId: {type: mongoose.Schema.Types.ObjectId,ref: 'users',required: true},
+    userId: {type: mongoose.Schema.Types.ObjectId,ref: 'user',required: true},
     contactNumber: { type: String, required: true },
     email: { type: String, required: true },
     propertyName: { type: String, require: true },

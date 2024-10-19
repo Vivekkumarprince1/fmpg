@@ -13,18 +13,10 @@ const Contact = require('../models/Contact'); // Adjust the path based on your f
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-
-
-// View all users
-router.get('/users', isAuthenticated, async (req, res) => {
-  const users = await User.find({});
-  res.render('admin/users', { users });
-});
-
 const Owner = require('../models/owner');
 
 // Route to display all owners on the admin page
-router.get('/newOwnerrequest', async (req, res) => {
+router.get('/newOwnerrequest', isAuthenticated, async (req, res) => {
   try {
     // Fetch all owners from the database and populate the rooms field
     const owners = await Owner.find().populate('rooms').exec();
@@ -38,7 +30,7 @@ router.get('/newOwnerrequest', async (req, res) => {
 });
 
 // Confirm route - Convert Owner to Property and delete from Owner collection
-router.post('/confirm/:ownerId', async (req, res) => {
+router.post('/confirm/:ownerId', isAuthenticated, async (req, res) => {
   try {
     // Find the owner by ID
     const owner = await Owner.findById(req.params.ownerId);
@@ -90,13 +82,18 @@ router.post('/confirm/:ownerId', async (req, res) => {
   }
 });
 
-
 // Cancel owner request
-router.post('/cancel/:id', async (req, res) => {
+router.post('/cancel/:ownerId', isAuthenticated, async (req, res) => {
   try {
-      const ownerId = req.params.id;
-      await Owner.findByIdAndUpdate(ownerId, { status: 'Canceled' });
-      res.redirect('/newOwnerrequest'); // Redirect back to the owner listings
+      const ownerId = req.params.ownerId; // Use req.params.ownerId correctly
+      const owner = await Owner.findById(ownerId); // Find the owner by ID
+      if (!owner) {
+          return res.status(404).send('Owner not found'); // Handle case where owner is not found
+      }
+      owner.status = 'Cancelled'; // Update the status to 'Cancelled'
+      await owner.save(); // Save the updated owner document back to the database
+
+      res.redirect('/admin/newOwnerrequest'); // Redirect back to the owner listings
   } catch (err) {
       console.error(err);
       res.status(500).send('Server Error');
@@ -104,11 +101,17 @@ router.post('/cancel/:id', async (req, res) => {
 });
 
 // View owner details
-router.get('/view/:id', async (req, res) => {
+router.get('/view/:id', isAuthenticated, async (req, res) => {
   try {
       const ownerId = req.params.id;
       console.log(ownerId);
-      const owner = await Owner.findById(ownerId).populate('rooms') || await Property.findById(ownerId).populate('rooms');
+      const owner = await Owner.findById(ownerId).populate('rooms').populate({
+        path: 'userId',          // Populate the 'user' field
+        select: 'username email mobile' // Select only necessary fields, e.g., 'username' and 'email'
+      }) || await Property.findById(ownerId).populate('rooms').populate({
+        path: 'user',          // Populate the 'user' field
+        select: 'username email' // Select only necessary fields, e.g., 'username' and 'email'
+      });
       if (!owner) {
           return res.status(404).send('Owner not found');
       }
@@ -120,6 +123,12 @@ router.get('/view/:id', async (req, res) => {
 });
 
 
+
+// View all users
+router.get('/users', isAuthenticated, async (req, res) => {
+  const users = await User.find({});
+  res.render('admin/users', { users });
+});
 
 
 // Add a new user
@@ -215,7 +224,6 @@ const uploadFields = upload.fields([
   { name: 'images', maxCount: 5 },  // Allow multiple images
   { name: 'tenantContract', maxCount: 1 } // Allow only one tenant contract
 ]);
-
 
 
 
@@ -319,8 +327,6 @@ router.post('/properties/add', uploadFields,isAuthenticated, async (req, res) =>
 });
 
 
-
-
 // Edit a property
 router.get('/properties/edit/:id', isAuthenticated, async (req, res) => {
   try {
@@ -359,6 +365,23 @@ router.post('/properties/edit/:id', uploadFields, isAuthenticated, async (req, r
       const newImagePaths = req.files['images'].map(file => `PG-photos/${propertyName}/${file.filename}`);
       images = images.concat(newImagePaths);
     }
+
+
+
+    // Handle image removal
+    const removeImages = req.body.removeImages || [];  // Images marked for deletion
+    removeImages.forEach(image => {
+      // Remove image from the server
+      const imagePath = path.join(__dirname, '../public/', image);  // Adjust the path as necessary
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
+      // Remove image from the images array
+      images = images.filter(img => img !== image);
+    });
+
+    
+
 
     // Handle uploaded tenant contract
     const tenantContractPath = req.files['tenantContract'] ? req.files['tenantContract'][0].path : property.tenantContract;
@@ -432,8 +455,6 @@ router.post('/properties/edit/:id', uploadFields, isAuthenticated, async (req, r
     res.status(500).send('Error updating property');
   }
 });
-
-
 
 
 // Delete a property
@@ -668,7 +689,7 @@ router.get('/booking/view/:id', isAuthenticated, async (req, res) => {
 
 
 
-router.get('/messages', async (req, res) => {
+router.get('/messages',  isAuthenticated, async (req, res) => {
   try {
       const messages = await Contact.find(); // Fetch all messages
       res.render('admin/messages', { messages });
@@ -680,11 +701,15 @@ router.get('/messages', async (req, res) => {
 
 
 function isAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-      return next();
+  if (req.isAuthenticated()) {
+    // Assuming the user's role is stored in req.user.role
+    if (req.user.role === 'admin' || req.user.role === 'superadmin') {
+      return next(); // Proceed if the user has the correct role
+    } else {
+      return res.status(403).send('Access Denied: You do not have the required permissions.');
     }
-    res.redirect('/admin/login');
   }
-  
+  res.redirect('/login');
+}
 
 module.exports = router;

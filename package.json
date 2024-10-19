@@ -18,6 +18,7 @@
     "ejs": "~2.6.1",
     "express": "^4.21.1",
     "express-session": "^1.18.0",
+    "googleapis": "^144.0.0",
     "http-errors": "~1.6.3",
     "mongoose": "^8.5.3",
     "morgan": "~1.9.1",

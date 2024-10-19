@@ -10,18 +10,17 @@
             font-family: Arial, sans-serif;
         }
         .chart-container {
-    width: 600px;
-    margin: 20px auto;
-    border: 1px solid #ccc; /* Add this for debugging */
-}
-
+            width: 600px;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+        }
     </style>
 </head>
 <body>
     <h1>Room Booking Service Analysis</h1>
 
     <div id="data" 
-         data-totalBookings="<%= totalBookings%>"
+         data-totalBookings="<%= totalBookings %>"
          data-confirmed="<%= confirmedBookings %>" 
          data-pending="<%= pendingBookings %>" 
          data-cancelled="<%= cancelledBookings %>" 
@@ -29,27 +28,35 @@
          data-single="<%= singleRoomProperties %>" 
          data-double="<%= doubleRoomProperties %>" 
          data-male="<%= maleProperties %>" 
-         data-female="<%= femaleProperties %>">
-         
-        </div>
-
-         
+         data-female="<%= femaleProperties %>"
+         data-ga-sessions="<%= googleAnalyticsData.totals[0].values[0] %>" 
+         data-ga-pageviews="<%= googleAnalyticsData.totals[0].values[1] %>"
+         data-bookings-over-time='<%= JSON.stringify(bookingsOverTime) %>'>
+    </div>
 
     <div class="chart-container">
         <canvas id="bookingStatusChart"></canvas>
     </div>
 
     <div class="chart-container">
-        <canvas id="propertyTypeChart" width="600" height="400"></canvas> <!-- Set width and height -->
+        <canvas id="propertyTypeChart" width="600" height="400"></canvas>
     </div>
 
     <div class="chart-container">
         <canvas id="userGenderChart"></canvas>
     </div>
 
+    <div class="chart-container">
+        <canvas id="googleAnalyticsChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="bookingsOverTimeChart"></canvas>
+    </div>
+
     <script>
         const dataElement = document.getElementById('data');
-        
+
         const confirmedBookings = parseInt(dataElement.getAttribute('data-confirmed'));
         const pendingBookings = parseInt(dataElement.getAttribute('data-pending'));
         const cancelledBookings = parseInt(dataElement.getAttribute('data-cancelled'));
@@ -61,10 +68,11 @@
         const maleProperties = parseInt(dataElement.getAttribute('data-male'));
         const femaleProperties = parseInt(dataElement.getAttribute('data-female'));
 
-        // Debugging logs
-        console.log("Booking Status Data:", confirmedBookings, pendingBookings, cancelledBookings, activeBookings);
-        console.log("Property Type Data:", singleRoomProperties, doubleRoomProperties);
-        console.log("User Gender Data:", maleProperties, femaleProperties);
+        const googleAnalyticsSessions = parseInt(dataElement.getAttribute('data-ga-sessions'));
+        const googleAnalyticsPageviews = parseInt(dataElement.getAttribute('data-ga-pageviews'));
+
+        // Parsing bookings over time data
+        const bookingsOverTime = JSON.parse(dataElement.getAttribute('data-bookings-over-time'));
 
         const bookingStatusData = {
             labels: ['Confirmed', 'Pending', 'Cancelled', 'Active'],
@@ -96,7 +104,17 @@
             }]
         };
 
-        // Creating the charts
+        const googleAnalyticsData = {
+            labels: ['Sessions', 'Pageviews'],
+            datasets: [{
+                label: 'Google Analytics Data',
+                data: [googleAnalyticsSessions, googleAnalyticsPageviews],
+                backgroundColor: ['#ff5722', '#00bcd4'],
+                borderWidth: 1
+            }]
+        };
+
+        // Creating the booking status chart
         const bookingStatusChart = new Chart(document.getElementById('bookingStatusChart'), {
             type: 'bar',
             data: bookingStatusData,
@@ -110,6 +128,7 @@
             }
         });
 
+        // Creating the property type chart
         const propertyTypeChart = new Chart(document.getElementById('propertyTypeChart'), {
             type: 'pie',
             data: propertyTypeData,
@@ -118,6 +137,7 @@
             }
         });
 
+        // Creating the user gender chart
         const userGenderChart = new Chart(document.getElementById('userGenderChart'), {
             type: 'doughnut',
             data: userGenderData,
@@ -125,8 +145,43 @@
                 responsive: true
             }
         });
+
+        // Creating the Google Analytics chart
+        const googleAnalyticsChart = new Chart(document.getElementById('googleAnalyticsChart'), {
+            type: 'bar',
+            data: googleAnalyticsData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Creating bookings over time chart
+        const bookingsOverTimeChart = new Chart(document.getElementById('bookingsOverTimeChart'), {
+            type: 'line',
+            data: {
+                labels: bookingsOverTime.map(b => b._id),
+                datasets: [{
+                    label: 'Bookings Over Time',
+                    data: bookingsOverTime.map(b => b.count),
+                    fill: false,
+                    borderColor: '#3e95cd',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>

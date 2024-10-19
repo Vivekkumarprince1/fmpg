@@ -105,6 +105,18 @@ router.get('/about', function (req, res, next) {
   res.render('about', { page: 'about', title: 'About Us' });
 });
 
+router.get('/404', function (req, res, next) {
+  res.render('404', { page: '404', title: '404' });
+});
+
+router.get('/contact', function (req, res, next) {
+  res.render('contact', { page: 'contact', title: 'Contact Us' });
+});
+
+router.get('/destination', function (req, res, next) {
+  res.render('destination', { page: 'destination', title: 'Destination' });
+});
+
 router.get('/readmore', async function (req, res, next) {
   try {
     const propertyID = req.query.propertyID;  // Use lowercase 'propertyID'
@@ -128,17 +140,6 @@ router.get('/readmore', async function (req, res, next) {
   }
 });
 
-router.get('/404', function (req, res, next) {
-  res.render('404', { page: '404', title: '404' });
-});
-
-router.get('/contact', function (req, res, next) {
-  res.render('contact', { page: 'contact', title: 'Contact Us' });
-});
-
-router.get('/destination', function (req, res, next) {
-  res.render('destination', { page: 'destination', title: 'Destination' });
-});
 
 
 // Helper function to calculate distance between two lat/lng points
