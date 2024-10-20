@@ -109,8 +109,8 @@ router.get('/view/:id', isAuthenticated, async (req, res) => {
         path: 'userId',          // Populate the 'user' field
         select: 'username email mobile' // Select only necessary fields, e.g., 'username' and 'email'
       }) || await Property.findById(ownerId).populate('rooms').populate({
-        path: 'user',          // Populate the 'user' field
-        select: 'username email' // Select only necessary fields, e.g., 'username' and 'email'
+        path: 'userId',          // Populate the 'user' field
+        select: 'username email mobile' // Select only necessary fields, e.g., 'username' and 'email'
       });
       if (!owner) {
           return res.status(404).send('Owner not found');
