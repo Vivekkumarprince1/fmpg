@@ -15,8 +15,8 @@
                             <!-- Show this option only if the user's role is 'owner' -->
                             <%-include('admin/dashboard nav', { user: admin })%>
                         <% } %>
-                        <a href="#" onclick="loadContent('/settings', 'settings'); return false;">Settings</a>
-                        <a href="#" onclick="loadContent('/refer-earn', 'refer-earn'); return false;">Refer And Earn</a>
+                        <a href="settings" return false;>Settings</a>
+                        <a href="referandearn" return false;>Refer And Earn</a>
                         <a href="/logout" class="btn" style="background-color: red;" onsubmit="confirmAction('Logout', event);">Logout</a>
                     </div>
             

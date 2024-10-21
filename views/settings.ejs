@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile Settings</title>
+    <link rel="stylesheet" href="/css/settings.css">
+
+    <style>
+        .container {
+  margin: 0 auto;
+  padding: 20px;
+  max-width: 600px;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn-primary {
+  padding: 10px 20px;
+  background-color: #28a745;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Edit Profile Settings</h2>
+        <!-- Flash Messages for Success/Error -->
+        <% if (successMessage) { %>
+            <div class="alert alert-success"><%= successMessage %></div>
+        <% } %>
+        <% if (errorMessage) { %>
+            <div class="alert alert-danger"><%= errorMessage %></div>
+        <% } %>
+
+        <!-- Profile Edit Form -->
+        <form action="/users/settings/update" method="POST">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" value="<%= user.username %>" required>
+            </div>
+            <div class="form-group">
+                <label for="mobile">Mobile Number:</label>
+                <input type="text" id="mobile" name="mobile" value="<%= user.mobile %>" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+          const username = document.getElementById('username').value.trim();
+          const mobile = document.getElementById('mobile').value.trim();
+      
+          if (username === '' || mobile === '') {
+            alert('All fields are required.');
+            event.preventDefault();
+          }
+          // Add more validation as needed
+        });
+      </script>
+      
+
+</body>
+
+</html>

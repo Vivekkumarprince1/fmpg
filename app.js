@@ -20,6 +20,7 @@ const forgotRoutes = require('./routes/forgot');
 const contactroutes = require('./routes/contactroutes');
 const ownerRoutes = require('./routes/ownerroutes');
 const bookingRoutes = require('./routes/bookingroutes'); 
+const settingsRoutes = require('./routes/settingsRautes');
 
 
 var app = express();
@@ -81,6 +82,7 @@ app.use('/admin/analytics', analyticsRoutes);
 app.use('/forgot', forgotRoutes);
 app.use('/',contactroutes);
 app.use('/owner', ownerRoutes);
+app.use('/settings', settingsRoutes);
 
 
 // catch 404 and forward to error handler
