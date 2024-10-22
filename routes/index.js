@@ -83,7 +83,7 @@ router.get('/referandearn', isLoggedIn, async function (req, res, next) {
     user.referralLink = `https://www.fmpg.in/signup?ref=${user._id}`;
     await user.save();
   }
-  res.render('referandearn', { page: 'referandearn', title: 'referandearn', user });
+  res.render('referandearn', { page: 'referandearn', title: 'Refer and Earn', user });
 });
 router.get('/TermsAndConditions', function (req, res, next) {
   res.render('TermsAndConditions', { page: 'TermsAndConditions', title: 'TermsAndConditions' });

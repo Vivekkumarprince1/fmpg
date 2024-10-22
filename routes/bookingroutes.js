@@ -50,7 +50,7 @@ router.post('/', async (req, res) => {
       user: new mongoose.Types.ObjectId(userId),
       room: new mongoose.Types.ObjectId(roomId),
       propertyID: new mongoose.Types.ObjectId(propertyID), // Ensure correct field is used
-      owner: property.owner,
+      owner: property.ownerName,
       specialRequest,
       username,
       status: 'Pending',

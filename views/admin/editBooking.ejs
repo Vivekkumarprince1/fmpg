@@ -22,7 +22,7 @@
             <% properties.forEach(property => { %>
                 <option value="<%= property._id %>" 
                     <%= (booking.room && booking.room.property && booking.room.property._id && booking.room.property._id.equals(property._id)) ? 'selected' : '' %>>
-                    <%= property.name %>
+                    <%= property.propertyName %>
                 </option>
             <% }) %>
         </select><br>

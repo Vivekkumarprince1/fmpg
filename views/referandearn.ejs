@@ -35,6 +35,29 @@
     <link href="../css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/footer.css">
     <link rel="stylesheet" href="..//css/management.css">
+    <style>
+      .share-referral .btn {
+          background-color: #4CAF50;
+          color: white;
+          padding: 10px 20px;
+          border-radius: 8px;
+          text-decoration: none;
+          font-weight: 600;
+          transition: background-color 0.3s ease, transform 0.2s ease;
+          display: inline-block;
+          text-align: center;
+      }
+
+      .btn:hover {
+          background-color: red;
+          transform: scale(1.05);
+      }
+
+      .f11{
+        margin-left: 3%;
+       
+      }
+  </style>
 </head>
 
 <body>
@@ -42,13 +65,22 @@
     <%- include('header') %>
     <!-- header end -->
 
+    <div class="f11">
 
-    <h3>Referral Program</h3>
+    
+    </div>
+
+    
+
+    <!-- Hero Section Start -->
+        <div class="f101">
+
+          <h3>Referral Program</h3>
         <div class="referral">
             <h4>Your Total Referral Credits:</h4>
             <p><strong><%= user.referralCredits %></strong> credits</p>
           </div>
-        </div>
+        
         <p>Share this link with your friends and earn rewards:</p>
         <input type="text" readonly value="<%= user.referralLink %>" id="referralLink">
         <button onclick="copyReferralLink()">Copy Link</button>
@@ -77,7 +109,6 @@
               <button class="btn btn-twitter">Share on Twitter</button>
             </a>
           </div>
-      </div>
       
       <script>
         function copyReferralLink() {
@@ -86,13 +117,9 @@
           document.execCommand("copy");
           alert("Referral link copied to clipboard");
         }
-      </script>
+      </script><br><br>
 
 
-    
-
-    <!-- Hero Section Start -->
-        <div class="f101">
             <h1 style="margin: 0px;">Refer and Earn</h1>
             <br>Welcome to our PG finding platform! We value your support and trust, and we’ve introduced a "Refer & Earn" program to reward you for sharing our platform with your friends and colleagues . By referring others, you can earn rewards while helping them find their perfect PG accommodation.
             <br>

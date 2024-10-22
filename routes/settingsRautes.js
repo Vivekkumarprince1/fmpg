@@ -13,7 +13,8 @@ router.get('/', (req, res) => {
 });
 
 // POST route to update username or mobile
-router.post('/update', (req, res) => {
+// POST route to update username or mobile
+router.post('/update', async (req, res) => {
   const { username, mobile } = req.body;
 
   // Ensure the user is logged in
@@ -22,16 +23,20 @@ router.post('/update', (req, res) => {
     return res.redirect('/login');
   }
 
-  // Find the user and update details
-  User.findByIdAndUpdate(req.user._id, { username, mobile }, { new: true }, (err, updatedUser) => {
-    if (err) {
-      req.flash('error', 'An error occurred while updating profile.');
-      return res.redirect('/settings');
-    }
+  try {
+    // Find the user and update details
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { username, mobile },
+      { new: true }
+    );
 
     req.flash('success', 'Profile updated successfully.');
+    res.redirect('/profile');
+  } catch (err) {
+    req.flash('error', 'An error occurred while updating profile.');
     res.redirect('/settings');
-  });
+  }
 });
 
 module.exports = router;
