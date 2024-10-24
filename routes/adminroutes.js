@@ -15,14 +15,19 @@ const path = require('path');
 const fs = require('fs');
 const Owner = require('../models/owner');
 
+router.get('/form', function (req, res, next) {
+  res.render('admin/pages/forms/basic-forms');
+});
+
 // Route to display all owners on the admin page
 router.get('/newOwnerrequest', isAuthenticated, async (req, res) => {
   try {
     // Fetch all owners from the database and populate the rooms field
     const owners = await Owner.find().populate('rooms').exec();
+    const user = await User.findOne({ email: req.session.passport.user });
 
     // Render the admin page with owner data
-    res.render('admin/newOwnerrequest', { owners });
+    res.render('admin/newOwnerrequest', { owners,admin:user });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server Error');
@@ -112,10 +117,11 @@ router.get('/view/:id', isAuthenticated, async (req, res) => {
         path: 'userId',          // Populate the 'user' field
         select: 'username email mobile' // Select only necessary fields, e.g., 'username' and 'email'
       });
+      const user = await User.findOne({ email: req.session.passport.user }); // Fetch the admin user
       if (!owner) {
           return res.status(404).send('Owner not found');
       }
-      res.render('admin/viewOwner', { owner }); // Render a new page with owner details
+      res.render('admin/viewOwner', { owner,admin:user }); // Render a new page with owner details
   } catch (err) {
       console.error(err);
       res.status(500).send('Server Error');
@@ -125,14 +131,15 @@ router.get('/view/:id', isAuthenticated, async (req, res) => {
 
 
 // View all users
-router.get('/users', isAuthenticated, async (req, res) => {
+router.get('/users',isAuthenticated, async (req, res) => {
   const users = await User.find({});
-  res.render('admin/users', { users });
+  const user = await User.findOne({ email: req.session.passport.user });
+  res.render('admin/users', { users, admin:user});
 });
 
 
 // Add a new user
-router.get('/users/add', isAuthenticated, (req, res) => {
+router.get('/users/add', isAuthenticated, async(req, res) => {
   res.render('admin/addUser');
 });
 
@@ -166,7 +173,8 @@ router.post('/users/delete/:id', isAuthenticated, async (req, res) => {
 router.get('/properties', isAuthenticated, async (req, res) => {
   try {
     const properties = await Property.find({}).populate('rooms');
-    res.render('admin/properties', { properties },);
+    const user = await User.findOne({ email: req.session.passport.user });
+    res.render('admin/properties', { properties ,admin:user},);
   } catch (err) {
     console.error(err);
     res.status(500).send('Server Error');
@@ -174,9 +182,10 @@ router.get('/properties', isAuthenticated, async (req, res) => {
 });
 
 // Add a new property
-router.get('/properties/add', isAuthenticated, (req, res) => {
+router.get('/properties/add', isAuthenticated, async(req, res) => {
   const propertyTypes = ['PG', 'Hostel', 'Flat', 'PG with Mess'];
-  res.render('admin/addProperty',{propertyTypes});
+  const user = await User.findOne({ email: req.session.passport.user });
+  res.render('admin/addProperty',{propertyTypes,admin:user});
 });
 
 
@@ -331,6 +340,7 @@ router.post('/properties/add', uploadFields,isAuthenticated, async (req, res) =>
 router.get('/properties/edit/:id', isAuthenticated, async (req, res) => {
   try {
     const property = await Property.findById(req.params.id).populate('rooms');
+    const user = await User.findOne({ email: req.session.passport.user });
 
     console.log('Property fetched:', property); // Debugging line
 
@@ -338,7 +348,7 @@ router.get('/properties/edit/:id', isAuthenticated, async (req, res) => {
       return res.status(404).send('Property not found');
     }
 
-    res.render('admin/editProperty', { property });
+    res.render('admin/editProperty', { property ,admin:user});
   } catch (err) {
     console.error('Error fetching property:', err);
     res.status(500).send('Server Error');
@@ -557,8 +567,9 @@ router.get('/bookings', isAuthenticated, async (req, res) => {
         path: 'propertyID',    // Populate the 'propertyID' field
         select: 'name location'  // Select specific fields, e.g., 'name' and 'location'
       });
+      const user = await User.findOne({ email: req.session.passport.user });
 
-    res.render('admin/bookings', { bookings });
+    res.render('admin/bookings', { bookings ,admin:user});
   } catch (err) {
     console.error(err);
     res.status(500).send('Server Error');
@@ -586,7 +597,8 @@ router.get('/bookings/add', isAuthenticated, async (req, res) => {
 try {
   const users = await User.find({});
   const properties = await Property.find({});
-  res.render('admin/addBooking', { users, properties, rooms: [] });
+  const user = await User.findOne({ email: req.session.passport.user });
+  res.render('admin/addBooking', { users, properties, rooms: [], admin:user});
 } catch (err) {
   console.error(err);
   res.status(500).send('Server Error');
@@ -633,8 +645,9 @@ router.get('/bookings/edit/:id', isAuthenticated, async (req, res) => {
     const users = await User.find({});
     const properties = await Property.find({});
     const rooms = await Room.find({});
+    const user = await User.findOne({ email: req.session.passport.user });
 
-    res.render('admin/editBooking', { booking, users, properties, rooms });
+    res.render('admin/editBooking', { booking, users, properties, rooms ,admin:user});
   } catch (err) {
     console.error(err);
     res.status(500).send('Server Error');
@@ -692,7 +705,8 @@ router.get('/booking/view/:id', isAuthenticated, async (req, res) => {
 router.get('/messages',  isAuthenticated, async (req, res) => {
   try {
       const messages = await Contact.find(); // Fetch all messages
-      res.render('admin/messages', { messages });
+      const user = await User.findOne({ email: req.session.passport.user });
+      res.render('admin/messages', { messages ,admin:user});
   } catch (error) {
       console.log('Error fetching messages:', error);
       res.status(500).send('Internal server error.');

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Analytics</title>
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Add your CSS file here -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js for charts -->
+    <style>
+        #bookingsChart {
+  width: 600px;
+  height: 400px;
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Analytics Dashboard</h1>
+        
+        <!-- Summary statistics -->
+        <div class="summary">
+            <h2>Booking Statistics</h2>
+            <p>Total Bookings: <%= totalBookings %></p>
+            <p>Confirmed Bookings: <%= confirmedBookings %></p>
+            <p>Pending Bookings: <%= pendingBookings %></p>
+            <p>Cancelled Bookings: <%= cancelledBookings %></p>
+            <p>Active Bookings: <%= activeBookings %></p>
+        </div>
+
+        <!-- Property stats -->
+        <div class="property-stats">
+            <h2>Property Statistics</h2>
+            <p>Single Room Properties: <%= singleRoomProperties %></p>
+            <p>Double Room Properties: <%= doubleRoomProperties %></p>
+            <p>Male Properties: <%= maleProperties %></p>
+            <p>Female Properties: <%= femaleProperties %></p>
+            <p>Total Users: <%= totalUsers %></p>
+        </div>
+
+        <!-- Bookings per property chart -->
+        <div class="chart-container">
+            <h2>Bookings Per Property</h2>
+            <canvas id="bookingsChart"></canvas>
+        </div>
+
+       <!-- Add the data as an attribute in a hidden element -->
+       <div id="bookingsData" data-bookings="<%- JSON.stringify(bookingsPerProperty || []) %>"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const bookingsElement = document.getElementById('bookingsData');
+    console.log('Bookings Element:', bookingsElement); // Check if the element exists
+    
+    if (bookingsElement) {
+        const rawData = bookingsElement.getAttribute('data-bookings');
+        console.log('Raw data-bookings attribute:', rawData); // Should log the raw JSON string
+        
+        const bookingsPerProperty = JSON.parse(rawData || '[]');
+        console.log('Parsed bookingsPerProperty:', bookingsPerProperty); // Check if the data is parsed correctly
+    } else {
+        console.error('Element with id "bookingsData" not found.');
+    }
+
+
+          // Only proceed if there is data
+          if (bookingsPerProperty.length > 0) {
+            // Log to confirm we are in the chart creation logic
+            console.log('Creating chart with data:', bookingsPerProperty);
+      
+            // Extract the property names and booking counts
+            const labels = bookingsPerProperty.map(item => item.property);
+            const data = bookingsPerProperty.map(item => item.total);
+      
+            // Get the canvas context for Chart.js
+            const ctx = document.getElementById('bookingsChart').getContext('2d');
+            
+            // Create a bar chart
+            const chart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: 'Bookings per Property',
+                  data: data,
+                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                  borderColor: 'rgba(75, 192, 192, 1)',
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                scales: {
+                  y: {
+                    beginAtZero: true
+                  }
+                }
+              }
+            });
+          } else {
+            console.log('No bookings data available.');
+          }
+        });
+      </script>
+      

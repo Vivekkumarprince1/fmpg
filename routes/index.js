@@ -217,6 +217,7 @@ router.get('/team', function (req, res, next) {
   res.render('team', { page: 'team', title: 'Team' });
 });
 
+
 router.get('/profile', isLoggedIn, async function (req, res, next) {
   try {
     const user = await userModel.findOne({ email: req.session.passport.user });
@@ -234,7 +235,7 @@ router.get('/profile', isLoggedIn, async function (req, res, next) {
     });
     if (user.role === 'superadmin' || user.role === 'admin') {
       req.flash('success', 'Successfully logged in as admin!');
-      return res.render('admin/dashboard', { admin: user });  // Adjust this route if needed
+      return res.render('admin/profile', { admin: user });  // Adjust this route if needed
     }
     console.log(user, bookings);
 
@@ -251,6 +252,10 @@ router.get('/profile', isLoggedIn, async function (req, res, next) {
 
 router.get('/dashboard', isLoggedIn, (req, res) => {
   res.render('admin/dashboard', { admin: req.user });
+});
+
+router.get('/dashboard-nav', isLoggedIn, (req, res) => {
+  res.render('admin/dashboard-nav', { admin: req.user });
 });
 
 // Get form to create a new owner
