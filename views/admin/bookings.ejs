@@ -47,7 +47,6 @@
                                     <th>Room Type</th>
                                     <th>Start-Date</th>
                                     <th>End-Date</th>
-                                    <th>Request</th>
                                     <th>Property</th>
                                     <th>Status</th>
                                     <th>Actions</th>
@@ -71,7 +70,7 @@
                                             <%= booking.mobile %>
                                         </td> <!-- Mobile -->
                                         <td>
-                                            <%= booking.room ? booking.room.type : 'N/A' %>
+                                            <%= booking.propertyID.type ? booking.propertyID.type : 'N/A' %>
                                         </td> <!--Room Type (populated)-->
                                         <td>
                                             <%= booking.startDate.toDateString() %>
@@ -80,10 +79,7 @@
                                             <%= booking.endDate.toDateString() %>
                                         </td> <!-- End-Date -->
                                         <td>
-                                            <%= booking.specialRequest %>
-                                        </td> <!-- Special Request -->
-                                        <td>
-                                            <%= booking.propertyID.name ? booking.propertyID.name : 'N/A' %>
+                                            <%= booking.propertyID.propertyName ? booking.propertyID.propertyName : 'N/A' %>
                                         </td> <!-- Property (populated) -->
                                         <td>
                                             <%= booking.status %>

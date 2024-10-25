@@ -565,8 +565,9 @@ router.get('/bookings', isAuthenticated, async (req, res) => {
       })
       .populate({
         path: 'propertyID',    // Populate the 'propertyID' field
-        select: 'name location'  // Select specific fields, e.g., 'name' and 'location'
+        select: 'propertyName location type'  // Select specific fields, e.g., 'name' and 'location'
       });
+      
       const user = await User.findOne({ email: req.session.passport.user });
 
     res.render('admin/bookings', { bookings ,admin:user});
@@ -613,12 +614,13 @@ router.post('/bookings/add', isAuthenticated, async (req, res) => {
     if (!property) {
       return res.status(404).send('Property not found');
     }
+   const owner=property.ownerName
 
-    if (!property.owner) {
+    if (!owner) {
       return res.status(400).send('Property does not have an owner');
     }
 
-    const newBooking = new Booking({ user ,owner: property.owner , propertyID , username, room, mobile, startDate, endDate, specialRequest });
+    const newBooking = new Booking({ user , owner, propertyID , username, room, mobile, startDate, endDate, specialRequest });
     
     await newBooking.save();
     
