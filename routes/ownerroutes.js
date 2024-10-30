@@ -166,16 +166,17 @@ router.post('/newOwner', uploadFields, async (req, res) => {
 // Get all bookings for the property owner
 router.get('/', ensureOwner, async (req, res) => {
   try {
-    const ownername = req.user.username; // Get the current owner's ID
+    const propertyEmail = req.user.email; // Get the current owner's ID
     
     // Step 1: Find all properties owned by the current owner
-    const ownerProperties = await Property.find({ owner: ownername });
+    const ownerProperties = await Property.find({ email: propertyEmail });
 
     // Log to verify that properties are fetched correctly
     console.log('Owner properties:', ownerProperties);
 
     // Step 2: Extract the property IDs owned by the owner
     const propertyIds = ownerProperties.map(property => property._id);
+    console.log(propertyIds);
 
     // Check if the owner actually has properties
     if (propertyIds.length === 0) {

@@ -557,7 +557,7 @@ router.get('/bookings', isAuthenticated, async (req, res) => {
     const bookings = await Booking.find({})
       .populate({
         path: 'user',          // Populate the 'user' field
-        select: 'username email' // Select only necessary fields, e.g., 'username' and 'email'
+        select: 'username email mobile' // Select only necessary fields, e.g., 'username' and 'email'
       })
       .populate({
         path: 'room',          // Populate the 'room' field
@@ -565,7 +565,7 @@ router.get('/bookings', isAuthenticated, async (req, res) => {
       })
       .populate({
         path: 'propertyID',    // Populate the 'propertyID' field
-        select: 'propertyName location type'  // Select specific fields, e.g., 'name' and 'location'
+        select: 'propertyName location type status '  // Select specific fields, e.g., 'name' and 'location'
       });
       
       const user = await User.findOne({ email: req.session.passport.user });
