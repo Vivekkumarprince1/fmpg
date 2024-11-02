@@ -13,7 +13,6 @@ router.get('/', (req, res) => {
 });
 
 // POST route to update username or mobile
-// POST route to update username or mobile
 router.post('/update', async (req, res) => {
   const { username, mobile } = req.body;
 

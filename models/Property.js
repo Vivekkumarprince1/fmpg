@@ -5,7 +5,7 @@ const { type } = require('os');
 // Define the schemaconst
  propertySchema = new mongoose.Schema({
   propertyName: {type: String,required: true},
-   userId: {type: mongoose.Schema.Types.ObjectId,ref: 'users'},
+  userId: {type: mongoose.Schema.Types.ObjectId,ref: 'users'},
   locations: {type: [String],required: true, },
   type: {type: String, enum:['PG','Hostel','Flat','PG with Mess'],required: true},
   images: {type: [String],},

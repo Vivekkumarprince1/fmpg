@@ -3,17 +3,14 @@ var express = require('express');
 var router = express.Router();
 const userModel = require("../models/users");
 const roomModel = require("../models/Room");
-const Room = require('../models/Room');
 const passport = require('passport');
 const localStrategy = require("passport-local");
 const { error } = require('console');
 const Booking = require('../models/Booking');
-// const properties= require('../models/Property');
 const Property = require('../models/Property');
 const flash = require('connect-flash');
-const crypto = require('crypto'); // Built-in Node.js module
-const nodemailer = require('nodemailer'); // External package
-
+const crypto = require('crypto'); 
+const nodemailer = require('nodemailer'); 
 
 passport.use(new localStrategy({ usernameField: 'email' }, userModel.authenticate()));
 
@@ -226,18 +223,11 @@ router.get('/profile', isLoggedIn, async function (req, res, next) {
       user.referralLink = `https://www.fmpg.in/signup?ref=${user._id}`;
       await user.save();
     }
-    const bookings = await Booking.find({ user: user._id }).populate('room').populate('propertyID').populate({
-      path: 'room',
-      populate: {
-        path: 'property',
-        model: 'Property',
-      }
-    });
+    const bookings = await Booking.find({ user: user._id }).populate('room').populate('propertyID');
     if (user.role === 'superadmin' || user.role === 'admin') {
       req.flash('success', 'Successfully logged in as admin!');
       return res.render('admin/profile', { admin: user });  // Adjust this route if needed
     }
-    console.log(user, bookings);
 
     if (user.role === 'owner') {
       req.flash('success', 'Successfully logged in as admin!');

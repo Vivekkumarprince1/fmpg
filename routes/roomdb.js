@@ -1,14 +1,10 @@
 //roomdb.js
 var express = require('express');
 var router = express.Router();
-const userModel = require("../models/users");
 const roomSchema = require("../models/Room");
-const Room=require('../models/Room');
 const propertySchema = require("../models/Property");
-const passport = require('passport');
 const localStrategy = require("passport-local");
 const { error } = require('console');
-const mongoose=require("mongoose");
 
 
 router.get('/create', async function(req, res, next) {
@@ -30,18 +26,12 @@ router.get('/create', async function(req, res, next) {
     console.log(propertyID, property)
 
     console.log("Room created successfully:", createdRoom);
-    res.status(201).json(createdRoom); // Respond with JSON and 201 status code
+    res.status(201).json(createdRoom);
   } catch (err) {
     console.error("Error creating room:", err);
-    res.status(500).json({ error: 'Failed to create room' }); // Handle error response
+    res.status(500).json({ error: 'Failed to create room' });
   }
 });
-
-
-  // router.get('/alluser', async function(req, res, next) {
-  //   let alluser = await roomSchema.find();
-  //   res.send(alluser)
-  // });
 
 
   router.get('/find/:roomID', async function(req, res, next) {

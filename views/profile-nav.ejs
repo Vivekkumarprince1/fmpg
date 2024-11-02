@@ -10,11 +10,6 @@
                             <!-- Show this option only if the user's role is 'owner' -->
                             <a href="#" onclick="loadContent('/owner', 'owner'); return false;">Pending bookings</a>
                         <% } %>
-
-                        <% if (user.role === 'superadmin' || user.role === 'admin') { %>
-                            <!-- Show this option only if the user's role is 'owner' -->
-                            <%-include('admin/dashboard nav', { user: admin })%>
-                        <% } %>
                         <a href="settings" return false;>Settings</a>
                         <a href="referandearn" return false;>Refer And Earn</a>
                         <a href="/logout" class="btn" style="background-color: red;" onsubmit="confirmAction('Logout', event);">Logout</a>

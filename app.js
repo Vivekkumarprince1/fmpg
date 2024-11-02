@@ -23,7 +23,12 @@ const bookingRoutes = require('./routes/bookingroutes');
 const settingsRoutes = require('./routes/settingsRautes');
 
 
+
+
+
 var app = express();
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -55,6 +60,9 @@ app.post('/api/bookings', (req, res) => {
   console.log('Received Body:', req.body);
   res.send('Received');
 });
+
+const methodOverride = require('method-override');
+app.use(methodOverride('_method'));
 
 
 // Passport initialization

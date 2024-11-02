@@ -85,7 +85,7 @@
                     <% if (booking.room) { %>
                     <% if (booking.room.property) { %>
                         <p><strong>Property Name:</strong>
-                            <%= booking.room.property.name %>
+                            <%= booking.propertyID.propertyName %>
                         </p>
                     <% } %>
                     <!-- <p><strong>property owner</strong><%= booking.propertyID.owner%></p> -->
@@ -107,6 +107,27 @@
                             <p><strong>Status</strong>
                                 <%= booking.status %>
                             </p>
+                            <% if (booking.status !== 'Cancelled') { %>
+                                <button class="btn submit" type="button" onclick="editBooking('<%= booking._id %>')">Edit Booking</button>
+                          
+                            <button class="btn submit" type="button" onclick="cancellBooking('<%= booking._id %>')" >cancel booking</button>
+                            <% } %>
+                            <script>
+                                console.log("object");
+                                function editBooking(bookingId) {
+                                  // Redirect to the edit booking page with booking ID in the URL or as a query parameter
+                                  window.location.href = `api/bookings/edit/${bookingId}`;
+                                }
+                              function cancellBooking(bookingId) {
+                                    // Redirect to the cancel booking page with booking ID in the URL or as a query parameter
+                                    const confirmation=confirm("Are you sure you want to cancel");
+                                    if(confirmation){
+                                    
+                                    window.location.href = `api/bookings/cancel/${bookingId}`;
+                                    }
+                                }
+                                        
+                            </script>                     
                         </li>
                     <% }) %>
                 </ol>

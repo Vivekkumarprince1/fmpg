@@ -5,15 +5,15 @@ const router = express.Router();
 const Property = require('../models/Property');
 const Room = require('../models/Room');
 const Booking = require('../models/Booking');
-const Admin=require('../models/admin');
 const { response } = require('../app');
 const User=require('../models/users');
 const mongoose = require('mongoose');
-const Contact = require('../models/Contact'); // Adjust the path based on your folder structure
+const Contact = require('../models/Contact'); 
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const Owner = require('../models/owner');
+const bcrypt = require('bcryptjs');
 
 router.get('/form', function (req, res, next) {
   res.render('admin/pages/forms/basic-forms');
@@ -317,14 +317,23 @@ router.post('/properties/add', uploadFields,isAuthenticated, async (req, res) =>
       tenantContract:tenantContractPath,
     });
 
-    // Check if the owner exists and update their role
-    const user = await User.findOne({ email: req.body.email });
+    // Check if the owner exists and update their role; otherwise, create a new user
+    let user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      // If no user exists, create one
+      const hashedPassword = await bcrypt.hash(req.body.propertyName, 10); // Hash the password
 
-    if (user) {
-      user.role = 'owner'; // Update role to owner
-      await user.save(); // Save the updated user
+      user = new User({
+        username: req.body.propertyName,
+        email: req.body.email,
+        mobile: req.body.contactNumber,
+        password: hashedPassword,
+        role: 'owner',
+      });
+      await user.save();
     } else {
-      return res.status(404).send('Owner username does not exist');
+      user.role = 'owner'; // Update role to owner if user already exists
+      await user.save();
     }
 
     await newProperty.save();

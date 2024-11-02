@@ -70,41 +70,6 @@ router.post('/', async (req, res) => {
 });
 
 
-// router.post('/', async (req, res) => {
-//   const { mobile, startDate, endDate, userId, roomId, propertyID } = req.body;
-
-//   try {
-//     const user = await User.findById(userId);
-//     const referrer = await User.findById(user.referredBy);  // Find the referrer
-
-//     // Reward referrer with additional credits when referred user books
-//     if (referrer) {
-//       referrer.referralCredits += 100;  // Adjust points as per your logic
-//       await referrer.save();
-//     }
-
-//     const booking = new Booking({
-//       mobile,
-//       startDate,
-//       endDate,
-//       user: user._id,
-//       room: roomId,
-//       propertyID: propertyID,
-//       status: 'Pending',
-//     });
-
-//     await booking.save();
-//     res.redirect('/');
-//   } catch (err) {
-//     console.error('Error creating booking:', err);
-//     res.status(500).json({ message: 'Error creating booking', error: err });
-//   }
-// });
-
-
-
-
-
 // Get all bookings
 router.get('/allbookings', async (req, res) => {
   try {
@@ -130,57 +95,79 @@ router.get('/:id', async (req, res) => {
 });
 
 
+// Render the edit booking page
+router.get('/edit/:id', async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id).populate('user').populate('room');
+    if (!booking) return res.status(404).json({ message: 'Booking not found' });
 
-// router.get("/findByUser/:userID", async (req, res) => {
-//   const userID = req.params.userID;
-//   console.log("User ID: ", userID)
-//   try {
-//     console.log("ho gya");
-//     const bookings = await Booking.find({ user: userID }).populate('user').populate('room');
-//     // res.status(200).json(bookings);
-//     res.render('profile',{bookings,userID});
-   
-//   } catch (err) {
-//     console.log("Error while fetching bookings: ", err);
-//     res.status(500).json({ message: 'Error fetching bookings', error: err });
-//     console.log(bookings)
-//   }
-// })
+    // Render an edit page (e.g., editBooking.ejs) with the booking details
+    res.render('editBooking', { booking });
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching booking for editing', error: err });
+  }
+});
 
 
 
-// Update a booking
-// router.put('/:id', async (req, res) => {
-//   const { startDate, endDate, status, specialRequest } = req.body;
 
-//   try {
-//     const booking = await Booking.findById(req.params.id);
-//     if (!booking) return res.status(404).json({ message: 'Booking not found' });
+// Update a booking with edited details
+router.post('/edit/:id', async (req, res) => {
+  const { startDate, endDate, status, specialRequest } = req.body;
 
-//     if (startDate) booking.startDate = startDate;
-//     if (endDate) booking.endDate = endDate;
-//     if (status) booking.status = status;
-//     if (specialRequest) booking.specialRequest = specialRequest;
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) return res.status(404).json({ message: 'Booking not found' });
 
-//     await booking.save();
-//     res.status(200).json(booking);
-//   } catch (err) {
-//     res.status(500).json({ message: 'Error updating booking', error: err });
-//   }
-// });
+    // Update booking details
+    if (startDate) booking.startDate = startDate;
+    if (endDate) booking.endDate = endDate;
+    if (status) booking.status = status;
+    if (specialRequest) booking.specialRequest = specialRequest;
+
+    await booking.save();
+    console.log('Booking updated:', booking);
+
+    // Optionally, redirect to a confirmation page or back to booking list
+    res.redirect('/profile');
+  } catch (err) {
+    res.status(500).json({ message: 'Error updating booking', error: err });
+  }
+});
+
+// Delete a booking
+router.delete('/:id', async (req, res) => {
+  try {
+    const booking = await Booking.findByIdAndDelete(req.params.id);
+    if (!booking) return res.status(404).json({ message: 'Booking not found' });
+
+    console.log('Booking deleted:', booking);
+
+    // Optionally, redirect to a confirmation page or back to booking list
+    res.redirect('/profile');
+  } catch (err) {
+    res.status(500).json({ message: 'Error deleting booking', error: err });
+  }
+});
 
 
+//cancell the booking
+router.get('/cancel/:id', async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) return res.status(404).json({ message: 'Booking not found' });
 
-// // Delete a booking
-// router.delete('/:id', async (req, res) => {
-//   try {
-//     const booking = await Booking.findByIdAndDelete(req.params.id);
-//     if (!booking) return res.status(404).json({ message: 'Booking not found' });
+    booking.status = 'Cancelled';
+    await booking.save();
+    console.log('Booking cancelled:', booking);
 
-//     res.status(200).json({ message: 'Booking deleted successfully' });
-//   } catch (err) {
-//     res.status(500).json({ message: 'Error deleting booking', error: err });
-//   }
-// });
+    // Optionally, redirect to a confirmation page or back to booking list
+    res.redirect('/profile');
+  } catch (err) {
+    res.status(500).json({ message: 'Error cancelling booking', error: err });
+  }
+});
+
+
 
 module.exports = router;
