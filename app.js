@@ -47,7 +47,7 @@ app.use(expressSession({
   saveUninitialized: false,
   secret: "hey hey",
   cookie: {
-    secure: false, // Set to true if using HTTPS
+    secure: true, // Set to true if using HTTPS
     maxAge: 1000 * 60 * 60 * 24 * 365 * 10 // 10 years in milliseconds
   }
 }));
