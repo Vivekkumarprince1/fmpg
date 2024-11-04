@@ -44,7 +44,7 @@
                                     <th>Booking ID</th>
                                     <th>Username</th>
                                     <th>mobile</th>
-                                    <th>Room Type</th>
+                                    <th>property Type</th>
                                     <th>Start-Date</th>
                                     <th>End-Date</th>
                                     <th>Property</th>
@@ -69,9 +69,11 @@
                                         <td>
                                             <%= booking.mobile %>
                                         </td> <!-- Mobile -->
+                                        
                                         <td>
-                                            <!-- <%= booking.propertyID.type ? booking.propertyID.type : 'N/A' %> -->
-                                        </td> <!--Room Type (populated)-->
+                                            <%= booking.propertyID ? booking.propertyID.type : 'N/A' %>
+                                        </td> <!-- Property Type -->
+                                        
                                         <td>
                                             <%= booking.startDate.toDateString() %>
                                         </td> <!-- Start-Date -->

@@ -221,7 +221,7 @@
                             <div class="position-relative w-75 mx-auto animated slideInDown">
                                 <div class="position-relative" style="width: 100%;">
                                     <input class="form-control border-0 w-100 py-3 ps-4 pe-5" id="input"
-                                           type="text" placeholder="Eg: Delhi" autocapitalize="on" required>
+                                           type="text" placeholder="Eg: Hoshiarpur" autocapitalize="on" required>
                                     
                                     <!-- Near Me button -->
                                     <button type="button" class="btn py-2 px-3" id="near-me-btn">
@@ -477,70 +477,6 @@
                         <h2 class="text-white mb-4" href="booking">Book your room</h2>
                         <form action="/api/bookings" method="Post">
                             <div class="row g-3">
-                                <!-- <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control bg-transparent" id="name" placeholder="Your Name">
-                                        <label for="name">Your Name</label>
-                                    </div>
-                                </div> -->
-                                <!-- <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input type="number" class="form-control bg-transparent" id="Mobile" placeholder="Mobile">
-                                        <label for="Mobile">Your mobile number</label>
-                                    </div>
-                                </div> -->
-                                <!-- <div class="col-md-6">
-                                    <div class="col-md-6">
-                                        <div class="form-floating date" id="date3" data-target-input="nearest">
-                                            <input type="text" class="form-control bg-transparent datetimepicker-input" id="datetime" placeholder="Date & Time" data-target="#date3" data-toggle="datetimepicker" />
-                                            <label for="datetime">Date & Time</label>
-                                        </div>
-                                    </div>
-                                </div> -->
-                                <!-- <div class="col-md-6">
-                                    <div class="col-md-6">
-                                        <div class="form-floating date" id="date2" data-target-input="nearest">
-                                            <input type="text" class="form-control bg-transparent datetimepicker-input" id="datetime" placeholder="Date & Time" data-target="#date3" data-toggle="datetimepicker" />
-                                            <label for="datetime">Date & Time</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                 -->
-                                <!-- <div class="col-md-6">
-                                    <div class="form-floating date" id="date3" data-target-input="nearest">
-                                        <input type="date" class="form-control bg-transparent datetimepicker-input" id="date" placeholder="End_Date" data-target="#date3"  />
-                                        <label for="date">End_Date</label>
-                                    </div>
-                                </div> -->
-
-                                <!-- <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <select class="form-select bg-transparent" id="select1">
-                                            <option value="1">Single Room</option>
-                                            <option value="2">Double Room</option>
-                                            <option value="3">Hostel</option>
-                                        </select>
-                                        <label for="select1">select room type</label>
-                                    </div>
-                                </div> -->
-
-                                <!-- <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <select class="form-select bg-transparent" id="select1">
-                                            <option value="1">white-house</option>
-                                            <option value="2">Double Room</option>
-                                            <option value="3">Hostel</option>
-                                        </select>
-                                        <label for="select1">select property</label>
-                                    </div>
-                                </div> -->
-
-                                <!-- <div class="col-12">
-                                    <div class="form-floating">
-                                        <textarea class="form-control bg-transparent" placeholder="Special Request" id="message" style="height: 100px"></textarea>
-                                        <label for="message">Special Request</label>
-                                    </div>
-                                </div> -->
                                 <div class="col-12">
                                     <a class="btn btn-outline-light w-100 py-3" type="submit" id="resister"
                                         href="search-page">Book Now</a>
@@ -604,122 +540,13 @@
     </div>
     <!-- Process Start -->
 
-
-   
-
     <!--footer start-->
     <%- include('footer') %>
     <!--footer end-->
 
-
-        
-        
-
-
-     
-
         <!-- Template Javascript -->
         <script src="js/main.js"></script>
-        <script>
-            const places = ["Delhi", "Hoshiarpur", "Mumbai", "Chandigarh", "Bangalore", "Kolkata", "Chennai", "Hyderabad"];
-            const input = document.getElementById('input');
-            const searchBtn = document.getElementById('search-btn');
-            const dropdown = document.getElementById('dropdown');
-        
-            // Function to filter and display suggestions based on input
-            input.addEventListener('input', function () {
-                const inputValue = input.value.trim().toLowerCase();
-                dropdown.innerHTML = ''; // Clear previous suggestions
-        
-                if (inputValue) {
-                    const filteredPlaces = places.filter(place => 
-                        place.toLowerCase().includes(inputValue)
-                    );
-        
-                    // Show suggestions if available
-                    if (filteredPlaces.length > 0) {
-                        dropdown.style.display = 'block';
-                        filteredPlaces.forEach(place => {
-                            const div = document.createElement('div');
-                            div.textContent = place;
-                            div.classList.add('dropdown-item'); // Optional styling
-        
-                            // On clicking a suggestion, fill input with the selected value
-                            div.addEventListener('click', function () {
-                                input.value = place;
-                                dropdown.innerHTML = ''; // Clear dropdown
-                                dropdown.style.display = 'none'; // Hide dropdown
-                                searchBtn.disabled = false; // Enable search button after selection
-                            });
-        
-                            dropdown.appendChild(div);
-                        });
-                    } else {
-                        dropdown.style.display = 'none';
-                    }
-                } else {
-                    dropdown.style.display = 'none';
-                }
-            });
-        
-            // Hide dropdown when clicking outside
-            document.addEventListener('click', function (e) {
-                if (!input.contains(e.target) && !dropdown.contains(e.target)) {
-                    dropdown.style.display = 'none';
-                }
-            });
-        
-            // Event listener to enable/disable the button based on input
-            input.addEventListener('input', function () {
-                if (input.value.trim() === '') {
-                    searchBtn.disabled = true;
-                } else {
-                    searchBtn.disabled = false;
-                }
-            });
-        
-            // Button click handler for searching
-            searchBtn.addEventListener('click', function () {
-                let inputValue = input.value.trim().toLowerCase();
-        
-                if (inputValue === "hoshiarpur") {
-                    console.log("clicked");
-                    window.open("search-page", "_blank");
-                    input.value = ""; // Clear the input field
-                    dropdown.innerHTML = ''; // Clear dropdown
-                    dropdown.style.display = 'none'; // Hide dropdown
-                    searchBtn.disabled = true; // Disable search button after click
-                } else {
-                    window.open("404");
-                }
-            });
-
-            document.getElementById('near-me-btn').addEventListener('click', function () {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-
-            // Here you can implement logic to find nearby locations based on the latitude and longitude.
-            // For example, you can use an API like Google Places or use a static list of places with coordinates.
-
-            // For demonstration purposes, let's log the coordinates
-            console.log('Latitude:', latitude);
-            console.log('Longitude:', longitude);
-
-            // Example: Open a search page with the coordinates (you might want to customize this)
-            window.open(`search-page?lat=${latitude}&lng=${longitude}`, "_blank");
-        }, function () {
-            alert('Unable to retrieve your location.');
-        });
-    } else {
-        alert('Geolocation is not supported by this browser.');
-    }
-});
-
-
-
-        </script>
+        <script src="..//js/locationScript.js"></script>
         <script>
             // Automatically hide the message after 4 seconds
             setTimeout(function () {
@@ -730,8 +557,19 @@
                     setTimeout(() => alertMessage.remove(), 1000);  // Remove from DOM after fade-out
                 }
             }, 4000);
-        </script>
-        
+        </script>   
+        <script>
+            document.getElementById('searchButton').onclick = function () {
+              const userLat = sessionStorage.getItem('userLat');
+              const userLng = sessionStorage.getItem('userLng');
+              if (userLat && userLng) {
+                window.location.href = `/search-page?lat=${userLat}&lng=${userLng}`;
+              } else {
+                alert("Location is required for this feature.");
+              }
+            };
+          </script>
+             
 </body>
 
 </html>

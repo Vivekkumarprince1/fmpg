@@ -16,6 +16,16 @@
         <input class="input" type="email" id="email" name="email" value="<%= user.email %>" required><br>
         <label for="mobile">Mobile:</label>
         <input class="input" type="text" id="mobile" name="mobile" value="<%= user.mobile %>" required><br>
+        <label for="role">Role:</label>
+<select class="input" id="role" name="role" required>
+
+    <option value="superadmin" <%= user.role === "superadmin" ? "selected" : "" %>>SuperAdmin</option>
+    <option value="admin" <%= user.role === "admin" ? "selected" : "" %>>Admin</option>
+    <option value="user" <%= user.role === "user" ? "selected" : "" %>>User</option>
+    <option value="owner" <%= user.role === "owner" ? "selected" : "" %>>Owner</option>
+
+</select>
+
         <button class="submit" type="submit">Save Changes</button>
     </form>
 </div>

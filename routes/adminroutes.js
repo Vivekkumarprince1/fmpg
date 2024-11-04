@@ -157,8 +157,8 @@ router.get('/users/edit/:id', isAuthenticated, async (req, res) => {
 });
 
 router.post('/users/edit/:id', isAuthenticated, async (req, res) => {
-  const { username, email, mobile } = req.body;
-  await User.findByIdAndUpdate(req.params.id, { username, email, mobile });
+  const { username, email, mobile,role } = req.body;
+  await User.findByIdAndUpdate(req.params.id, { username, email, mobile,role });
   res.redirect('/admin/users');
 });
 
@@ -573,9 +573,9 @@ router.get('/bookings', isAuthenticated, async (req, res) => {
         select: 'number type price' // Select specific fields, e.g., 'number', 'type', and 'price'
       })
       .populate({
-        path: 'propertyID',    // Populate the 'propertyID' field
-        select: 'propertyName location type status '  // Select specific fields, e.g., 'name' and 'location'
-      });
+        path: 'propertyID'    // Populate the 'propertyID' field fully
+    });
+    
       
       const user = await User.findOne({ email: req.session.passport.user });
 

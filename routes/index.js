@@ -140,7 +140,6 @@ router.get('/readmore', async function (req, res, next) {
 
 
 // Helper function to calculate distance between two lat/lng points
-
 const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
   const R = 6371; // Radius of Earth in km
   const dLat = deg2rad(lat2 - lat1);
@@ -205,6 +204,71 @@ router.get('/search-page', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// Route to filter and sort properties, including by distance
+// router.get('/search-page', async (req, res) => {
+//   try {
+//     const { gender = 'all', sort = '', lat, lng } = req.query;
+
+//     // Initialize the query object based on gender filter
+//     const query = gender !== 'all' ? { gender } : {};
+
+//     // Fetch properties based on the query
+//     let properties = await Property.find(query).populate('rooms');
+
+//     // Filter properties within 8km radius if lat and lng are provided
+//     if (lat && lng) {
+//       const userLat = parseFloat(lat);
+//       const userLng = parseFloat(lng);
+
+//       properties = properties.filter(property => {
+//         const coordinates = extractLatLngFromMapUrl(property.map);
+//         if (coordinates) {
+//           const distance = getDistanceFromLatLonInKm(userLat, userLng, coordinates.lat, coordinates.lng);
+//           return distance <= 8; // Keep properties within 8 km radius
+//         }
+//         return false;
+//       });
+//     }
+
+//     // Sort properties based on the selected criteria
+//     if (sort === 'low-to-high') {
+//       properties.sort((a, b) => (a.rooms[0]?.price || Infinity) - (b.rooms[0]?.price || Infinity));
+//     } else if (sort === 'high-to-low') {
+//       properties.sort((a, b) => (b.rooms[0]?.price || 0) - (a.rooms[0]?.price || 0));
+//     } else if (sort === 'distance' && lat && lng) {
+//       const userLat = parseFloat(lat);
+//       const userLng = parseFloat(lng);
+
+//       properties = properties.map(property => {
+//         const coordinates = extractLatLngFromMapUrl(property.map);
+//         if (coordinates) {
+//           property.distance = getDistanceFromLatLonInKm(userLat, userLng, coordinates.lat, coordinates.lng);
+//         } else {
+//           property.distance = Infinity; // Assign a large distance if coordinates are missing
+//         }
+//         return property;
+//       });
+
+//       // Sort properties by nearest distance
+//       properties.sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
+//     }
+
+//     res.render('search-page', { 
+//       page: 'search-page', 
+//       title: 'Search result', 
+//       properties, 
+//       gender, 
+//       sort 
+//     });
+//   } catch (err) {
+//     console.error("Error in /search-page:", err);
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
+
+
 
 router.get('/service', function (req, res, next) {
   res.render('service', { page: 'service', title: 'Service' });
