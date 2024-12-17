@@ -18,7 +18,7 @@
             transform: translateY(-50%);
         }
 
-        .fa-lock{
+        .fa-lock {
             display: inline-block;
         }
 
@@ -98,7 +98,7 @@
 
                         <div class="input-div pass" id="otpLogin">
                             <div class="i">
-                                <i class="fas fa-lock" ></i>
+                                <i class="fas fa-lock"></i>
                             </div>
                             <div class="div">
                                 <h5>OTP</h5>
@@ -151,22 +151,25 @@
             togglePassword.classList.toggle('fa-eye-slash');
         });
 
-        // Handle authentication method toggle
-        authMethodRadios.forEach(radio => {
-            radio.addEventListener('change', function () {
-                if (this.value === 'otp') {
-                    otpLoginDiv.style.display = 'block';
-                    passwordLoginDiv.style.display = 'none';
-                    passwordInput.removeAttribute('required');
-                    document.getElementById('otp').setAttribute('required', 'true');
-                } else {
-                    otpLoginDiv.style.display = 'none';
-                    passwordLoginDiv.style.display = 'block';
-                    passwordInput.setAttribute('required', 'true');
-                    document.getElementById('otp').removeAttribute('required');
-                }
-            });
-        });
+        // Set default state based on radio button selection
+    const defaultAuthMethod = document.querySelector('input[name="authMethod"]:checked').value;
+    if (defaultAuthMethod === 'otp') {
+        otpLoginDiv.style.display = 'block';
+        passwordLoginDiv.style.display = 'none';
+        passwordInput.removeAttribute('required');
+        passwordInput.disabled = true;
+        document.getElementById('otp').disabled = false;
+        document.getElementById('otp').setAttribute('required', 'true');
+    } else {
+        otpLoginDiv.style.display = 'none';
+        passwordLoginDiv.style.display = 'block';
+        passwordInput.setAttribute('required', 'true');
+        passwordInput.disabled = false;
+        document.getElementById('otp').removeAttribute('required');
+        document.getElementById('otp').disabled = true;
+    }
+
+
 
         // Send OTP functionality
         sendOtpButton.addEventListener('click', () => {
