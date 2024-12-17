@@ -3,6 +3,8 @@ const router = express.Router();
 const Booking = require('../models/Booking');
 const Property = require('../models/Property');
 const User = require('../models/users');
+const { isAuthenticated, authorizeAdmin } = require('../middleware/auth'); // Adjust path as needed
+
 
 // Helper function to get booking count over time
 async function getBookingsOverTime() {
@@ -44,7 +46,7 @@ router.get('/', isAuthenticated, async (req, res) => {
   try {
     const totalBookings = await Booking.countDocuments();
     const confirmedBookings = await Booking.countDocuments({ status: 'Confirmed' });
-    const pendingBookings = await Booking.countDocuments({ status: 'Pending' });
+    const pendingBookings = await Booking.countDocuments({ status: 'Pending waiting for owner confirmation' });
     const cancelledBookings = await Booking.countDocuments({ status: 'Cancelled' });
     const bookingsOverTime = await getBookingsOverTime();
     
@@ -63,7 +65,7 @@ router.get('/', isAuthenticated, async (req, res) => {
     const femaleProperties = await Property.countDocuments({ gender: 'female' });
 
     const totalUsers = await User.countDocuments();
-    const user = await User.findOne({ email: req.session.passport.user });
+    const user = await User.findOne({ email: req.user.email });
 
     const bookingsPerProperty = await Booking.aggregate([
       {
@@ -141,15 +143,15 @@ router.get('/', isAuthenticated, async (req, res) => {
 });
 
 // Authentication check middleware
-function isAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    if (req.user.role === 'admin' || req.user.role === 'superadmin') {
-      return next();
-    } else {
-      return res.status(403).send('Access Denied: You do not have the required permissions.');
-    }
-  }
-  res.redirect('/login');
-}
+// function isAuthenticated(req, res, next) {
+//   if (req.isAuthenticated()) {
+//     if (req.user.role === 'admin' || req.user.role === 'superadmin') {
+//       return next();
+//     } else {
+//       return res.status(403).send('Access Denied: You do not have the required permissions.');
+//     }
+//   }
+//   res.redirect('/login');
+// }
 
 module.exports = router;
