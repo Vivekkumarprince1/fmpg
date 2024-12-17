@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>fmpg signup Form</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fmpg Signup Form</title>
     <link rel="stylesheet" type="text/css" href="../css/loginstyle.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a81368914c.js"></script>
@@ -21,26 +23,24 @@
             <img src="../images/bg.svg">
         </div>
         <div class="login-content">
-            <!-- <form action="/signup" method="POST" id="signup-form"> -->
-                <form action="/signup?ref=<%= referrerId %>" method="POST" id="signup-form">
+            <form action="/signup?ref=<%= referrerId %>" method="POST" id="signup-form">
                 <img src="../images/avatar.svg">
-				
                 <h2 class="title">Please Signup</h2>
-				<!-- Display error message -->
-				<% if (error.length > 0) { %>
-					<div class="alert alert-danger">
-					<%= error %>
-					</div>
-				<% } %>
-				
-				<!-- Display success message -->
-				<% if (success.length > 0) { %>
-					<div class="alert alert-success">
-					<%= success %>
-					</div>
-				<% } %>
-  
+
+                <!-- Display error message -->
+                <% if (error.length > 0) { %>
+                    <div class="alert alert-danger">
+                        <%= error %>
+                    </div>
+                <% } %>
                 
+                <!-- Display success message -->
+                <% if (success.length > 0) { %>
+                    <div class="alert alert-success">
+                        <%= success %>
+                    </div>
+                <% } %>
+
                 <div class="input-div one">
                     <div class="i">
                         <i class="fas fa-user"></i>
@@ -60,8 +60,9 @@
                         <input type="email" class="input" id="email" name="email" required>
                     </div>
                 </div>
-				<!-- Send OTP Button will be initially hidden -->
-				<button type="button" class="btn" id="send-otp" onclick="sendOTP()" style="display:none;">Send OTP</button>
+
+                <!-- Send OTP Button will be initially hidden -->
+                <button type="button" class="btn" id="send-otp" onclick="sendOTP()" style="display:none;">Send OTP</button>
 
                 <div class="input-div one" id="otp-container" style="display:none;">
                     <div class="i">
@@ -95,18 +96,16 @@
                         <input type="password" class="input" id="password" name="password" required>
                     </div>
                 </div>
-                <div  class="" style="font-size: small;">
 
-                <input type="checkbox" value="" required>Agree to <a href="TermsAndConditions">Terms and Condition</a> and <a href="privacypolicy">privacypolicy</a>
-            </div>
+                <div class="" style="font-size: small;">
+                    <input type="checkbox" value="" required> Agree to <a href="TermsAndConditions">Terms and Condition</a> and <a href="privacypolicy">Privacy Policy</a>
+                </div>
+
                 <input type="submit" class="btn" value="Signup" id="signup-btn">
-				
-			  <h4 class="title">Already having account  <a href="login">login</a></h4>
+                <h4 class="title">Already having an account? <a href="login">Login</a></h4>
             </form>
         </div>
-		
     </div>
-	
 
     <script type="text/javascript" src="/js/login.js"></script>
     <script type="text/javascript">
@@ -179,6 +178,6 @@
                 alert('Please enter the OTP');
             }
         }
-    </script>	
+    </script>
 </body>
 </html>

@@ -7,8 +7,6 @@ var logger = require('morgan');
 const expressSession = require("express-session");
 const passport = require('passport');
 const flash = require("connect-flash");
-const cluster = require('cluster'); // Cluster module for multi-core usage
-const os = require('os'); // To get the number of CPU cores
 
 const roomdb = require('./routes/roomdb');
 const propertyroutes = require('./routes/propertyroutes');
@@ -21,8 +19,7 @@ const contactroutes = require('./routes/contactroutes');
 const ownerRoutes = require('./routes/ownerroutes');
 const bookingRoutes = require('./routes/bookingroutes'); 
 const settingsRoutes = require('./routes/settingsRautes');
-
-
+const authRoutes = require('./routes/authroutes');
 
 
 
@@ -52,24 +49,26 @@ app.use(expressSession({
   }
 }));
 
+require('dotenv').config({ path: './.env' });
+
 app.use(flash());
 
 app.use('/api/bookings', bookingRoutes);
-app.post('/api/bookings', (req, res) => {
-  console.log('Received Headers:', req.headers);
-  console.log('Received Body:', req.body);
-  res.send('Received');
-});
+// app.post('/api/bookings', (req, res) => {
+//   console.log('Received Headers:', req.headers);
+//   console.log('Received Body:', req.body);
+//   res.send('Received');
+// });
 
 const methodOverride = require('method-override');
 app.use(methodOverride('_method'));
 
 
 // Passport initialization
-app.use(passport.initialize());
-app.use(passport.session());
-passport.serializeUser(usersRouter.serializeUser());
-passport.deserializeUser(usersRouter.deserializeUser());
+// app.use(passport.initialize());
+// app.use(passport.session());
+// passport.serializeUser(usersRouter.serializeUser());
+// passport.deserializeUser(usersRouter.deserializeUser());
 
 
 // Flash message middleware
@@ -91,6 +90,7 @@ app.use('/forgot', forgotRoutes);
 app.use('/',contactroutes);
 app.use('/owner', ownerRoutes);
 app.use('/settings', settingsRoutes);
+app.use('/', authRoutes);
 
 
 // catch 404 and forward to error handler

@@ -19,7 +19,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="icon" href="img/logo.png" type="image/icon type">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap"
+        rel="stylesheet">
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -35,99 +37,112 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/footer.css">
+    <link href="css/footer.css" rel="stylesheet">
+    <link href="css/loader.css" rel="stylesheet">
     <style>
         body .alert-custom {
-           position: fixed;
-           top: 50%;
-           left: 50%;
-           transform: translate(-50%, -50%);
-           z-index: 1050;
-           width: 80%;
-           max-width: 400px;
-           padding: 20px;
-           border-radius: 12px;
-           box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-           font-size: 1.2rem;
-           font-weight: 600;
-           text-align: center;
-           background: rgba(36, 193, 96, 0.9); 
-           backdrop-filter: blur(80%);
-           opacity: 0.8;
-           animation: fadeIn 1s forwards, fadeOut 1s forwards 3s;
-       }
-
-       
-
-       @keyframes fadeIn {
-           from { opacity: 0; }
-           to { opacity: 1; }
-       }
-
-       @keyframes fadeOut {
-           from { opacity: 1; }
-           to { opacity: 0; }
-       }
-
-       .suggestions-container {
-        position: absolute;
-        top: 100%; /* Positions the dropdown right below the input */
-        left: 0;
-        width: 100%;
-        background-color: white;
-        /* border-radius: 0 0 20px 20px; */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        z-index: 999;
-        max-height: 150px;
-        overflow-y: auto;
-    }
-
-    .dropdown-item {
-        padding: 10px;
-        cursor: pointer;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .dropdown-item:hover {
-        background-color: #f0f0f0;
-    }
-
-    /* Style to match the input field's rounded corners when dropdown appears */
-    #input {
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
-    }
-
-    .suggestions-container div:last-child {
-        border-bottom: none; /* Remove the last item's bottom border */
-    }
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1050;
+            width: 80%;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            background: rgba(36, 193, 96, 0.9);
+            backdrop-filter: blur(80%);
+            opacity: 0.8;
+            animation: fadeIn 1s forwards, fadeOut 1s forwards 3s;
+        }
 
 
-    #near-me-btn {
-    position: absolute;
-    right: 110px; /* Adjust this value to move the button closer to Search */
-    top: 0;
-    margin-top: 7px;
-    margin-left: 0px;
-    }
 
-    #search-btn {
-    position: absolute;
-    right: 6px;
-    top: 0;
-    margin-top: 7px;
-    }
-    
-    .full-height{
-    height: 100%;
-}
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        .suggestions-container {
+            position: absolute;
+            top: 100%;
+            /* Positions the dropdown right below the input */
+            left: 0;
+            width: 100%;
+            background-color: white;
+            /* border-radius: 0 0 20px 20px; */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .dropdown-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Style to match the input field's rounded corners when dropdown appears */
+        #input {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .suggestions-container div:last-child {
+            border-bottom: none;
+            /* Remove the last item's bottom border */
+        }
 
 
-   </style>
+        #near-me-btn {
+            position: absolute;
+            right: 110px;
+            /* Adjust this value to move the button closer to Search */
+            top: 0;
+            margin-top: 7px;
+            margin-left: 0px;
+        }
+
+        #search-btn {
+            position: absolute;
+            right: 6px;
+            top: 0;
+            margin-top: 7px;
+        }
+
+        .full-height {
+            height: 100%;
+        }
+    </style>
 
 </head>
 
 <body>
+
 
     <!-- Spinner Start -->
     <div id="spinner"
@@ -136,6 +151,12 @@
             <span class="sr-only">Loading...</span>
         </div>
     </div>
+
+    <!-- <script src="../assets/js/preloader.js"></script>
+    <script src="https://raw.githubusercontent.com/bjornd/jvectormap/master/public/javascript/jquery-jvectormap-in-mill.js"></script> -->
+
+
+
     <!-- Spinner End -->
 
     <!-- Topbar Start -->
@@ -143,11 +164,15 @@
         <div class="row gx-0">
             <div class="col-lg-8 text-center text-lg-start mb-2 mb-lg-0">
                 <div class="d-inline-flex align-items-center" style="height: 45px;">
-                    <small class="me-3 text-light"><a href="https://maps.app.goo.gl/KJCAo6hSidjYhC5D8" style="color: white;" class="mb-2" ><i class="fa fa-map-marker-alt me-3"></i>UIET Hoshiarpur , india</a><br>
+                    <small class="me-3 text-light"><a href="https://maps.app.goo.gl/KJCAo6hSidjYhC5D8"
+                            style="color: white;" class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>UIET Hoshiarpur
+                            , india</a><br>
                     </small>
-                    <small class="me-3 text-light"><a href=" tel: +917321835093" style="color: white;" class="mb-2"><i class="fa fa-phone-alt me-3"></i>+917321835093</a><br>
+                    <small class="me-3 text-light"><a href=" tel: +917321835093" style="color: white;" class="mb-2"><i
+                                class="fa fa-phone-alt me-3"></i>+917321835093</a><br>
                     </small>
-                    <small class="text-light"><a href="mailto: fmpg974@gmail.com?" style="color: white;" class="mb-2"><i class="fa fa-envelope me-3"></i>fmpg974@gmail.com</a>
+                    <small class="text-light"><a href="mailto: fmpg974@gmail.com?" style="color: white;" class="mb-2"><i
+                                class="fa fa-envelope me-3"></i>fmpg974@gmail.com</a>
                     </small>
                 </div>
             </div>
@@ -173,195 +198,210 @@
     <!-- Topbar End -->
 
     <!-- Display success message -->
-    <% if (typeof success !== 'undefined' && success) { %>
+    <% if (typeof success !=='undefined' && success) { %>
         <div class="alert alert-success alert-custom" id="message-alert">
             <%= success %>
         </div>
-    <% } %>
-    
+        <% } %>
 
-    <!-- Navbar & Hero Start -->
-    <div class="container-fluid position-relative p-0">
-        <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
-            <a href="" class="navbar-brand p-0">
-                <h1 class="text-primary m-0"><i class="fa"><img
-                            src="img/logo.png" alt=""></i>FMPG</h1>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                <span class="fa fa-bars"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav ms-auto py-0">
-                    <a href="index" class="nav-item nav-link active">Home</a>
-                    <a href="about" class="nav-item nav-link">About</a>
-                    <a href="service" class="nav-item nav-link">Services</a>
-                    <!-- <a href="package.html" class="nav-item nav-link">Packages</a> -->
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                        <div class="dropdown-menu m-0">
-                            <a href="destination" class="dropdown-item">Destination</a>
-                            <a href="fooding" class="dropdown-item">fooding</a>
-                            <!-- <a href="team" class="dropdown-item">Team</a> -->
-                        </div>
-                    </div>
-                    <a href="contact" class="nav-item nav-link">Contact</a>
-                </div>
-                <!-- <a href="/login" class="btn btn-primary rounded-pill py-2 px-4">Login</a> -->
-                <a href="/profile" class="btn btn-primary rounded-pill py-2 px-4"><i class="fa-regular fa-user"></i></a>
-            </div>
-        </nav>
 
-        <div class="container-fluid bg-primary py-5 mb-5 hero-header">
-            <div class="container py-5">
-                <div class="row justify-content-center py-5">
-                    <div class="col-lg-10 pt-lg-5 mt-lg-5 text-center">
-                        <h1 class="display-3 text-white mb-3 animated slideInDown">Enjoy Your Hassle Free Living </h1>
-                        <p class="fs-4 text-white mb-4 animated slideInDown">Your home away from home, where comfort
-                            meets convenience!</p>
-                            <div class="position-relative w-75 mx-auto animated slideInDown">
-                                <div class="position-relative" style="width: 100%;">
-                                    <input class="form-control border-0 w-100 py-3 ps-4 pe-5" id="input"
-                                           type="text" placeholder="Eg: Hoshiarpur" autocapitalize="on" required>
-                                    
-                                    <!-- Near Me button -->
-                                    <button type="button" class="btn py-2 px-3" id="near-me-btn">
-                                        <i class="fa-sharp-duotone fa-solid fa-location-crosshairs"></i>
-                                    </button>
-                                    
-                                    <!-- Search button -->
-                                    <button type="button" class="btn btn-primary py-2 px-4" id="search-btn" disabled>
-                                        Search
-                                    </button>
-                                    
-                                    <!-- Suggestions container -->
-                                    <div class="suggestions-container" id="dropdown" style="display: none;"></div>
+            <!-- Navbar & Hero Start -->
+            <div class="container-fluid position-relative p-0">
+                <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
+                    <a href="" class="navbar-brand p-0">
+                        <h1 class="text-primary m-0"><i class="fa"><img src="img/logo.png" alt=""></i>FMPG</h1>
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarCollapse">
+                        <span class="fa fa-bars"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarCollapse">
+                        <div class="navbar-nav ms-auto py-0">
+                            <a href="index" class="nav-item nav-link active">Home</a>
+                            <a href="about" class="nav-item nav-link">About</a>
+                            <a href="service" class="nav-item nav-link">Services</a>
+                            <!-- <a href="package.html" class="nav-item nav-link">Packages</a> -->
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                                <div class="dropdown-menu m-0">
+                                    <a href="destination" class="dropdown-item">Destination</a>
+                                    <a href="fooding" class="dropdown-item">fooding</a>
+                                    <!-- <a href="team" class="dropdown-item">Team</a> -->
                                 </div>
                             </div>
-                            
+                            <a href="contact" class="nav-item nav-link">Contact</a>
+                        </div>
+                        <!-- <a href="/login" class="btn btn-primary rounded-pill py-2 px-4">Login</a> -->
+                        <a href="/profile" class="btn btn-primary rounded-pill py-2 px-4"><i
+                                class="fa-regular fa-user"></i></a>
+                    </div>
+                </nav>
+
+                <div class="container-fluid bg-primary py-5 mb-5 hero-header">
+                    <div class="container py-5">
+                        <div class="row justify-content-center py-5">
+                            <div class="col-lg-10 pt-lg-5 mt-lg-5 text-center">
+                                <h1 class="display-3 text-white mb-3 animated slideInDown">Enjoy Your Hassle Free Living
+                                </h1>
+                                <p class="fs-4 text-white mb-4 animated slideInDown">Your home away from home, where
+                                    comfort
+                                    meets convenience!</p>
+                                <div class="position-relative w-75 mx-auto animated slideInDown">
+                                    <div class="position-relative" style="width: 100%;">
+                                        <input class="form-control border-0 w-100 py-3 ps-4 pe-5" id="input" type="text"
+                                            placeholder="Eg: Hoshiarpur" autocapitalize="on" required>
+
+                                        <!-- Near Me button -->
+                                        <button type="button" class="btn py-2 px-3" id="near-me-btn">
+                                            <i class="fa-sharp-duotone fa-solid fa-location-crosshairs"></i>
+                                        </button>
+
+                                        <!-- Search button -->
+                                        <button type="button" class="btn btn-primary py-2 px-4" id="search-btn"
+                                            disabled>
+                                            Search
+                                        </button>
+
+                                        <!-- Suggestions container -->
+                                        <div class="suggestions-container" id="dropdown" style="display: none;"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- Navbar & Hero End -->
+            <!-- Navbar & Hero End -->
 
 
-    <!-- About Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="row g-5">
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s" style="min-height: 400px;">
-                    <div class="position-relative h-100">
-                        <img class="img-fluid position-absolute w-100 h-100" src="img/about.jpg" alt=""
-                            style="object-fit: cover;">
+            <!-- About Start -->
+            <div class="container-xxl py-5">
+                <div class="container">
+                    <div class="row g-5">
+                        <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s" style="min-height: 400px;">
+                            <div class="position-relative h-100">
+                                <img class="img-fluid position-absolute w-100 h-100" src="img/about.jpg" alt=""
+                                    style="object-fit: cover;">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
+                            <h6 class="section-title bg-white text-start text-primary pe-3">About Us</h6>
+                            <h1 class="mb-4">Welcome to <span class="text-primary">FMPG</span></h1>
+                            <p class="mb-4">FMPG your premier choice for hastle-free and comfortable hostel living! We
+                                pride
+                                ourselves on creating a home away from home, offering you a perfect blend of
+                                convenience,
+                                security, and community. Whether you're a student, a working professional, or a
+                                traveler. Join
+                                us and experience a new standard of living where comfort meets convenience and every
+                                stay feels
+                                like home.</p>
+                            <p class="mb-4">Our single rooms are thoughtfully designed to offer you maximum comfort and
+                                privacy.
+                                Each room is fully furnished with a cozy bed, a spacious wardrobe, a study desk, and
+                                ample
+                                lighting to create an ideal environment for both relaxation and productivity. With
+                                high-speed
+                                internet, air conditioning, and a dedicated bathroom, you can enjoy all the comforts of
+                                home.
+                            </p>
+                            <div class="row gy-2 gx-4 mb-4">
+                                <div class="col-sm-6">
+                                    <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Handpicked PGs
+                                    </p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <!-- <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>First Class Flights</p> -->
+                                </div>
+                                <div class="col-sm-6">
+                                    <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>24/7 Service</p>
+
+                                </div>
+                                <div class="col-sm-6">
+                                    <!-- <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Latest Model Vehicles</p> -->
+                                </div>
+                                <div class="col-sm-6">
+                                    <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Hassle free
+                                        booking
+                                        process</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <!-- <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>5 Star Accommodations</p> -->
+                                </div>
+                            </div>
+                            <a class="btn btn-primary py-3 px-5 mt-2" href="about">Read More</a>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <h6 class="section-title bg-white text-start text-primary pe-3">About Us</h6>
-                    <h1 class="mb-4">Welcome to <span class="text-primary">FMPG</span></h1>
-                    <p class="mb-4">FMPG your premier choice for hastle-free and comfortable hostel living! We pride
-                        ourselves on creating a home away from home, offering you a perfect blend of convenience,
-                        security, and community. Whether you're a student, a working professional, or a traveler. Join
-                        us and experience a new standard of living where comfort meets convenience and every stay feels
-                        like home.</p>
-                    <p class="mb-4">Our single rooms are thoughtfully designed to offer you maximum comfort and privacy.
-                        Each room is fully furnished with a cozy bed, a spacious wardrobe, a study desk, and ample
-                        lighting to create an ideal environment for both relaxation and productivity. With high-speed
-                        internet, air conditioning, and a dedicated bathroom, you can enjoy all the comforts of home.
-                    </p>
-                    <div class="row gy-2 gx-4 mb-4">
-                        <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Handpicked PGs</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <!-- <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>First Class Flights</p> -->
-                        </div>
-                        <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>24/7 Service</p>
-
-                        </div>
-                        <div class="col-sm-6">
-                            <!-- <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Latest Model Vehicles</p> -->
-                        </div>
-                        <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Hassle free booking
-                                process</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <!-- <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>5 Star Accommodations</p> -->
-                        </div>
-                    </div>
-                    <a class="btn btn-primary py-3 px-5 mt-2" href="about">Read More</a>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- About End -->
+            <!-- About End -->
 
 
-    <!-- Service Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Services</h6>
-                <h1 class="mb-5">Our Services</h1>
+            <!-- Service Start -->
+            <div class="container-xxl py-5">
+                <div class="container">
+                    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                        <h6 class="section-title bg-white text-center text-primary px-3">Services</h6>
+                        <h1 class="mb-5">Our Services</h1>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
+                            <div class="service-item rounded pt-3">
+                                <div class="p-4">
+                                    <i class="fa fa-3x fa-globe text-primary mb-4"></i>
+                                    <h5>Single Room PG</h5>
+                                    <p>Our single rooms are thoughtfully designed to offer you maximum comfort and
+                                        privacy.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                            <div class="service-item rounded pt-3">
+                                <div class="p-4">
+                                    <i class="fa fa-3x fa-hotel text-primary mb-4"></i>
+                                    <h5>Double Room PG </h5>
+                                    <p>Awesome Room with attach bathroom , Start living with your bestfriend</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
+                            <div class="service-item rounded pt-3">
+                                <div class="p-4">
+                                    <i class="fa fa-3x fa-hotel text-primary mb-4"></i>
+                                    <h5>Flat</h5>
+                                    <p>Start your hassle free living with family or friend</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
+                            <div class="service-item rounded pt-3">
+                                <div class="p-4">
+                                    <i class="fa fa-3x fa-hotel text-primary mb-4"></i>
+                                    <h5>Hostel</h5>
+                                    <p>Take experience of best living and hygenic food</p>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+                </div>
             </div>
-            <div class="row g-4">
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="service-item rounded pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-3x fa-globe text-primary mb-4"></i>
-                            <h5>Single Room PG</h5>
-                            <p>Our single rooms are thoughtfully designed to offer you maximum comfort and privacy.</p>
-                        </div>
+            <!-- Service End -->
+
+
+            <!-- room Start -->
+            <div class="container-xxl py-5">
+                <div class="container">
+                    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                        <h6 class="section-title bg-white text-center text-primary px-3">Best rooms</h6>
+                        <h1 class="mb-5">Top Rooms</h1>
                     </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="service-item rounded pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-3x fa-hotel text-primary mb-4"></i>
-                            <h5>Double Room PG </h5>
-                            <p>Awesome Room with attach bathroom , Start living with your bestfriend</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="service-item rounded pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-3x fa-hotel text-primary mb-4"></i>
-                            <h5>Flat</h5>
-                            <p>Start your hassle free living with family or friend</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-                    <div class="service-item rounded pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-3x fa-hotel text-primary mb-4"></i>
-                            <h5>Hostel</h5>
-                            <p>Take experience of best living and hygenic food</p>
-                        </div>
-                    </div>
-                </div>
-
-
-
-
-            </div>
-        </div>
-    </div>
-    <!-- Service End -->
-
-
-    <!-- room Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Best rooms</h6>
-                <h1 class="mb-5">Top Rooms</h1>
-            </div>
-            <div class="row g-4 justify-content-center">
-                <!-- <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="row g-4 justify-content-center">
+                        <!-- <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                     <div class="package-item">
 
                         <div class="overflow-hidden">
@@ -403,173 +443,176 @@
 
 
 
-                <% properties.slice(0, 3).forEach(property => { %>
-                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="package-item" onclick="readmore('<%= property._id %>')">
-                            <div class="overflow-hidden">
-                                <img class="img-fluid"  src="<%= property.images[0] %>"
-                                    alt="<%= property.propertyName %>">
-                            </div>
-                            <div class="d-flex border-bottom" style="color: #808b8d;">
-                                <small class="flex-fill text-center border-end py-2">
-                                    <%= property.type %>
-                                </small>
-                                <small class="flex-fill text-center border-end py-2"><i
-                                        class="fa fa-calendar-alt text-primary me-2"></i>Per Month
-                                </small>
-                                <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>
-                                </small>
+                        <% properties.slice(0, 3).forEach(property=> { %>
+                            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                                <div class="package-item" onclick="readmore('<%= property._id %>')">
+                                    <div class="overflow-hidden">
+                                        <img class="img-fluid" src="<%= property.images[0] %>"
+                                            alt="<%= property.propertyName %>">
+                                    </div>
+                                    <div class="d-flex border-bottom" style="color: #808b8d;">
+                                        <small class="flex-fill text-center border-end py-2">
+                                            <%= property.type %>
+                                        </small>
+                                        <small class="flex-fill text-center border-end py-2"><i
+                                                class="fa fa-calendar-alt text-primary me-2"></i>Per Month
+                                        </small>
+                                        <small class="flex-fill text-center py-2"><i
+                                                class="fa fa-user text-primary me-2"></i>
+                                        </small>
 
-                            </div>
+                                    </div>
 
-                            <div class="text-center p-4">
-                                <h3 class="mb-0">
-                                    <%= property.propertyName %>
-                                </h3>
-                                <div class="mb-3">
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
-                                    <small class="fa fa-star text-primary"></small>
+                                    <div class="text-center p-4">
+                                        <h3 class="mb-0">
+                                            <%= property.propertyName %>
+                                        </h3>
+                                        <div class="mb-3">
+                                            <small class="fa fa-star text-primary"></small>
+                                            <small class="fa fa-star text-primary"></small>
+                                            <small class="fa fa-star text-primary"></small>
+                                            <small class="fa fa-star text-primary"></small>
+                                            <small class="fa fa-star text-primary"></small>
+                                        </div>
+                                        <p style="color: #808b8d;">
+                                            <%= property.description %>
+                                        </p>
+                                    </div>
+                                    <!-- <div class="mb-3"></div> -->
+                                    <div class="d-flex justify-content-center mb-2">
+                                        <button class="book-btn btn-primary btn" style="border-radius: 30px;"
+                                            id="book-btn" onclick="readmore('<%= property._id %>')">Book Now</button>
+
+                                    </div>
                                 </div>
-                                <p style="color: #808b8d;">
-                                    <%= property.description %>
-                                </p>
                             </div>
-                            <!-- <div class="mb-3"></div> -->
-                            <div class="d-flex justify-content-center mb-2">
-                                <button class="book-btn btn-primary btn" style="border-radius: 30px;" id="book-btn"
-                                    onclick="readmore('<%= property._id %>')">Book Now</button>
-                                
+                            <% }) %>
+                                <script>
+                                    const readmore = (propertyID) => {
+                                        const queryString = `propertyID=${propertyID}`;
+                                        window.location.href = `/readmore?${queryString}`;
+                                    };
+                                </script>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Package End -->
+
+
+            <!-- Booking Start -->
+            <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="container">
+                    <div class="booking p-5">
+                        <div class="row g-5 align-items-center">
+                            <div class="col-md-6 text-white">
+                                <h6 class="text-white text-uppercase">Booking</h6>
+                                <h1 class="text-white mb-4">Online Booking</h1>
+                                <p class="mb-4">Online booking guarantees the protection of personal and financial
+                                    information
+                                    through encrypted transactions, secure payment gateways, and strict privacy
+                                    policies,
+                                    ensuring a seamless and trustworthy reservation process.</p>
+                                <p class="mb-4">Secure your booking instantly with Online Payment</p>
+                                <!-- <a class="btn btn-outline-light p y-3 px-5 mt-2" href="">Read More</a> -->
+                            </div>
+                            <div class="col-md-6">
+                                <h2 class="text-white mb-4" href="booking">Book your room</h2>
+                                <form action="/api/bookings" method="Post">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <a class="btn btn-outline-light w-100 py-3" type="submit" id="resister"
+                                                href="search-page">Book Now</a>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
-                <% }) %>
+                </div>
+            </div>
+            <!-- Booking Start -->
+
+
+            <!-- Process Start -->
+            <div class="container-xxl py-5">
+                <div class="container">
+                    <div class="text-center pb-4 wow fadeInUp" data-wow-delay="0.1s">
+                        <h6 class="section-title bg-white text-center text-primary px-3">Process</h6>
+                        <h1 class="mb-5">3 Easy Steps</h1>
+                    </div>
+                    <div class="row gy-5 gx-4 justify-content-center">
+                        <div class="col-lg-4 col-sm-6 text-center pt-4 wow fadeInUp" data-wow-delay="0.1s">
+                            <div class="position-relative border border-primary pt-5 pb-4 px-4">
+                                <div class="d-inline-flex align-items-center justify-content-center bg-primary rounded-circle position-absolute top-0 start-50 translate-middle shadow"
+                                    style="width: 100px; height: 100px;">
+                                    <i class="fa fa-globe fa-3x text-white"></i>
+                                </div>
+                                <h5 class="mt-4">Choose A Room</h5>
+                                <hr class="w-25 mx-auto bg-primary mb-1">
+                                <hr class="w-50 mx-auto bg-primary mt-0">
+                                <p class="mb-0">Simple select a room where you want to live</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-6 text-center pt-4 wow fadeInUp" data-wow-delay="0.3s">
+                            <div class="position-relative border border-primary pt-5 pb-4 px-4 full-height">
+                                <div class="d-inline-flex align-items-center justify-content-center bg-primary rounded-circle position-absolute top-0 start-50 translate-middle shadow"
+                                    style="width: 100px; height: 100px;">
+                                    <i class="fa fa-rupee-sign fa-3x text-white"></i>
+                                </div>
+                                <h5 class="mt-4">Pay Online</h5>
+                                <hr class="w-25 mx-auto bg-primary mb-1">
+                                <hr class="w-50 mx-auto bg-primary mt-0">
+                                <p class="mb-0">Pay through UPI</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-sm-6 text-center pt-4 wow fadeInUp" data-wow-delay="0.5s">
+                            <div class="position-relative border border-primary pt-5 pb-4 px-4 full-height">
+                                <div class="d-inline-flex align-items-center justify-content-center bg-primary rounded-circle position-absolute top-0 start-50 translate-middle shadow"
+                                    style="width: 100px; height: 100px;">
+                                    <i class="fa bi bi-building fa-3x text-white"></i>
+                                </div>
+                                <h5 class="mt-4">Move In Today</h5>
+                                <hr class="w-25 mx-auto bg-primary mb-1">
+                                <hr class="w-50 mx-auto bg-primary mt-0">
+                                <p class="mb-0">Start hassle-free living from today </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Process Start -->
+
+            <!--footer start-->
+            <%- include('footer') %>
+                <!--footer end-->
+
+                <!-- Template Javascript -->
+                <script src="js/main.js"></script>
+                <script src="..//js/locationScript.js"></script>
                 <script>
-                    const readmore = (propertyID) => {
-                        const queryString = `propertyID=${propertyID}`;
-                        window.location.href = `/readmore?${queryString}`;
+                    // Automatically hide the message after 4 seconds
+                    setTimeout(function () {
+                        const alertMessage = document.getElementById('message-alert');
+                        if (alertMessage) {
+                            alertMessage.style.transition = 'opacity 1s ease';
+                            alertMessage.style.opacity = '0';
+                            setTimeout(() => alertMessage.remove(), 1000);  // Remove from DOM after fade-out
+                        }
+                    }, 4000);
+                </script>
+                <script>
+                    document.getElementById('searchButton').onclick = function () {
+                        const userLat = sessionStorage.getItem('userLat');
+                        const userLng = sessionStorage.getItem('userLng');
+                        if (userLat && userLng) {
+                            window.location.href = `/search-page?lat=${userLat}&lng=${userLng}`;
+                        } else {
+                            alert("Location is required for this feature.");
+                        }
                     };
                 </script>
 
-            </div>
-        </div>
-    </div>
-    <!-- Package End -->
-
-
-    <!-- Booking Start -->
-    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container">
-            <div class="booking p-5">
-                <div class="row g-5 align-items-center">
-                    <div class="col-md-6 text-white">
-                        <h6 class="text-white text-uppercase">Booking</h6>
-                        <h1 class="text-white mb-4">Online Booking</h1>
-                        <p class="mb-4">Online booking guarantees the protection of personal and financial information
-                            through encrypted transactions, secure payment gateways, and strict privacy policies,
-                            ensuring a seamless and trustworthy reservation process.</p>
-                        <p class="mb-4">Secure your booking instantly with Online Payment</p>
-                        <!-- <a class="btn btn-outline-light p y-3 px-5 mt-2" href="">Read More</a> -->
-                    </div>
-                    <div class="col-md-6">
-                        <h2 class="text-white mb-4" href="booking">Book your room</h2>
-                        <form action="/api/bookings" method="Post">
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <a class="btn btn-outline-light w-100 py-3" type="submit" id="resister"
-                                        href="search-page">Book Now</a>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Booking Start -->
-
-
-    <!-- Process Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center pb-4 wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Process</h6>
-                <h1 class="mb-5">3 Easy Steps</h1>
-            </div>
-            <div class="row gy-5 gx-4 justify-content-center">
-                <div class="col-lg-4 col-sm-6 text-center pt-4 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="position-relative border border-primary pt-5 pb-4 px-4">
-                        <div class="d-inline-flex align-items-center justify-content-center bg-primary rounded-circle position-absolute top-0 start-50 translate-middle shadow"
-                            style="width: 100px; height: 100px;">
-                            <i class="fa fa-globe fa-3x text-white"></i>
-                        </div>
-                        <h5 class="mt-4">Choose A Room</h5>
-                        <hr class="w-25 mx-auto bg-primary mb-1">
-                        <hr class="w-50 mx-auto bg-primary mt-0">
-                        <p class="mb-0">Simple select a room where you want to live</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-sm-6 text-center pt-4 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="position-relative border border-primary pt-5 pb-4 px-4 full-height">
-                        <div class="d-inline-flex align-items-center justify-content-center bg-primary rounded-circle position-absolute top-0 start-50 translate-middle shadow"
-                            style="width: 100px; height: 100px;">
-                            <i class="fa fa-rupee-sign fa-3x text-white"></i>
-                        </div>
-                        <h5 class="mt-4">Pay Online</h5>
-                        <hr class="w-25 mx-auto bg-primary mb-1">
-                        <hr class="w-50 mx-auto bg-primary mt-0">
-                        <p class="mb-0">Pay through UPI</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-sm-6 text-center pt-4 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="position-relative border border-primary pt-5 pb-4 px-4 full-height">
-                        <div class="d-inline-flex align-items-center justify-content-center bg-primary rounded-circle position-absolute top-0 start-50 translate-middle shadow"
-                            style="width: 100px; height: 100px;">
-                            <i class="fa bi bi-building fa-3x text-white"></i>
-                        </div>
-                        <h5 class="mt-4">Move In Today</h5>
-                        <hr class="w-25 mx-auto bg-primary mb-1">
-                        <hr class="w-50 mx-auto bg-primary mt-0">
-                        <p class="mb-0">Start hassle-free living from today </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Process Start -->
-
-    <!--footer start-->
-    <%- include('footer') %>
-    <!--footer end-->
-
-        <!-- Template Javascript -->
-        <script src="js/main.js"></script>
-        <script src="..//js/locationScript.js"></script>
-        <script>
-            // Automatically hide the message after 4 seconds
-            setTimeout(function () {
-                const alertMessage = document.getElementById('message-alert');
-                if (alertMessage) {
-                    alertMessage.style.transition = 'opacity 1s ease';
-                    alertMessage.style.opacity = '0';
-                    setTimeout(() => alertMessage.remove(), 1000);  // Remove from DOM after fade-out
-                }
-            }, 4000);
-        </script>   
-        <script>
-            document.getElementById('searchButton').onclick = function () {
-              const userLat = sessionStorage.getItem('userLat');
-              const userLng = sessionStorage.getItem('userLng');
-              if (userLat && userLng) {
-                window.location.href = `/search-page?lat=${userLat}&lng=${userLng}`;
-              } else {
-                alert("Location is required for this feature.");
-              }
-            };
-          </script>
-             
 </body>
 
 </html>

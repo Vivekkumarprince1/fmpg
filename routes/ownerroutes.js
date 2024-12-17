@@ -11,6 +11,8 @@ const Owner = require('../models/owner');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { isAuthenticated, authorizeAdmin } = require('../middleware/auth'); // Adjust path as needed
+
 
 // Ensure the owner middleware is placed correctly
 function ensureOwner(req, res, next) {
@@ -35,9 +37,25 @@ router.get('/owners', async (req, res) => {
   }
 });
 
-// Get form to create a new owner
-router.get('/newOwner', (req, res) => {
-  res.render('newOwner');
+// // Get form to create a new owner
+router.get('/newOwner', isAuthenticated, async (req, res) => {
+  try {
+    // The email from the decoded JWT token
+    const email = req.user.email;
+
+    // Fetch the user from the database using the email
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    // Render the 'newOwner' page and pass the user data
+    res.render('newOwner', { user });  // Pass 'user' as an object to EJS
+  } catch (err) {
+    console.error('Error in /newOwner route:', err.message);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 
@@ -85,13 +103,14 @@ const uploadFields = upload.fields([
   { name: 'tenantContract', maxCount: 1 } // For tenant contract upload
 ]);
 
-// Route to handle form submission with multiple file uploads
-router.post('/newOwner', uploadFields, async (req, res) => {
-  try {
-      const { ownerName, contactNumber, userId, email, propertyName, type, address, map, locations, landmark, gender, amenities, rules, securityDeposit, description, additionalDetails } = req.body;
 
-       // Get the paths of the uploaded images and store as relative paths
-       const imagePaths = req.files['images'] ? req.files['images'].map(file => `PG-photos/${req.body.propertyName}/${file.filename}`) : [];
+router.post('/newOwner',isAuthenticated, uploadFields, async (req, res) => {
+  try {
+      // Extract form data from req.body
+      const { ownerName, contactNumber, email, propertyName, type, address, map, locations, landmark, gender, amenities, rules, securityDeposit, description, additionalDetails } = req.body;
+
+      // Get the paths of the uploaded images and store them as relative paths
+      const imagePaths = req.files['images'] ? req.files['images'].map(file => `PG-photos/${req.body.propertyName}/${file.filename}`) : [];
 
       // Get the path of the uploaded tenantContract
       const tenantContractPath = req.files['tenantContract'] ? req.files['tenantContract'][0].path : null;
@@ -115,26 +134,42 @@ router.post('/newOwner', uploadFields, async (req, res) => {
         if (!roomData.type || !roomData.price || !roomData.capacity || !roomData.availableRooms) {
           throw new Error('Room data is missing required fields.');
         }
-        
+
         const room = new Room({
-          // number: roomData.number,
           type: roomData.type,
           price: roomData.price,
           capacity: roomData.capacity,
           available: roomData.available === 'true',
           availableRooms: roomData.availableRooms,
         });
-        
+
         await room.save();
         rooms.push(room._id); // Save the room ID
       }
+
+      // Ensure the user is authenticated via JWT
+      // const token = req.cookies.token || req.headers['authorization']; // Get the token from cookies or header
+      // if (!token) {
+      //   return res.status(401).send('Authentication required');
+      // }
+
+      // // Decode the JWT token to extract user info
+      // let decoded;
+      // try {
+      //   decoded = jwt.verify(token, process.env.JWT_SECRET || 'myjwt');
+      // } catch (err) {
+      //   return res.status(401).send('Invalid or expired token');
+      // }
+
+      // Now you can use the decoded data (e.g., userId, email) in your new Owner creation
+      const userId = req.user.userId; // assuming 'id' is part of the JWT payload
 
       // Create new Owner object and save in MongoDB
       const newOwner = new Owner({
           ownerName,
           contactNumber,
-          userId,
-          email,
+          userId, // Use the userId from the JWT
+          email, // Use the email from the JWT
           propertyName,
           type,
           address,
@@ -149,17 +184,18 @@ router.post('/newOwner', uploadFields, async (req, res) => {
           description,
           additionalDetails,
           tenantContract: tenantContractPath, // Save the tenant contract path
-          images:  imagePaths, // Save the images path
+          images: imagePaths, // Save the images path
       });
 
       await newOwner.save();
       req.session.success = 'Successfully submitted, our team will contact you';
       res.redirect('/');
   } catch (err) {
-      console.error(err);
+      console.error('Error in creating new owner:', err);
       res.status(500).send('Server Error');
   }
 });
+
 
 
 

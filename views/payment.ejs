@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -50,4 +50,214 @@
 </script>
     
 </body>
-</html>
+</html> -->
+
+
+
+
+
+
+<!-- <form id="payment-form">
+    <button id="pay-btn">Pay Now</button>
+  </form>
+  
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    document.getElementById('pay-btn').onclick = function (e) {
+      e.preventDefault();
+  
+      // Fetch order details from the server
+      fetch('/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: 500, // Amount in INR
+        }),
+      })
+        .then((response) => response.json())
+        .then((order) => {
+          // Initialize Razorpay payment
+          const options = {
+            key: 'your_razorpay_key_id', // Replace with your key ID
+            amount: order.amount,
+            currency: order.currency,
+            name: 'Your Company Name',
+            description: 'Test Transaction',
+            order_id: order.id, // Order ID from server
+            handler: function (response) {
+              alert('Payment successful!');
+              console.log('Payment Response:', response);
+              // Send the response to your server for verification and booking
+            },
+          };
+  
+          const rzp = new Razorpay(options);
+          rzp.open();
+        })
+        .catch((err) => {
+          console.error('Error fetching order:', err);
+          alert('Payment initiation failed.');
+        });
+    };
+  </script>
+   -->
+
+
+
+
+   <!DOCTYPE html>
+   <html lang="en">
+   
+   <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Order Summary</title>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+     <style>
+       body {
+         font-family: 'Arial', sans-serif;
+         margin: 0;
+         padding: 0;
+         background: #f9f9f9;
+       }
+   
+       .container {
+         max-width: 600px;
+         margin: 50px auto;
+         padding: 20px;
+         background: #fff;
+         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+         border-radius: 10px;
+       }
+   
+       h1 {
+         text-align: center;
+         color: #333;
+       }
+   
+       .summary {
+         margin: 20px 0;
+       }
+   
+       .summary p {
+         font-size: 16px;
+         color: #555;
+         margin: 10px 0;
+       }
+   
+       .summary .highlight {
+         color: #000;
+         font-weight: bold;
+       }
+   
+       .fee {
+         margin-top: 20px;
+         font-size: 18px;
+         text-align: center;
+         background: #f4f4f4;
+         padding: 10px;
+         border-radius: 5px;
+       }
+   
+       .pay-btn {
+         display: block;
+         width: 100%;
+         margin: 20px auto;
+         padding: 15px;
+         font-size: 18px;
+         color: #fff;
+         background: #28a745;
+         text-align: center;
+         border: none;
+         border-radius: 5px;
+         cursor: pointer;
+         transition: background 0.3s ease;
+       }
+   
+       .pay-btn:hover {
+         background: #218838;
+       }
+   
+       footer {
+         margin-top: 20px;
+         text-align: center;
+         font-size: 14px;
+         color: #777;
+       }
+     </style>
+     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+   </head>
+   
+   <body>
+     <div class="container">
+       <h1>Order Summary</h1>
+   
+       <div class="summary">
+         <p>Property Name: <span class="highlight">The Sunshine Hostel</span></p>
+         <p>Room Type: <span class="highlight">Single Deluxe</span></p>
+         <p>Check-in Date: <span class="highlight">01-Jan-2025</span></p>
+         <p>Check-out Date: <span class="highlight">07-Jan-2025</span></p>
+         <p>Special Request: <span class="highlight">Late Check-in</span></p>
+         <div class="fee">Booking Verification Fee: <span class="highlight">₹500</span></div>
+       </div>
+   
+       <button id="rzp-button" class="pay-btn">Pay ₹500 to Confirm Booking</button>
+     </div>
+   
+     <footer>
+       <p>&copy; 2024 FMPG. All rights reserved.</p>
+     </footer>
+   
+   
+     <script>
+       const options = {
+         key: "<%= process.env.RAZORPAY_KEY_ID %>",
+         amount: "<%= order.amount %>",
+         currency: "INR",
+         name: "FMPG",
+         description: "Room Booking Payment",
+         order_id: "<%= order.id %>",
+         handler: function (response) {
+           const data = {
+             payment_id: response.razorpay_payment_id,
+             order_id: response.razorpay_order_id,
+             signature: response.razorpay_signature,
+             userId: "<%= userId %>",
+             roomId: "<%= roomId %>",
+             propertyID: "<%= propertyID %>",
+             mobile: "<%= mobile %>",
+             startDate: "<%= startDate %>",
+             endDate: "<%= endDate %>",
+             specialRequest: "<%= specialRequest %>",
+             username: "<%= username %>",
+           };
+   
+           fetch('/api/bookings/payment-success', {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify(data),
+           })
+             .then(response => response.json())
+             .then(result => {
+               if (result.success) {
+                 alert('Payment successful!');
+                 window.location.href = result.redirect;
+                } else {
+                 alert('Payment failed: ' + result.message);
+               }
+             });
+         },
+         theme: {
+           color: "#F37254"
+         }
+       };
+   
+       const rzp = new Razorpay(options);
+       document.getElementById('rzp-button').onclick = () => rzp.open();
+     </script>
+   </body>
+   
+   </html>
+   

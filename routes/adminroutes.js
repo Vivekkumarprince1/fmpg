@@ -14,6 +14,8 @@ const path = require('path');
 const fs = require('fs');
 const Owner = require('../models/owner');
 const bcrypt = require('bcryptjs');
+const { isAuthenticated, authorizeAdmin } = require('../middleware/auth'); // Adjust path as needed
+
 
 router.get('/form', function (req, res, next) {
   res.render('admin/pages/forms/basic-forms');
@@ -24,12 +26,14 @@ router.get('/newOwnerrequest', isAuthenticated, async (req, res) => {
   try {
     // Fetch all owners from the database and populate the rooms field
     const owners = await Owner.find().populate('rooms').exec();
-    const user = await User.findOne({ email: req.session.passport.user });
 
-    // Render the admin page with owner data
-    res.render('admin/newOwnerrequest', { owners,admin:user });
+    // Fetch the logged-in user details using the email from the decoded JWT token
+    const user = await User.findOne({ email: req.user.email });
+
+    // Render the admin page with owner data and admin user details
+    res.render('admin/newOwnerrequest', { owners, admin: user });
   } catch (err) {
-    console.error(err);
+    console.error('Error in /newOwnerrequest route:', err.message);
     res.status(500).send('Server Error');
   }
 });
@@ -43,7 +47,7 @@ router.post('/confirm/:ownerId', isAuthenticated, async (req, res) => {
       return res.status(404).send('Owner not found');
     }
 
-    // Extract relevant data from owner to create a new property
+    // Extract relevant data from the owner to create a new property
     const newProperty = new Property({
       propertyName: owner.propertyName,
       locations: owner.locations,
@@ -78,63 +82,105 @@ router.post('/confirm/:ownerId', isAuthenticated, async (req, res) => {
     // Remove the owner from the Owner collection
     await Owner.findByIdAndDelete(req.params.ownerId);
 
-    // Redirect or send success response
+    // Send success message and redirect
     req.session.success = 'Owner confirmed and added as a property';
     res.redirect('/admin/properties');
   } catch (err) {
-    console.error(err);
+    console.error('Error in /confirm/:ownerId route:', err);
     res.status(500).send('Server error');
   }
 });
 
+
 // Cancel owner request
 router.post('/cancel/:ownerId', isAuthenticated, async (req, res) => {
   try {
-      const ownerId = req.params.ownerId; // Use req.params.ownerId correctly
-      const owner = await Owner.findById(ownerId); // Find the owner by ID
-      if (!owner) {
-          return res.status(404).send('Owner not found'); // Handle case where owner is not found
-      }
-      owner.status = 'Cancelled'; // Update the status to 'Cancelled'
-      await owner.save(); // Save the updated owner document back to the database
+    const ownerId = req.params.ownerId; // Use req.params.ownerId correctly
 
-      res.redirect('/admin/newOwnerrequest'); // Redirect back to the owner listings
+    // Find the owner by ID
+    const owner = await Owner.findById(ownerId);
+    if (!owner) {
+      return res.status(404).send('Owner not found'); // Handle case where owner is not found
+    }
+
+    // Update the status to 'Cancelled'
+    owner.status = 'Cancelled';
+    await owner.save(); // Save the updated owner document back to the database
+
+    // Set a success message (optional)
+    req.session.success = 'Owner request has been cancelled successfully';
+
+    // Redirect back to the owner listings page
+    res.redirect('/admin/newOwnerrequest');
   } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
+    console.error('Error in /cancel/:ownerId route:', err);
+    res.status(500).send('Server Error');
   }
 });
+
 
 // View owner details
 router.get('/view/:id', isAuthenticated, async (req, res) => {
   try {
-      const ownerId = req.params.id;
-      console.log(ownerId);
-      const owner = await Owner.findById(ownerId).populate('rooms').populate({
-        path: 'userId',          // Populate the 'user' field
-        select: 'username email mobile' // Select only necessary fields, e.g., 'username' and 'email'
-      }) || await Property.findById(ownerId).populate('rooms').populate({
-        path: 'userId',          // Populate the 'user' field
-        select: 'username email mobile' // Select only necessary fields, e.g., 'username' and 'email'
-      });
-      const user = await User.findOne({ email: req.session.passport.user }); // Fetch the admin user
-      if (!owner) {
-          return res.status(404).send('Owner not found');
-      }
-      res.render('admin/viewOwner', { owner,admin:user }); // Render a new page with owner details
+    const ownerId = req.params.id; // Extract the ownerId from URL
+    console.log(ownerId);
+
+    // Find the owner in either the Owner or Property model and populate related fields
+    const owner = await Owner.findById(ownerId).populate('rooms').populate({
+      path: 'userId',          // Populate the 'user' field
+      select: 'username email mobile' // Select only necessary fields
+    }) || await Property.findById(ownerId).populate('rooms').populate({
+      path: 'userId',          // Populate the 'user' field
+      select: 'username email mobile' // Select only necessary fields
+    });
+
+    if (!owner) {
+      return res.status(404).send('Owner not found');
+    }
+
+    // Extract the email from the JWT payload (req.user)
+    const email = req.user.email;
+
+    // Fetch the admin user using the extracted email
+    const user = await User.findOne({ email });
+
+    // If the user doesn't exist, handle it (optional)
+    if (!user) {
+      return res.status(404).send('Admin user not found');
+    }
+
+    // Render the page with owner and admin user data
+    res.render('admin/viewOwner', { owner, admin: user });
+
   } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
+    console.error('Error in /view/:id route:', err.message);
+    res.status(500).send('Server Error');
   }
 });
 
 
 
+
 // View all users
-router.get('/users',isAuthenticated, async (req, res) => {
-  const users = await User.find({});
-  const user = await User.findOne({ email: req.session.passport.user });
-  res.render('admin/users', { users, admin:user});
+router.get('/users', isAuthenticated, async (req, res) => {
+  try {
+    // Extract the email from req.user
+    const email = req.user.email;
+
+    // Fetch all users
+    const users = await User.find({});
+
+    // Fetch the admin user by email
+    const admin = await User.findOne({ email });
+
+    console.log(admin);
+
+    // Render the admin users page
+    res.render('admin/users', { users, admin });
+  } catch (err) {
+    console.error('Error in /users route:', err.message);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 
@@ -144,22 +190,91 @@ router.get('/users/add', isAuthenticated, async(req, res) => {
 });
 
 router.post('/users/add', isAuthenticated, async (req, res) => {
-  const { username, email, mobile, password } = req.body;
-  const newUser = new User({ username, email, mobile });
-  await User.register(newUser, password);
-  res.redirect('/admin/users');
+  try {
+    const { username, email, mobile, password, role } = req.body;
+
+    // Check if the email or username already exists
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
+      return res.status(400).send('Email or username already exists');
+    }
+
+    // Hash the password manually before saving
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create a new user
+    const newUser = new User({
+      username,
+      email,
+      mobile,
+      password: hashedPassword, // Save the hashed password
+      role: role || 'user', // Default to 'user' if no role is provided
+    });
+
+    // Save the new user to the database
+    await newUser.save();
+
+    // Redirect to the users list page
+    res.redirect('/admin/users');
+  } catch (err) {
+    console.error('Error in /users/add route:', err.message);
+    res.status(500).send('Internal Server Error');
+  }
 });
+
 
 // Edit a user
 router.get('/users/edit/:id', isAuthenticated, async (req, res) => {
-  const user = await User.findById(req.params.id);
-  res.render('admin/editUser', { user });
+  try {
+    // Fetch the user by ID from the URL parameter
+    const user = await User.findById(req.params.id);
+
+    // If the user doesn't exist, handle the error
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    // Optionally, you can fetch the admin user based on the decoded JWT email
+    const admin = await User.findOne({ email: req.user.email });
+
+    // Render the admin edit user page with the user and admin data
+    res.render('admin/editUser', { user, admin });
+  } catch (err) {
+    console.error('Error in /users/edit/:id route:', err.message);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
+
 router.post('/users/edit/:id', isAuthenticated, async (req, res) => {
-  const { username, email, mobile,role } = req.body;
-  await User.findByIdAndUpdate(req.params.id, { username, email, mobile,role });
-  res.redirect('/admin/users');
+  const { username, email, mobile, role } = req.body;
+  const userId = req.params.id;
+
+  // Check if the logged-in user has the permission to edit other users
+  if (req.user.role !== 'admin' && req.user.role !== 'superadmin') {
+    return res.status(403).send('Forbidden: You do not have permission to edit users.');
+  }
+
+  try {
+    // Perform the update on the user with the given ID
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { username, email, mobile, role },
+      { new: true } // Return the updated document
+    );
+
+    // Check if the user was found and updated
+    if (!updatedUser) {
+      return res.status(404).send('User not found.');
+    }
+
+    // Redirect to the admin users page with a success message (if needed)
+    res.redirect('/admin/users');
+  } catch (err) {
+    console.error('Error updating user:', err.message);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 // Delete a user
@@ -172,21 +287,49 @@ router.post('/users/delete/:id', isAuthenticated, async (req, res) => {
 // View all properties
 router.get('/properties', isAuthenticated, async (req, res) => {
   try {
+    // Fetch properties with populated rooms
     const properties = await Property.find({}).populate('rooms');
-    const user = await User.findOne({ email: req.session.passport.user });
-    res.render('admin/properties', { properties ,admin:user},);
+
+    // Extract the email from the decoded JWT in req.user
+    const email = req.user.email;
+
+    // Fetch the admin user by email
+    const user = await User.findOne({ email });
+
+    // Render the admin properties page, passing properties and the admin user
+    res.render('admin/properties', { properties, admin: user });
   } catch (err) {
-    console.error(err);
+    console.error('Error in /properties route:', err.message);
     res.status(500).send('Server Error');
   }
 });
 
+
 // Add a new property
-router.get('/properties/add', isAuthenticated, async(req, res) => {
-  const propertyTypes = ['PG', 'Hostel', 'Flat', 'PG with Mess'];
-  const user = await User.findOne({ email: req.session.passport.user });
-  res.render('admin/addProperty',{propertyTypes,admin:user});
+router.get('/properties/add', isAuthenticated, async (req, res) => {
+  try {
+    // Extract the email from the JWT payload
+    const email = req.user.email;
+
+    // Find the user by email
+    const user = await User.findOne({ email });
+
+    // If the user is not found, you can handle it here, for example:
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    // Property types for the dropdown menu
+    const propertyTypes = ['PG', 'Hostel', 'Flat', 'PG with Mess'];
+
+    // Render the addProperty page with the necessary data
+    res.render('admin/addProperty', { propertyTypes, admin: user });
+  } catch (err) {
+    console.error('Error in /properties/add route:', err.message);
+    res.status(500).send('Internal Server Error');
+  }
 });
+
 
 
 
@@ -236,7 +379,7 @@ const uploadFields = upload.fields([
 
 
 
-router.post('/properties/add', uploadFields,isAuthenticated, async (req, res) => {
+router.post('/properties/add', uploadFields, isAuthenticated, async (req, res) => {
   try {
     console.log(req.body); // Log the entire request body
     console.log(req.files); // Log uploaded files for debugging
@@ -251,8 +394,6 @@ router.post('/properties/add', uploadFields,isAuthenticated, async (req, res) =>
     if (imagePaths.length < 1) {
       return res.status(400).send('You must upload at least 1 image.');
     }
-
-
 
     // Extract room data
     const roomsData = [];
@@ -269,8 +410,6 @@ router.post('/properties/add', uploadFields,isAuthenticated, async (req, res) =>
         }
       }
     }
-    // Extract room data directly as an array
-    // const roomsData = req.body.rooms;
 
     // Check if roomsData is an array
     if (!Array.isArray(roomsData)) {
@@ -282,10 +421,9 @@ router.post('/properties/add', uploadFields,isAuthenticated, async (req, res) =>
     const rooms = [];
     for (const roomData of roomsData) {
       const room = new Room({
-        // number: roomData.number,
         type: roomData.type,
         price: roomData.price,
-        available: roomData.available === 'true', // Convert
+        available: roomData.available === 'true', // Convert string to boolean
         capacity: roomData.capacity,
         availableRooms: roomData.availableRooms,
       });
@@ -293,9 +431,10 @@ router.post('/properties/add', uploadFields,isAuthenticated, async (req, res) =>
       rooms.push(room._id); // Save the room ID to the property
     }
 
+    // Extract property data
+    const { propertyName, locations, type, gender, amenities, map, ownerName, description, rules, landmark, address, contactNumber, email, securityDeposit, additionalDetails } = req.body;
 
-    // Create property
-    const { propertyName, locations, type, gender,amenities, map, ownerName, description, rules, landmark, address, contactNumber, email,securityDeposit, additionalDetails} = req.body;
+    // Create the new property
     const newProperty = new Property({
       propertyName,
       locations,
@@ -308,35 +447,48 @@ router.post('/properties/add', uploadFields,isAuthenticated, async (req, res) =>
       email,
       securityDeposit,
       rules,
-      images: imagePaths ,
+      images: imagePaths,
       map,
       amenities: Array.isArray(amenities) ? amenities : [amenities],
       description,
       rooms, // Add room references to property
       ownerName,
-      tenantContract:tenantContractPath,
+      tenantContract: tenantContractPath,
     });
 
-    // Check if the owner exists and update their role; otherwise, create a new user
-    let user = await User.findOne({ email: req.body.email });
+    // Use JWT to authenticate and get the logged-in user's email
+    const token = req.cookies.token || req.headers['authorization'];
+    if (!token) {
+      return res.status(401).send('Authentication token is missing.');
+    }
+
+    // Verify the JWT token and get the user info
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'myjwt');
+    const userEmail = decoded.email; // Extract the email from the decoded JWT payload
+
+    // Check if the user already exists
+    let user = await User.findOne({ email: userEmail });
     if (!user) {
       // If no user exists, create one
-      const hashedPassword = await bcrypt.hash(req.body.propertyName, 10); // Hash the password
+      const hashedPassword = await bcrypt.hash(propertyName, 10); // Hash the password using property name as an example
 
       user = new User({
-        username: req.body.propertyName,
-        email: req.body.email,
-        mobile: req.body.contactNumber,
+        username: propertyName,
+        email: userEmail,
+        mobile: contactNumber,
         password: hashedPassword,
-        role: 'owner',
+        role: 'owner', // Set the role to 'owner'
       });
       await user.save();
     } else {
-      user.role = 'owner'; // Update role to owner if user already exists
+      user.role = 'owner'; // Update the role to 'owner' if user already exists
       await user.save();
     }
 
+    // Save the property
     await newProperty.save();
+
+    // Redirect to the properties page
     res.redirect('/admin/properties');
   } catch (err) {
     console.error(err);
@@ -348,8 +500,11 @@ router.post('/properties/add', uploadFields,isAuthenticated, async (req, res) =>
 // Edit a property
 router.get('/properties/edit/:id', isAuthenticated, async (req, res) => {
   try {
+    // Fetch the property using the ID in the URL
     const property = await Property.findById(req.params.id).populate('rooms');
-    const user = await User.findOne({ email: req.session.passport.user });
+
+    // Fetch the user from JWT data (req.user)
+    const user = await User.findOne({ email: req.user.email });
 
     console.log('Property fetched:', property); // Debugging line
 
@@ -357,7 +512,8 @@ router.get('/properties/edit/:id', isAuthenticated, async (req, res) => {
       return res.status(404).send('Property not found');
     }
 
-    res.render('admin/editProperty', { property ,admin:user});
+    // Render the edit property page
+    res.render('admin/editProperty', { property, admin: user });
   } catch (err) {
     console.error('Error fetching property:', err);
     res.status(500).send('Server Error');
@@ -367,6 +523,7 @@ router.get('/properties/edit/:id', isAuthenticated, async (req, res) => {
 
 router.post('/properties/edit/:id', uploadFields, isAuthenticated, async (req, res) => {
   try {
+    // Find the property by ID
     const property = await Property.findById(req.params.id).populate('rooms');
     if (!property) {
       return res.status(404).send('Property not found');
@@ -385,8 +542,6 @@ router.post('/properties/edit/:id', uploadFields, isAuthenticated, async (req, r
       images = images.concat(newImagePaths);
     }
 
-
-
     // Handle image removal
     const removeImages = req.body.removeImages || [];  // Images marked for deletion
     removeImages.forEach(image => {
@@ -399,14 +554,10 @@ router.post('/properties/edit/:id', uploadFields, isAuthenticated, async (req, r
       images = images.filter(img => img !== image);
     });
 
-    
-
-
     // Handle uploaded tenant contract
     const tenantContractPath = req.files['tenantContract'] ? req.files['tenantContract'][0].path : property.tenantContract;
 
     // Handle room updates
-    // Handle rooms
     const roomUpdates = req.body.rooms || [];
     const updatedRooms = [];
 
@@ -479,112 +630,137 @@ router.post('/properties/edit/:id', uploadFields, isAuthenticated, async (req, r
 // Delete a property
 router.post('/properties/delete/:id', isAuthenticated, async (req, res) => {
   try {
-    await Property.findByIdAndDelete(req.params.id);
+    // Ensure the user is authenticated and has the necessary permissions (if needed)
+    const user = req.user; // This is the decoded JWT payload
+
+    // Check if the user has appropriate role or permission if necessary
+    // Example: only admins or superadmins can delete properties
+    if (user.role !== 'admin' && user.role !== 'superadmin') {
+      return res.status(403).send('Permission denied');
+    }
+
+    // Proceed with deleting the property
+    const propertyId = req.params.id;
+
+    const deletedProperty = await Property.findByIdAndDelete(propertyId);
+    
+    if (!deletedProperty) {
+      return res.status(404).send('Property not found');
+    }
+
+    // Redirect to properties page after deletion
     res.redirect('/admin/properties');
   } catch (err) {
-    console.error(err);
+    console.error('Error deleting property:', err);
     res.status(500).send('Server Error');
   }
 });
 
 
-// View all rooms
-router.get('/rooms', isAuthenticated, async (req, res) => {
-    try {
-      const rooms = await Room.find({}).populate('property');
-      res.render('admin/rooms', { rooms });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
-    }
-  });
+
+// // View all rooms
+// router.get('/rooms', isAuthenticated, async (req, res) => {
+//     try {
+//       const rooms = await Room.find({}).populate('property');
+//       res.render('admin/rooms', { rooms });
+//     } catch (err) {
+//       console.error(err);
+//       res.status(500).send('Server Error');
+//     }
+//   });
   
-  // Add a new room
-  router.get('/rooms/add', isAuthenticated, async (req, res) => {
-    try {
-      const properties = await Property.find({});
-      res.render('admin/addRoom', { properties });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
-    }
-  });
+//   // Add a new room
+//   router.get('/rooms/add', isAuthenticated, async (req, res) => {
+//     try {
+//       const properties = await Property.find({});
+//       res.render('admin/addRoom', { properties });
+//     } catch (err) {
+//       console.error(err);
+//       res.status(500).send('Server Error');
+//     }
+//   });
   
-  router.post('/rooms/add', isAuthenticated, async (req, res) => {
-    try {
-      const { property, number, type, price } = req.body;
-      const available = req.body.available === "on"; // Convert "on" to true, else false
+//   router.post('/rooms/add', isAuthenticated, async (req, res) => {
+//     try {
+//       const { property, number, type, price } = req.body;
+//       const available = req.body.available === "on"; // Convert "on" to true, else false
   
-      const newRoom = new Room({ property, number, type, price, available }); // Use correct model variable `Room`
-      await newRoom.save();
-      res.redirect('/admin/rooms');
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
-    }
-  });
+//       const newRoom = new Room({ property, number, type, price, available }); // Use correct model variable `Room`
+//       await newRoom.save();
+//       res.redirect('/admin/rooms');
+//     } catch (err) {
+//       console.error(err);
+//       res.status(500).send('Server Error');
+//     }
+//   });
   
-  // Edit a room
-  router.get('/rooms/edit/:id', isAuthenticated, async (req, res) => {
-    try {
-      const room = await Room.findById(req.params.id).populate('property');
-      const properties = await Property.find({});
-      res.render('admin/editRoom', { room, properties });
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
-    }
-  });
+//   // Edit a room
+//   router.get('/rooms/edit/:id', isAuthenticated, async (req, res) => {
+//     try {
+//       const room = await Room.findById(req.params.id).populate('property');
+//       const properties = await Property.find({});
+//       res.render('admin/editRoom', { room, properties });
+//     } catch (err) {
+//       console.error(err);
+//       res.status(500).send('Server Error');
+//     }
+//   });
   
-  router.post('/rooms/edit/:id', isAuthenticated, async (req, res) => {
-    try {
-      const { property, number, type, price } = req.body;
-      const available = req.body.available === "on"; // Convert "on" to true, else false
-      await Room.findByIdAndUpdate(req.params.id, { property, number, type, price, available });
-      res.redirect('/admin/rooms');
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
-    }
-  });
+//   router.post('/rooms/edit/:id', isAuthenticated, async (req, res) => {
+//     try {
+//       const { property, number, type, price } = req.body;
+//       const available = req.body.available === "on"; // Convert "on" to true, else false
+//       await Room.findByIdAndUpdate(req.params.id, { property, number, type, price, available });
+//       res.redirect('/admin/rooms');
+//     } catch (err) {
+//       console.error(err);
+//       res.status(500).send('Server Error');
+//     }
+//   });
   
-  // Delete a room
-  router.post('/rooms/delete/:id', isAuthenticated, async (req, res) => {
-    try {
-      await Room.findByIdAndDelete(req.params.id);
-      res.redirect('/admin/rooms');
-    } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
-    }
-  });
+//   // Delete a room
+//   router.post('/rooms/delete/:id', isAuthenticated, async (req, res) => {
+//     try {
+//       await Room.findByIdAndDelete(req.params.id);
+//       res.redirect('/admin/rooms');
+//     } catch (err) {
+//       console.error(err);
+//       res.status(500).send('Server Error');
+//     }
+//   });
 
 
 // View all bookings
 router.get('/bookings', isAuthenticated, async (req, res) => {
   try {
+    // Fetch all bookings and populate the relevant fields
     const bookings = await Booking.find({})
       .populate({
         path: 'user',          // Populate the 'user' field
-        select: 'username email mobile' // Select only necessary fields, e.g., 'username' and 'email'
+        select: 'username email mobile' // Select necessary fields
       })
       .populate({
         path: 'room',          // Populate the 'room' field
-        select: 'number type price' // Select specific fields, e.g., 'number', 'type', and 'price'
+        select: 'number type price' // Select necessary fields
       })
       .populate({
         path: 'propertyID'    // Populate the 'propertyID' field fully
-    });
-    
-      
-      const user = await User.findOne({ email: req.session.passport.user });
+      });
 
-    res.render('admin/bookings', { bookings ,admin:user});
+    // Extract the email from the decoded JWT in req.user
+    const email = req.user.email; // Ensure this comes from JWT
+
+    // Fetch the admin user using the email extracted from JWT
+    const user = await User.findOne({ email });
+
+    // Render the bookings page with populated bookings and admin user data
+    res.render('admin/bookings', { bookings, admin: user });
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching bookings:', err);
     res.status(500).send('Server Error');
   }
 });
+
 
 //Route to fetch rooms by property
 router.get('/rooms-by-property/:propertyId', async (req, res) => {
@@ -604,35 +780,66 @@ router.get('/rooms-by-property/:propertyId', async (req, res) => {
 
 // Add a new booking
 router.get('/bookings/add', isAuthenticated, async (req, res) => {
-try {
-  const users = await User.find({});
-  const properties = await Property.find({});
-  const user = await User.findOne({ email: req.session.passport.user });
-  res.render('admin/addBooking', { users, properties, rooms: [], admin:user});
-} catch (err) {
-  console.error(err);
-  res.status(500).send('Server Error');
-}
+  try {
+    // Extract the email from the JWT token stored in req.user
+    const email = req.user.email;
+
+    // Fetch all users
+    const users = await User.find({});
+
+    // Fetch all properties
+    const properties = await Property.find({});
+
+    // Fetch the user (admin) by email
+    const user = await User.findOne({ email });
+
+    // Render the add booking page with users, properties, and admin data
+    res.render('admin/addBooking', { users, properties, rooms: [], admin: user });
+  } catch (err) {
+    console.error('Error in /bookings/add route:', err.message);
+    res.status(500).send('Server Error');
+  }
 });
+
 
 router.post('/bookings/add', isAuthenticated, async (req, res) => {
   try {
-    const { user, propertyID , username, room, mobile, startDate, endDate, specialRequest } = req.body;
+    // Extract data from request body
+    const { propertyID, username, room, mobile, startDate, endDate, specialRequest } = req.body;
 
+    // Get the authenticated user from req.user (from JWT)
+    const user = req.user;
+
+    // Find the property by its ID
     const property = await Property.findById(propertyID);
     if (!property) {
       return res.status(404).send('Property not found');
     }
-   const owner=property.ownerName
+
+    // Get the property owner
+    const owner = property.ownerName;
 
     if (!owner) {
       return res.status(400).send('Property does not have an owner');
     }
 
-    const newBooking = new Booking({ user , owner, propertyID , username, room, mobile, startDate, endDate, specialRequest });
-    
+    // Create a new booking with the provided information
+    const newBooking = new Booking({
+      user: user._id, // Save the user ID (from JWT) in the booking
+      owner, 
+      propertyID,
+      username, 
+      room,
+      mobile,
+      startDate,
+      endDate,
+      specialRequest
+    });
+
+    // Save the new booking to the database
     await newBooking.save();
-    
+
+    // Redirect to the bookings page
     res.redirect('/admin/bookings');
   } catch (err) {
     console.error(err);
@@ -641,9 +848,11 @@ router.post('/bookings/add', isAuthenticated, async (req, res) => {
 });
 
 
+
 // Edit a booking
 router.get('/bookings/edit/:id', isAuthenticated, async (req, res) => {
   try {
+    // Fetch the booking by ID and populate related data
     const booking = await Booking.findById(req.params.id)
       .populate({
         path: 'room',
@@ -652,13 +861,17 @@ router.get('/bookings/edit/:id', isAuthenticated, async (req, res) => {
         }
       })
       .populate('user');
-    
+
+    // Fetch all related users, properties, and rooms
     const users = await User.find({});
     const properties = await Property.find({});
     const rooms = await Room.find({});
-    const user = await User.findOne({ email: req.session.passport.user });
 
-    res.render('admin/editBooking', { booking, users, properties, rooms ,admin:user});
+    // Get the current authenticated user details from JWT
+    const admin = await User.findById(req.user.id);  // Use req.user.id to get the admin
+
+    // Render the edit booking page with necessary data
+    res.render('admin/editBooking', { booking, users, properties, rooms, admin });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server Error');
@@ -668,8 +881,12 @@ router.get('/bookings/edit/:id', isAuthenticated, async (req, res) => {
 
 router.post('/bookings/edit/:id', isAuthenticated, async (req, res) => {
   try {
-    const { user, room, mobile, specialRequest,startDate,endDate } = req.body;
-    await Booking.findByIdAndUpdate(req.params.id, { user, room, mobile, specialRequest,startDate,endDate });
+    const { user, room, mobile, specialRequest, startDate, endDate } = req.body;
+
+    // Update the booking with the provided details
+    await Booking.findByIdAndUpdate(req.params.id, { user, room, mobile, specialRequest, startDate, endDate });
+
+    // Redirect to the bookings page after successful update
     res.redirect('/admin/bookings');
   } catch (err) {
     console.error(err);
@@ -677,64 +894,87 @@ router.post('/bookings/edit/:id', isAuthenticated, async (req, res) => {
   }
 });
 
-// Delete a booking
+
 router.post('/bookings/delete/:id', isAuthenticated, async (req, res) => {
   try {
+    // Delete the booking by ID
     await Booking.findByIdAndDelete(req.params.id);
+
+    // Redirect to the bookings page after successful deletion
     res.redirect('/admin/bookings');
   } catch (err) {
     console.error(err);
     res.status(500).send('Server Error');
   }
 });
+
 
 
 //view routes
 router.get('/booking/view/:id', isAuthenticated, async (req, res) => {
   try {
-    const booking = await Booking.findById(req.params.id).populate('propertyID').populate('room')
+    // Extract the user info from req.user (decoded JWT token)
+    const userId = req.user.id;  // Get the user's ID from the JWT payload
+    
+    // Find the booking by ID, and populate the relevant fields
+    const booking = await Booking.findById(req.params.id)
+      .populate('propertyID')
+      .populate('room')
       .populate({
         path: 'room',
         populate: {
-          path: 'property'  // Populate property within room
-        }
+          path: 'property',  // Populate property within the room
+        },
       })
-      .populate('user');
+      .populate('user'); // Populate user details associated with the booking
+    
+    // Fetch all users, properties, and rooms to send to the view
     const users = await User.find({});
     const properties = await Property.find({});
     const rooms = await Room.find({});
-
+    
+    // Render the view, passing the populated booking and other data
     res.render('admin/view', { booking, users, properties, rooms });
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching booking details:', err);
     res.status(500).send('Server Error');
   }
 });
 
 
 
-router.get('/messages',  isAuthenticated, async (req, res) => {
+
+router.get('/messages', isAuthenticated, async (req, res) => {
   try {
-      const messages = await Contact.find(); // Fetch all messages
-      const user = await User.findOne({ email: req.session.passport.user });
-      res.render('admin/messages', { messages ,admin:user});
+    // Extract the email from the decoded JWT stored in req.user
+    const email = req.user.email;
+
+    // Fetch all messages from the Contact model
+    const messages = await Contact.find();
+
+    // Fetch the user (admin) based on the email from the JWT
+    const user = await User.findOne({ email });
+
+    // Render the messages page with the messages and user (admin) information
+    res.render('admin/messages', { messages, admin: user });
   } catch (error) {
-      console.log('Error fetching messages:', error);
-      res.status(500).send('Internal server error.');
+    console.log('Error fetching messages:', error);
+    res.status(500).send('Internal server error.');
   }
 });
 
 
-function isAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    // Assuming the user's role is stored in req.user.role
-    if (req.user.role === 'admin' || req.user.role === 'superadmin') {
-      return next(); // Proceed if the user has the correct role
-    } else {
-      return res.status(403).send('Access Denied: You do not have the required permissions.');
-    }
-  }
-  res.redirect('/login');
-}
+
+// function isAuthenticated(req, res, next) {
+//   if (req.isAuthenticated()) {
+//     // Assuming the user's role is stored in req.user.role
+//     if (req.user.role === 'admin' || req.user.role === 'superadmin') {
+//       return next(); // Proceed if the user has the correct role
+//     } else {
+//       return res.status(403).send('Access Denied: You do not have the required permissions.');
+//     }
+//   }
+//   res.redirect('/login');
+// }
 
 module.exports = router;

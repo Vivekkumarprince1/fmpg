@@ -7,6 +7,7 @@
     "dev": "nodemon app.js"
   },
   "dependencies": {
+    "authenticate": "^0.1.5",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "chart.js": "^4.4.5",
@@ -19,7 +20,9 @@
     "express": "^4.21.1",
     "express-session": "^1.18.0",
     "googleapis": "^144.0.0",
+    "got": "^11.8.6",
     "http-errors": "~1.6.3",
+    "jsonwebtoken": "^9.0.2",
     "method-override": "^3.0.0",
     "mongoose": "^8.5.3",
     "morgan": "~1.9.1",
@@ -30,6 +33,7 @@
     "passport-local-mongoose": "^8.0.0",
     "paytmchecksum": "^1.5.1",
     "pdfkit": "^0.15.0",
+    "razorpay": "^2.9.5",
     "serverless-http": "^3.2.0",
     "uuid": "^10.0.0"
   },
