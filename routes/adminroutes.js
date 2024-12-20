@@ -150,7 +150,7 @@ router.get('/view/:id', isAuthenticated, async (req, res) => {
     }
 
     // Render the page with owner and admin user data
-    res.render('admin/viewOwner', { owner, admin: user });
+    res.render('admin/propertyView', { owner, admin: user });
 
   } catch (err) {
     console.error('Error in /view/:id route:', err.message);

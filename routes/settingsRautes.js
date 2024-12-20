@@ -1,26 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/users');
+const { isAuthenticated, authorizeAdmin } = require('../middleware/auth'); // Adjust path as needed
 
 // GET route for settings page
-router.get('/', (req, res) => {
-  if (!req.isAuthenticated()) {
-    req.flash('error', 'Please log in to view this page.');
-    return res.redirect('/login');
-  }
+router.get('/',isAuthenticated, (req, res) => {
   
   res.render('settings', { user: req.user });
 });
 
 // POST route to update username or mobile
-router.post('/update', async (req, res) => {
+router.post('/update',isAuthenticated, async (req, res) => {
   const { username, mobile } = req.body;
-
-  // Ensure the user is logged in
-  if (!req.isAuthenticated()) {
-    req.flash('error', 'You need to log in first.');
-    return res.redirect('/login');
-  }
 
   try {
     // Find the user and update details

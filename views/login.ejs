@@ -152,48 +152,48 @@
         });
 
         // Set default state based on radio button selection
-    // Handle authentication method toggle
-authMethodRadios.forEach(radio => {
-    radio.addEventListener('change', function () {
-        if (this.value === 'otp') {
-            otpLoginDiv.style.display = 'block';
-            passwordLoginDiv.style.display = 'none';
-            passwordInput.removeAttribute('required');
-            passwordInput.disabled = true;
-            document.getElementById('otp').disabled = false;
-            document.getElementById('otp').setAttribute('required', 'true');
-        } else {
-            otpLoginDiv.style.display = 'none';
-            passwordLoginDiv.style.display = 'block';
-            passwordInput.setAttribute('required', 'true');
-            passwordInput.disabled = false;
-            document.getElementById('otp').removeAttribute('required');
-            document.getElementById('otp').disabled = true;
-        }
-    });
-});
+        // Handle authentication method toggle
+        authMethodRadios.forEach(radio => {
+            radio.addEventListener('change', function () {
+                if (this.value === 'otp') {
+                    otpLoginDiv.style.display = 'block';
+                    passwordLoginDiv.style.display = 'none';
+                    passwordInput.removeAttribute('required');
+                    passwordInput.disabled = true;
+                    document.getElementById('otp').disabled = false;
+                    document.getElementById('otp').setAttribute('required', 'true');
+                } else {
+                    otpLoginDiv.style.display = 'none';
+                    passwordLoginDiv.style.display = 'block';
+                    passwordInput.setAttribute('required', 'true');
+                    passwordInput.disabled = false;
+                    document.getElementById('otp').removeAttribute('required');
+                    document.getElementById('otp').disabled = true;
+                }
+            });
+        });
 
-// Initialize with default method
-document.addEventListener('DOMContentLoaded', function () {
-    const defaultRadio = document.querySelector('[name="authMethod"]:checked');
-    if (defaultRadio) {
-        if (defaultRadio.value === 'otp') {
-            otpLoginDiv.style.display = 'block';
-            passwordLoginDiv.style.display = 'none';
-            passwordInput.removeAttribute('required');
-            passwordInput.disabled = true;
-            document.getElementById('otp').disabled = false;
-            document.getElementById('otp').setAttribute('required', 'true');
-        } else {
-            otpLoginDiv.style.display = 'none';
-            passwordLoginDiv.style.display = 'block';
-            passwordInput.setAttribute('required', 'true');
-            passwordInput.disabled = false;
-            document.getElementById('otp').removeAttribute('required');
-            document.getElementById('otp').disabled = true;
-        }
-    }
-});
+        // Initialize with default method
+        document.addEventListener('DOMContentLoaded', function () {
+            const defaultRadio = document.querySelector('[name="authMethod"]:checked');
+            if (defaultRadio) {
+                if (defaultRadio.value === 'otp') {
+                    otpLoginDiv.style.display = 'block';
+                    passwordLoginDiv.style.display = 'none';
+                    passwordInput.removeAttribute('required');
+                    passwordInput.disabled = true;
+                    document.getElementById('otp').disabled = false;
+                    document.getElementById('otp').setAttribute('required', 'true');
+                } else {
+                    otpLoginDiv.style.display = 'none';
+                    passwordLoginDiv.style.display = 'block';
+                    passwordInput.setAttribute('required', 'true');
+                    passwordInput.disabled = false;
+                    document.getElementById('otp').removeAttribute('required');
+                    document.getElementById('otp').disabled = true;
+                }
+            }
+        });
 
 
 

@@ -104,10 +104,11 @@ const uploadFields = upload.fields([
 ]);
 
 
-router.post('/newOwner',isAuthenticated, uploadFields, async (req, res) => {
+router.post('/newOwner', isAuthenticated, uploadFields, async (req, res) => {
   try {
       // Extract form data from req.body
-      const { ownerName, contactNumber, email, propertyName, type, address, map, locations, landmark, gender, amenities, rules, securityDeposit, description, additionalDetails } = req.body;
+      const { ownerName, contactNumber, email, propertyName, type, address, map, locations, landmark, locality, city,
+        state, pincode, gender, amenities, rules, securityDeposit, description, additionalDetails } = req.body;
 
       // Get the paths of the uploaded images and store them as relative paths
       const imagePaths = req.files['images'] ? req.files['images'].map(file => `PG-photos/${req.body.propertyName}/${file.filename}`) : [];
@@ -120,15 +121,18 @@ router.post('/newOwner',isAuthenticated, uploadFields, async (req, res) => {
         return res.status(400).send('You must upload at least 1 image.');
       }
 
-      // Extract room data directly as an array
+      // Validate zipCodes
+      if (!pincode) {
+        return res.status(400).send('ZIP Codes are required.');
+      }
+
+      // Validate rooms data
       const roomsData = req.body.rooms;
 
-      // Check if roomsData is an array
       if (!Array.isArray(roomsData)) {
         throw new Error('Rooms data is not in the expected format.');
       }
 
-      // Loop over roomsData to create Room instances
       const rooms = [];
       for (const roomData of roomsData) {
         if (!roomData.type || !roomData.price || !roomData.capacity || !roomData.availableRooms) {
@@ -147,22 +151,8 @@ router.post('/newOwner',isAuthenticated, uploadFields, async (req, res) => {
         rooms.push(room._id); // Save the room ID
       }
 
-      // Ensure the user is authenticated via JWT
-      // const token = req.cookies.token || req.headers['authorization']; // Get the token from cookies or header
-      // if (!token) {
-      //   return res.status(401).send('Authentication required');
-      // }
-
-      // // Decode the JWT token to extract user info
-      // let decoded;
-      // try {
-      //   decoded = jwt.verify(token, process.env.JWT_SECRET || 'myjwt');
-      // } catch (err) {
-      //   return res.status(401).send('Invalid or expired token');
-      // }
-
       // Now you can use the decoded data (e.g., userId, email) in your new Owner creation
-      const userId = req.user.userId; // assuming 'id' is part of the JWT payload
+      const userId = req.user.userId;
 
       // Create new Owner object and save in MongoDB
       const newOwner = new Owner({
@@ -173,9 +163,14 @@ router.post('/newOwner',isAuthenticated, uploadFields, async (req, res) => {
           propertyName,
           type,
           address,
+          locality,
+          city,
+          state,
+          pincode,
+          country: 'India',
+          landmark,
           map,
           locations,
-          landmark,
           gender,
           rooms,
           amenities,
@@ -183,8 +178,8 @@ router.post('/newOwner',isAuthenticated, uploadFields, async (req, res) => {
           securityDeposit,
           description,
           additionalDetails,
-          tenantContract: tenantContractPath, // Save the tenant contract path
-          images: imagePaths, // Save the images path
+          tenantContract: tenantContractPath,
+          images: imagePaths,
       });
 
       await newOwner.save();
@@ -195,6 +190,7 @@ router.post('/newOwner',isAuthenticated, uploadFields, async (req, res) => {
       res.status(500).send('Server Error');
   }
 });
+
 
 
 

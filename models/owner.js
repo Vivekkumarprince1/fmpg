@@ -9,10 +9,18 @@ const ownerSchema = new mongoose.Schema({
     email: { type: String, required: true },
     propertyName: { type: String, require: true },
     type: { type: String, enum: ['PG', 'Hostel', 'PG with Mess'] },
+
     address: { type: String, required: true },
+    landmark: { type: String, required: true},
+    locality: { type: String, required: true},
+    city: { type: String, required: true },
+    state: { type: String, required: true },
+   pincode: { type: String, required: true }, // Array of ZIP codes for the city
+    country:{ type: String,enum:['India'],default:'India', required: true},
+
     map: { type: String, required: true },
     locations: {type: [String],required: true, },
-    landmark: { type: String, required: true },
+
     gender: { type: String, enum: ['male', 'female', 'unisex'] },
     amenities: [{ type: String}],
     rules: { type: String, required: true },
