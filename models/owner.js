@@ -15,7 +15,7 @@ const ownerSchema = new mongoose.Schema({
     locality: { type: String, required: true},
     city: { type: String, required: true },
     state: { type: String, required: true },
-   pincode: { type: String, required: true }, // Array of ZIP codes for the city
+    pincode: { type: String, required: true }, // Array of ZIP codes for the city
     country:{ type: String,enum:['India'],default:'India', required: true},
 
     map: { type: String, required: true },

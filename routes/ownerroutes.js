@@ -114,8 +114,7 @@ router.post('/newOwner', isAuthenticated, uploadFields, async (req, res) => {
       const imagePaths = req.files['images'] ? req.files['images'].map(file => `PG-photos/${req.body.propertyName}/${file.filename}`) : [];
 
       // Get the path of the uploaded tenantContract
-      const tenantContractPath = req.files['tenantContract'] ? req.files['tenantContract'][0].path : null;
-
+      const tenantContractPath = req.files['tenantContract'] ? `PG-contracts/${req.body.propertyName}/${req.files['tenantContract'][0].filename}` : null;
       // Validate that at least 1 image has been uploaded
       if (imagePaths.length < 1) {
         return res.status(400).send('You must upload at least 1 image.');
