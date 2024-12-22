@@ -339,9 +339,12 @@ router.get('/profile', isAuthenticated, async function (req, res) {
 
     if (user.role === 'owner') {
       req.flash('success', 'Successfully logged in as owner!');
+      console.log(bookings);
       return res.render('profile', { user, bookings });
+      
     }
 
+    console.log(bookings);
     res.render('profile', { user, bookings });
   } catch (err) {
     console.error('Error fetching profile data:', err);
