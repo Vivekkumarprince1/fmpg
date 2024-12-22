@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-// In your routes file (e.g., routes/shop.js)
 const express = require('express');
 const router = express.Router();
 // Middleware for authentication
@@ -65,12 +64,18 @@ const authorizeSupperAdmin = (req, res, next) => {
 
 
 // user-based access
-const authorizeUser = (req, res, next) => {
-  if (req.user.role !== 'user') {
-    return res.status(403).json({ error: 'Access denied. Users only.' });
+const authorizeOwner = (req, res, next) => {
+  if (!req.user || !req.user.role) {
+    return res.status(403).json({ error: 'Access denied. Missing user role.' });
   }
+
+  if (req.user.role !== 'owner') {
+    return res.status(403).json({ error: 'Access denied. Owners only.' });
+  }
+
   next();
-  };
+};
+
 
 // module.exports = { authenticate, authorizeAdmin };
-module.exports = { isAuthenticated, authorizeAdmin, authorizeSupperAdmin,authorizeUser };
+module.exports = { isAuthenticated, authorizeAdmin, authorizeSupperAdmin,authorizeOwner };

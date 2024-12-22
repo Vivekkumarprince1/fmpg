@@ -11,31 +11,32 @@ const Owner = require('../models/owner');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { isAuthenticated, authorizeAdmin } = require('../middleware/auth'); // Adjust path as needed
+const { isAuthenticated, authorizeOwner } = require('../middleware/auth'); // Adjust path as needed
 
 
 // Ensure the owner middleware is placed correctly
 function ensureOwner(req, res, next) {
-    if (req.user && req.user.role === 'owner') {
+    if (req.user && req.user.role =='owner') {
       return next();
     } else {
       req.flash('error', 'Access denied');
-      res.redirect('/');
+      // console.log("object")
+      // res.redirect('/');
     // res.send(req.user);
     }
 }
 
 
 // Get all owners
-router.get('/owners', async (req, res) => {
-  try {
-      const owners = await Owner.find();
-      res.render('owners', { owners });
-  } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
-  }
-});
+// router.get('/owners', async (req, res) => {
+//   try {
+//       const owners = await Owner.find();
+//       res.render('owners', { owners });
+//   } catch (err) {
+//       console.error(err);
+//       res.status(500).send('Server Error');
+//   }
+// });
 
 // // Get form to create a new owner
 router.get('/newOwner', isAuthenticated, async (req, res) => {
@@ -195,9 +196,11 @@ router.post('/newOwner', isAuthenticated, uploadFields, async (req, res) => {
 
 
 // Get all bookings for the property owner
-router.get('/', ensureOwner, async (req, res) => {
+router.get('/pendingProperty',isAuthenticated,authorizeOwner, async (req, res) => {
   try {
     const propertyEmail = req.user.email; // Get the current owner's ID
+
+    console.log("object")
     
     // Step 1: Find all properties owned by the current owner
     const ownerProperties = await Property.find({ email: propertyEmail });
@@ -287,7 +290,7 @@ function sendInvoiceEmail(user, pdfBuffer) {
 }
 
 // Confirm a booking and send the invoice
-router.post('/bookings/:id/accept', ensureOwner, async (req, res) => {
+router.post('/bookings/:id/accept', isAuthenticated, authorizeOwner, async (req, res) => {
   try {
     const bookingId = req.params.id;
     const booking = await Booking.findById(bookingId).populate('user').populate('propertyID').populate('room');
@@ -308,7 +311,7 @@ router.post('/bookings/:id/accept', ensureOwner, async (req, res) => {
       // Send the invoice to the user via email
       await sendInvoiceEmail(user, pdfBuffer);
       req.flash('success', 'Booking confirmed and invoice sent to the user.');
-      res.redirect('/owner'); // Redirect to owner's bookings page
+      res.redirect('/owner/pendingProperty'); // Redirect to owner's bookings page
     });
 
   } catch (err) {
@@ -317,7 +320,7 @@ router.post('/bookings/:id/accept', ensureOwner, async (req, res) => {
   }
 });
 
-router.post('/bookings/:id/decline', ensureOwner, async (req, res) => {
+router.post('/bookings/:id/decline',isAuthenticated, authorizeOwner, async (req, res) => {
   try {
     const bookingId = req.params.id;
     const booking = await Booking.findById(bookingId).populate('user').populate('propertyID').populate('room');
@@ -338,7 +341,9 @@ router.post('/bookings/:id/decline', ensureOwner, async (req, res) => {
       // Send the invoice to the user via email
       await sendInvoiceEmail(user, pdfBuffer);
       req.flash('success', 'Booking Cancelled and invoice sent to the user.');
-      res.redirect('/owner'); // Redirect to owner's bookings page
+      
+      // res.redirect('/owner'); // Redirect to owner's bookings page
+      res.redirect('/owner/pendingProperty'); 
     });
 
   } catch (err) {

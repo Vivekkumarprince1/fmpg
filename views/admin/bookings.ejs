@@ -1,100 +1,99 @@
+<%- include('partials/header') %>
 
 
-                <%- include('partials/header') %>
+    <!-- partial -->
+    <h1>Manage Bookings</h1>
+    <a href="/admin/bookings/add">Add New Booking</a><br>
+    <a href="/profile"> back to profile</a>
 
-                
-                    <!-- partial -->
-                    <h1>Manage Bookings</h1>
-                    <a href="/admin/bookings/add">Add New Booking</a><br>
-                    <a href="/profile"> back to profile</a>
+    <ol>
+        <table border="1" style="width: 100%; text-align: center;" class="customers">
+            <thead>
+                <tr>
+                    <th>user</th>
+                    <th>Booking ID</th>
+                    <th>Username</th>
+                    <th>mobile</th>
+                    <th>property Type</th>
+                    <th>Start-Date</th>
+                    <th>End-Date</th>
+                    <th>Property</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% bookings.forEach(booking=> { %>
+                    <tr>
+                        <td>
+                            <li>
+                                <%= booking.user ? booking.user.username : 'N/A' %>
+                        </td> <!-- User (populated) --></li>
+                        </td>
+                        <td>
+                            <%= booking._id %>
+                        </td> <!-- Booking ID -->
+                        <td>
+                            <%= booking.username %>
+                        </td> <!-- Username -->
+                        <td>
+                            <%= booking.mobile %>
+                        </td> <!-- Mobile -->
 
-                    <ol>
-                        <table border="1" style="width: 100%; text-align: center;" class="customers">
-                            <thead>
-                                <tr>
-                                    <th>user</th>
-                                    <th>Booking ID</th>
-                                    <th>Username</th>
-                                    <th>mobile</th>
-                                    <th>property Type</th>
-                                    <th>Start-Date</th>
-                                    <th>End-Date</th>
-                                    <th>Property</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% bookings.forEach(booking=> { %>
-                                    <tr>
-                                        <td>
-                                            <li>
-                                                <%= booking.user ? booking.user.username : 'N/A' %>
-                                        </td> <!-- User (populated) --></li>
-                                        </td>
-                                        <td>
-                                            <%= booking._id %>
-                                        </td> <!-- Booking ID -->
-                                        <td>
-                                            <%= booking.username %>
-                                        </td> <!-- Username -->
-                                        <td>
-                                            <%= booking.mobile %>
-                                        </td> <!-- Mobile -->
-                                        
-                                        <td>
-                                            <%= booking.propertyID ? booking.propertyID.type : 'N/A' %>
-                                        </td> <!-- Property Type -->
-                                        
-                                        <td>
-                                            <%= booking.startDate.toDateString() %>
-                                        </td> <!-- Start-Date -->
-                                        <td>
-                                            <%= booking.endDate.toDateString() %>
-                                        </td> <!-- End-Date -->
-                                        <td>
-                                            <%= booking.propertyID.propertyName ? booking.propertyID.propertyName : 'N/A' %>
-                                        </td> <!-- Property (populated) -->
-                                        <td>
-                                            <%= booking.status %>
-                                        </td> <!-- Status -->
-                                        <td>
-                                            <a href="/admin/booking/view/<%= booking._id %>">view</a>
-                                            <a href="/admin/bookings/edit/<%= booking._id %>"> Edit </a>
-                                            <form action="/admin/bookings/delete/<%= booking._id %>" method="POST"
-                                                style="display:inline;" onsubmit="confirmAction('delete', event);">
-                                                <button type="submit"> Delete </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    <% }) %>
-                            </tbody>
-                            <script>
-                                function confirmAction(action, event) {
-                                    event.preventDefault(); // Prevent the form from submitting immediately
-                                    const confirmation = confirm(`Are you sure you want to ${action} this booking?`);
-                                    if (confirmation) {
-                                        event.target.submit(); // Submit the form if confirmed
-                                    }
-                                }
-                            </script>
-                        </table>
-                    </ol>
-            </div>
-            <!-- plugins:js -->
-            <script src="../assets/vendors/js/vendor.bundle.base.js"></script>
-            <!-- endinject -->
-            <!-- Plugin js for this page-->
-            <script src="../assets/vendors/chartjs/Chart.min.js"></script>
-            <script src="../assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
-            <script src="../assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-            <!-- End plugin js for this page-->
-            <!-- inject:js -->
-            <script src="../assets/js/material.js"></script>
-            <script src="../assets/js/misc.js"></script>
-            <!-- endinject -->
-            <!-- Custom js for this page-->
-            <script src="../assets/js/dashboard.js"></script>
-            <!-- End custom js for this page-->
-</body>
-</html>
+                        <td>
+                            <%= booking.propertyID ? booking.propertyID.type : 'N/A' %>
+                        </td> <!-- Property Type -->
+
+                        <td>
+                            <%= booking.startDate.toDateString() %>
+                        </td> <!-- Start-Date -->
+                        <td>
+                            <%= booking.endDate.toDateString() %>
+                        </td> <!-- End-Date -->
+                        <td>
+                            <%= booking.propertyID.propertyName ? booking.propertyID.propertyName : 'N/A' %>
+                        </td> <!-- Property (populated) -->
+                        <td>
+                            <%= booking.status %>
+                        </td> <!-- Status -->
+                        <td>
+                            <a href="/admin/booking/view/<%= booking._id %>">view</a>
+                            <a href="/admin/bookings/edit/<%= booking._id %>"> Edit </a>
+                            <form action="/admin/bookings/delete/<%= booking._id %>" method="POST"
+                                style="display:inline;" onsubmit="confirmAction('delete', event);">
+                                <button type="submit"> Delete </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }) %>
+            </tbody>
+            <script>
+                function confirmAction(action, event) {
+                    event.preventDefault(); // Prevent the form from submitting immediately
+                    const confirmation = confirm(`Are you sure you want to ${action} this booking?`);
+                    if (confirmation) {
+                        event.target.submit(); // Submit the form if confirmed
+                    }
+                }
+            </script>
+        </table>
+    </ol>
+    </div>
+    <!-- plugins:js -->
+    <script src="../assets/vendors/js/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page-->
+    <script src="../assets/vendors/chartjs/Chart.min.js"></script>
+    <script src="../assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
+    <script src="../assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+    <!-- End plugin js for this page-->
+    <!-- inject:js -->
+    <script src="../assets/js/material.js"></script>
+    <script src="../assets/js/misc.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="../assets/js/dashboard.js"></script>
+    <!-- End custom js for this page-->
+    </body>
+
+    </html>

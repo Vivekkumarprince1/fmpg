@@ -1,59 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Property Owner Dashboard</title>
   <link rel="icon" href="img/logo.png" type="image/icon type">
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="../css/management.css">
   <script>
     function confirmAction(action, event) {
-      event.preventDefault(); // Prevent the form from submitting immediately
+      event.preventDefault();
       const confirmation = confirm(`Are you sure you want to ${action} this booking?`);
       if (confirmation) {
-        event.target.submit(); // Submit the form if confirmed
+        event.target.submit();
       }
     }
   </script>
+
 </head>
 
 <body>
   <h1>Welcome, Property Owner</h1>
-<h2>Bookings for Your Properties</h2>
+  <h2>Bookings for Your Properties</h2>
 
-<table>
-  <thead>
-    <tr>
-      <th>Booking ID</th>
-      <th>Property</th>
-      <th>User</th>
-      <th>Status</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% bookings.forEach(booking => { %>
+  <table border="1" style="width: 100%; text-align: center;" class="customers">
+    <thead>
       <tr>
-        <td><%= booking._id %></td>
-        <td><%= booking.propertyID.name %></td>
-        <td><%= booking.username %></td>
-        <td><%= booking.status %></td>
-        <td>
-          <% if (booking.status.toLowerCase() === 'pending') { %>
-            <form action="/owner/bookings/<%= booking._id %>/accept" method="POST" style="display:inline;" onsubmit="confirmAction('accept', event);">
-              <button type="submit">Accept</button>
-            </form>
-            <form action="/owner/bookings/<%= booking._id %>/decline" method="POST" style="display:inline;" onsubmit="confirmAction('decline', event);">
-              <button type="submit">Decline</button>
-            </form>
-          <% } else { %>
-            <span><%= booking.status %></span>
-          <% } %>          
-        </td>
+        <th>Booking ID</th>
+        <th>Property</th>
+        <th>User</th>
+        <th>Status</th>
+        <th>Actions</th>
       </tr>
-    <% }) %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% bookings.forEach(booking=> { %>
+        <tr>
+          <td>
+            <%= booking._id %>
+          </td>
+          <td>
+            <%= booking.propertyID.propertyName%>
+          </td>
+          <td>
+            <%= booking.username %>
+          </td>
+          <td>
+            <%= booking.status %>
+          </td>
+          <td>
+            <% if (booking.status ==='Pending waiting for owner confirmation' ) { %>
+              <form action="/owner/bookings/<%= booking._id %>/accept" method="POST" style="display:inline;"
+                onsubmit="confirmAction('accept', event);">
+                <button type="submit">Accept</button>
+              </form>
+              <form action="/owner/bookings/<%= booking._id %>/decline" method="POST" style="display:inline;"
+                onsubmit="confirmAction('decline', event);">
+                <button type="submit">Decline</button>
+              </form>
+              <% } else { %>
+                <span>
+                  <%= booking.status %>
+                </span>
+                <% } %>
+          </td>
+        </tr>
+        <% }) %>
+    </tbody>
+  </table>
 
 </body>
+
 </html>
