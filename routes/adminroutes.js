@@ -8,11 +8,10 @@ const Booking = require('../models/Booking');
 const User=require('../models/users');
 const mongoose = require('mongoose');
 const Contact = require('../models/Contact'); 
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const Owner = require('../models/owner');
 const bcrypt = require('bcryptjs');
+const { uploadPropertyAssets, isCloudinaryConfigured } = require('../middleware/cloudinaryUpload');
+const { deleteFromCloudinary } = require('../config/cloudinary');
 const { isAuthenticated, authorizeAdmin } = require('../middleware/auth'); // Adjust path as needed
 
 
@@ -332,62 +331,20 @@ router.get('/properties/add', isAuthenticated, async (req, res) => {
 
 
 
-// Set storage engine for multer
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-      const folderPath = `public/PG-photos/${req.body.propertyName}`;
-      
-      fs.mkdir(folderPath, { recursive: true }, (err) => {
-          if (err) return cb(err);
-          cb(null, folderPath);
-      });
-  },
-  filename: (req, file, cb) => {
-      const folderPath = `public/PG-photos/${req.body.propertyName}`;
-
-      fs.readdir(folderPath, (err, files) => {
-          if (err) return cb(err);
-          const imageCount = files.filter(f => f.startsWith(file.fieldname)).length + 1;
-          cb(null, `${file.fieldname}-${imageCount}${path.extname(file.originalname)}`);
-      });
-  }
-});
-
-// Initialize multer for multiple file fields (images and tenantContract)
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 12 * 1024 * 1024 }, // Limit: 12MB per file
-    fileFilter: (req, file, cb) => {
-        const filetypes = /jpeg|jpg|png|pdf/;
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = filetypes.test(file.mimetype);
-
-        if (mimetype && extname) {
-            return cb(null, true);
-        } else {
-            cb('Error: Only images (jpg, jpeg, png) and PDFs are allowed!');
-        }
-    }
-});
-
-// Use upload.fields to handle both images and tenantContract
-const uploadFields = upload.fields([
-  { name: 'images', maxCount: 5 },  // Allow multiple images
-  { name: 'tenantContract', maxCount: 1 } // Allow only one tenant contract
-]);
-
-
-
-router.post('/properties/add', uploadFields, isAuthenticated, async (req, res) => {
+router.post('/properties/add', uploadPropertyAssets, isAuthenticated, async (req, res) => {
   try {
+  if (!isCloudinaryConfigured()) {
+    return res.status(500).send('Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET.');
+  }
+
     console.log(req.body); // Log the entire request body
     console.log(req.files); // Log uploaded files for debugging
 
     // Get the paths of the uploaded images
-    const imagePaths = req.files['images'] ? req.files['images'].map(file => `PG-photos/${req.body.propertyName}/${file.filename}`) : [];
+  const imagePaths = req.files['images'] ? req.files['images'].map(file => file.path) : [];
 
     // Get the path of the uploaded tenantContract
-    const tenantContractPath = req.files['tenantContract'] ? req.files['tenantContract'][0].path : null;
+  const tenantContractPath = req.files['tenantContract'] ? req.files['tenantContract'][0].path : null;
 
     // Validate that at least 1 image has been uploaded
     if (imagePaths.length < 1) {
@@ -520,8 +477,12 @@ router.get('/properties/edit/:id', isAuthenticated, async (req, res) => {
 });
 
 
-router.post('/properties/edit/:id', uploadFields, isAuthenticated, async (req, res) => {
+router.post('/properties/edit/:id', uploadPropertyAssets, isAuthenticated, async (req, res) => {
   try {
+    if (!isCloudinaryConfigured()) {
+      return res.status(500).send('Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET.');
+    }
+
     // Find the property by ID
     const property = await Property.findById(req.params.id).populate('rooms');
     if (!property) {
@@ -537,21 +498,16 @@ router.post('/properties/edit/:id', uploadFields, isAuthenticated, async (req, r
 
     if (req.files && req.files['images']) {
       // Append new image paths to the existing images
-      const newImagePaths = req.files['images'].map(file => `PG-photos/${propertyName}/${file.filename}`);
+      const newImagePaths = req.files['images'].map(file => file.path);
       images = images.concat(newImagePaths);
     }
 
     // Handle image removal
     const removeImages = req.body.removeImages || [];  // Images marked for deletion
-    removeImages.forEach(image => {
-      // Remove image from the server
-      const imagePath = path.join(__dirname, '../public/', image);  // Adjust the path as necessary
-      if (fs.existsSync(imagePath)) {
-        fs.unlinkSync(imagePath);
-      }
-      // Remove image from the images array
+    for (const image of removeImages) {
+      await deleteFromCloudinary(image);
       images = images.filter(img => img !== image);
-    });
+    }
 
     // Handle uploaded tenant contract
     const tenantContractPath = req.files['tenantContract'] ? req.files['tenantContract'][0].path : property.tenantContract;

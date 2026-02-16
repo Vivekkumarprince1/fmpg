@@ -100,7 +100,7 @@
         <ul>
             <% if (owner.tenantContract) { %>
                 <li>
-                    <a href="/<%= owner.tenantContract.replace('public/', '') %>" target="_blank">
+                    <a href="<%= assetUrl(owner.tenantContract) %>" target="_blank">
                         <%= owner.tenantContract.split('/').pop() %>
                     </a>
                 </li>
@@ -113,7 +113,7 @@
         <ul>
             <% owner.images.forEach(image => { %>
                 <li>
-                    <a href="/<%= image.replace('public/', '') %>" target="_blank">
+                    <a href="<%= assetUrl(image) %>" target="_blank">
                         <%= image.split('/').pop() %>
                     </a>
                 </li>

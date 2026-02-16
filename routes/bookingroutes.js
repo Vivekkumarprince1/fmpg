@@ -91,6 +91,12 @@ router.post('/', async (req, res) => {
   }
 
   try {
+    if (!razorpay) {
+      return res.status(503).json({
+        message: 'Payment service is temporarily unavailable. Please try again later.',
+      });
+    }
+
     // Fetch property and user to validate existence
     const property = await Property.findById(propertyID);
     if (!property) return res.status(404).json({ message: 'Property not found' });

@@ -25,7 +25,7 @@
                     <td>
                         <ul>
                             <% if (owner.tenantContract) { %>
-                                <a href="/<%= owner.tenantContract.replace('public/', '') %>" target="_blank">
+                                <a href="<%= assetUrl(owner.tenantContract) %>" target="_blank">
                                     <%= owner.tenantContract.split('/').pop() %> <!-- Display only the file name -->
                                 </a>
                             <% } else { %>

@@ -8,9 +8,7 @@ const Room = require('../models/Room');
 const PDFDocument = require('pdfkit');
 const nodemailer = require('nodemailer');
 const Owner = require('../models/owner');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const { uploadPropertyAssets, isCloudinaryConfigured } = require('../middleware/cloudinaryUpload');
 const { isAuthenticated, authorizeOwner } = require('../middleware/auth'); // Adjust path as needed
 
 
@@ -60,62 +58,21 @@ router.get('/newOwner', isAuthenticated, async (req, res) => {
 });
 
 
-// Set storage engine for multer
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-      const folderPath = `public/PG-photos/${req.body.propertyName}`;
-      
-      fs.mkdir(folderPath, { recursive: true }, (err) => {
-          if (err) return cb(err);
-          cb(null, folderPath);
-      });
-  },
-  filename: (req, file, cb) => {
-      const folderPath = `public/PG-photos/${req.body.propertyName}`;
-
-      fs.readdir(folderPath, (err, files) => {
-          if (err) return cb(err);
-          const imageCount = files.filter(f => f.startsWith(file.fieldname)).length + 1;
-          cb(null, `${file.fieldname}-${imageCount}${path.extname(file.originalname)}`);
-      });
-  }
-});
-
-// Initialize multer for multiple file fields (images and tenantContract)
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 12 * 1024 * 1024 }, // Limit: 12MB per file
-    fileFilter: (req, file, cb) => {
-        const filetypes = /jpeg|jpg|png|pdf/;
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = filetypes.test(file.mimetype);
-
-        if (mimetype && extname) {
-            return cb(null, true);
-        } else {
-            cb('Error: Only images (jpg, jpeg, png) and PDFs are allowed!');
-        }
-    }
-});
-
-// Use upload.fields to handle both images and tenantContract
-const uploadFields = upload.fields([
-  { name: 'images' },        // For image uploads
-  { name: 'tenantContract', maxCount: 1 } // For tenant contract upload
-]);
-
-
-router.post('/newOwner', isAuthenticated, uploadFields, async (req, res) => {
+router.post('/newOwner', isAuthenticated, uploadPropertyAssets, async (req, res) => {
   try {
+      if (!isCloudinaryConfigured()) {
+        return res.status(500).send('Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET.');
+      }
+
       // Extract form data from req.body
       const { ownerName, contactNumber, email, propertyName, type, address, map, locations, landmark, locality, city,
         state, pincode, gender, amenities, rules, securityDeposit, description, additionalDetails } = req.body;
 
       // Get the paths of the uploaded images and store them as relative paths
-      const imagePaths = req.files['images'] ? req.files['images'].map(file => `PG-photos/${req.body.propertyName}/${file.filename}`) : [];
+      const imagePaths = req.files['images'] ? req.files['images'].map(file => file.path) : [];
 
       // Get the path of the uploaded tenantContract
-      const tenantContractPath = req.files['tenantContract'] ? `PG-contracts/${req.body.propertyName}/${req.files['tenantContract'][0].filename}` : null;
+      const tenantContractPath = req.files['tenantContract'] ? req.files['tenantContract'][0].path : null;
       // Validate that at least 1 image has been uploaded
       if (imagePaths.length < 1) {
         return res.status(400).send('You must upload at least 1 image.');

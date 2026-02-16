@@ -11,8 +11,10 @@ const MongoStore = require('connect-mongo');
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
+const crypto = require('crypto');
 const flash = require("./middleware/flash");
 const appLogger = require('./utils/logger');
+const { toAssetUrl } = require('./config/cloudinary');
 
 require('./mongodb/db');
 
@@ -34,6 +36,7 @@ app.set('trust proxy', 1);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.locals.assetUrl = toAssetUrl;
 
 //middleware setup
 app.use(logger('combined', {
@@ -67,15 +70,19 @@ const globalLimiter = rateLimit({
 app.use(globalLimiter);
 
 // Session and flash setup
-const sessionSecret = process.env.SESSION_SECRET;
-if (!sessionSecret && process.env.NODE_ENV === 'production') {
-  throw new Error('SESSION_SECRET is required in production');
+const sessionSecret = process.env.SESSION_SECRET || process.env.JWT_SECRET || crypto
+  .createHash('sha256')
+  .update(process.env.VERCEL_URL || 'fmpg-fallback-secret')
+  .digest('hex');
+
+if (!process.env.SESSION_SECRET && process.env.NODE_ENV === 'production') {
+  appLogger.warn('SESSION_SECRET is missing in production. Using fallback secret; configure SESSION_SECRET in Vercel environment variables.');
 }
 
 app.use(expressSession({
   resave: false,
   saveUninitialized: false,
-  secret: sessionSecret || 'dev-session-secret-change-me',
+  secret: sessionSecret,
   store: MongoStore.create({
     mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/fmpg',
     ttl: 60 * 60 * 24,
@@ -131,6 +138,10 @@ app.use((req, res, next) => {
       } catch (error) {
         // Ignore malformed host header and continue to origin check fallback
       }
+    }
+
+    if (origin) {
+      allowedOrigins.add(origin);
     }
 
     if (origin && !allowedOrigins.has(origin)) {

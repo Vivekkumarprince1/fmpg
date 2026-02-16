@@ -57,14 +57,14 @@
 </head>
 
 <body>
-    <img class="wave" src="../images/wave.png">
+    <img class="wave" src="<%= assetUrl('images/wave.png') %>">
     <div class="container">
         <div class="img">
-            <img src="../images/bg.svg">
+            <img src="<%= assetUrl('images/bg.svg') %>">
         </div>
         <div class="login-content">
             <form action="/login" method="POST">
-                <img src="../images/avatar.svg">
+                <img src="<%= assetUrl('images/avatar.svg') %>">
                 <h2 class="title">Welcome</h2>
 
                 <% if (error && error.length> 0) { %>
