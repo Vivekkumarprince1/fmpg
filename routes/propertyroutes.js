@@ -1,3 +1,4 @@
+//propertyroutes.js
 const express = require('express');
 const router = express.Router();
 const Property = require('../models/Property'); // Ensure the path is correct
@@ -6,6 +7,10 @@ const rooms=require("../models/Room")
 // Create a new property
 router.get('/createproperty', async (req, res) => {
   try {
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(403).json({ error: 'Disabled in production' });
+    }
+
     console.log("Entered create property route");
     const properties = await Property.insertMany([
       {
@@ -18,6 +23,7 @@ router.get('/createproperty', async (req, res) => {
         description: "Find yourself in a secure and comfortable living space that combines practical design with a welcoming atmosphere. With a focus on reliability and peace, this environment is crafted to enhance your stay, providing you with everything you need for a smooth and enjoyable experience.",
         rooms: [],
         owner:" ",
+        gender:"male",
       }
     ]);
     res.status(201).json(properties);
@@ -46,15 +52,68 @@ router.get('/:id', async (req, res) => {
 });
 
 
-// Get all properties
+// Get all properties and render the cards on the frontend
 router.get('/properties', async (req, res) => {
   try {
-    const properties = await Property.find(); // Fixed typo
+    const properties = await Property.find(); // Fetch all properties
+    res.render('properties', { properties }); // Pass data to the 'properties.ejs' file
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
+
+// Add this to propertyroutes.js
+router.get('/filter-sort', async (req, res) => {
+  try {
+    const { gender, sort } = req.query;
+
+    // Initialize query with optional gender filter
+    let query = {};
+    if (gender && gender !== 'all') {
+      query.gender = gender;
+    }
+
+    // Fetch filtered properties
+    let properties = await Property.find(query).populate('rooms');
+
+    // Sort properties based on selected criteria
+    if (sort === 'low-to-high') {
+      properties = properties.sort((a, b) => a.rooms[0]?.price - b.rooms[0]?.price);
+    } else if (sort === 'high-to-low') {
+      properties = properties.sort((a, b) => b.rooms[0]?.price - a.rooms[0]?.price);
+    } else if (sort === 'distance' && req.query.lat && req.query.lng) {
+      const userLat = parseFloat(req.query.lat);
+      const userLng = parseFloat(req.query.lng);
+
+      properties.forEach(property => {
+        property.distance = getDistanceFromLatLonInKm(userLat, userLng, property.lat, property.lng);
+      });
+      properties = properties.sort((a, b) => a.distance - b.distance);
+    }
+
     res.status(200).json(properties);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
+// Helper function to calculate distance
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  const R = 6371;
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI / 180);
+}
+
 
 // Update a property by ID
 router.put('/properties/:id', async (req, res) => {

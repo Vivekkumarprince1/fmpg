@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
 
-const dbUrl = 'mongodb+srv://vivekkumarprince1:fmpg%40123@fmpg.fzm8y3a.mongodb.net/?retryWrites=true&w=majority&appName=fmpg';
+const dbUrl = process.env.MONGODB_URI || 'mongodb://localhost:27017/fmpg';
 
 const options = {
-  // useNewUrlParser: true,
-  // useUnifiedTopology: true,
-  // useCreateIndex: true,
-  // useFindAndModify: false,
   serverSelectionTimeoutMS: 30000,
+  maxPoolSize: 20,
+  minPoolSize: 5,
+  retryWrites: true,
 };
 
 mongoose.connect(dbUrl, options)
@@ -19,7 +18,9 @@ mongoose.connect(dbUrl, options)
 
 mongoose.connection.on('disconnected', () => {
   console.log('MongoDB disconnected. Reconnecting...');
-  mongoose.connect(dbURl, options);
+  mongoose.connect(dbUrl, options).catch((err) => {
+    console.error('MongoDB reconnection failed:', err);
+  });
 });
 
 module.exports = mongoose;

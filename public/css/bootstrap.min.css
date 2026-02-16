@@ -12,7 +12,7 @@
   --bs-red: #dc3545;
   --bs-orange: #fd7e14;
   --bs-yellow: #ffc107;
-  --bs-green: #198754;
+  --bs-green: #198754f4;
   --bs-teal: #20c997;
   --bs-cyan: #0dcaf0;
   --bs-white: #fff;
@@ -471,8 +471,6 @@ progress {
     font-size: 2.5rem;
   }
 }
-
-
 .list-unstyled {
   padding-left: 0;
   list-style: none;
@@ -509,8 +507,12 @@ progress {
 }
 .img-fluid {
   max-width: 100%;
-  height: auto;
+  /* height: 30vb; */
+  height: 25vw;
+  width: 100%;
+  min-height: 300px;
 }
+
 .img-thumbnail {
   padding: 0.25rem;
   background-color: #fff;

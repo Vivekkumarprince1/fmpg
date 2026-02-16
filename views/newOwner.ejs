@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Property</title>
+    <link rel="stylesheet" href="../css/management.css">
+    <style>
+        #images {
+            height: 100px;
+            width: 300px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form">
+        <h1>Add New PG Owner</h1>
+
+        <form class="add" action="newOwner" method="POST" enctype="multipart/form-data">
+            <label for="ownerName">Owner Name:</label><br>
+            <input class="input" type="text" id="ownerName" name="ownerName" required><br><br>
+
+            <label for="contactNumber">Contact Number:</label><br>
+            <input class="input" type="tel" id="contactNumber" name="contactNumber" required><br><br>
+
+            <label for="email">Email:</label><br>
+            <input class="input" type="email" id="email" name="email" required><br><br>
+
+            <label for="propertyName">Property Name:</label><br>
+            <input class="input" type="text" id="propertyName" name="propertyName" required><br><br>
+
+            <label for="type">Type:</label><br>
+            <select class="select" id="type" name="type">
+                <option value="PG">PG</option>
+                <option value="Hostel">Hostel</option>
+                <option value="PG with Mess">PG with Mess</option>
+            </select><br><br>
+
+            <label for="address">Address:</label><br>
+            <input class="input" type="text" id="address" name="address" placeholder="i.e 1234 Elm Street "
+                required><br><br>
+
+            <label for="pincode">Pincode:</label><br>
+            <input class="input" type="text" id="pincode" name="pincode" placeholder="" required><br><br>
+
+            <label for="state">State:</label><br>
+            <input class="input" type="text" id="state" name="state" placeholder="rajsthan" required><br><br>
+
+            <label for="city">City:</label><br>
+            <input class="input" type="text" id="city" name="city" placeholder="kota" required><br><br>
+
+            <label for="locality">Locality:</label><br>
+            <select class="select" id="locality" name="locality" required>
+                <option value="">Select Locality</option>
+            </select><br><br>
+
+            <label for="map">Google Map link</label><br>
+            <input class="input" type="text" id="map" name="map" required><br><br>
+
+            <label for="locations">Locations</label>
+            <div id="location-container">
+                <div class="input-group">
+                    <p>Eg:distance from nearest bus stand :- 1.3km</p>
+                    <input class="input" type="text" id="location" name="locations[]"
+                        placeholder="Eg:Delhi bus stand :- 15.6km" required>
+                    <input class="input" type="text" id="location" name="locations[]"
+                        placeholder="Eg:New Delhi Railway Station:- 12km" required>
+                    <input class="input" type="text" id="location" name="locations[]" placeholder="Eg:Landmark:-0.5km"
+                        required>
+                </div>
+            </div>
+            <button type="button" onclick="addLocationField()">+</button>
+            <br><br>
+
+
+            <label for="landmark">Landmark</label><br>
+            <input class="input" type="text" id="landmark" name="landmark" required><br><br>
+
+            <label for="image">Upload Images or PDFs (Minimum 5):</label><br>
+            <div id="image-container">
+                <div class="input-group">
+                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
+                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
+                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
+                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
+                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
+                    <button type="button" onclick="addImageField()">+</button>
+                </div>
+            </div>
+            <br>
+
+            <label for="gender">Allowed Gender:</label><br>
+            <select class="select" id="gender" name="gender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="unisex">Unisex</option>
+            </select><br><br>
+
+            <label>Rooms:</label>
+            <div id="room-container">
+                <div class="input-group">
+                    <!-- <input type="text" name="rooms[0][type]" placeholder="Room Type" required> -->
+                    <select name="rooms[0][type]">
+                        <option value="">Select your room type</option>
+                        <option value="single">Single</option>
+                        <option value="double">Double</option>
+                        <option value="triple">Triple</option>
+                        <option value="morethanthree">More than Three</option>
+                    </select>
+                    <input type="number" name="rooms[0][price]" placeholder="Price" required>
+                    <input type="number" name="rooms[0][capacity]" placeholder="Total no of Rooms" required>
+                    <input type="number" name="rooms[0][availableRooms]" placeholder="Number of available Rooms"
+                        required>
+
+                    <select name="rooms[0][available]" required>
+                        <option value="true">Available</option>
+                        <option value="false">Not Available</option>
+                    </select>
+                    <button type="button" onclick="addRoomField()">+</button>
+                </div>
+            </div>
+
+
+            <label>Amenities:</label>
+            <div id="amenity-container">
+                <div class="input-group">
+                    <input class="input" type="text" id="amenities" name="amenities" required>
+                    <button type="button" onclick="addAmenityField()">+</button>
+                </div>
+            </div>
+
+
+            <label for="rules">House Rules:</label><br>
+            <textarea class="input" id="rules" name="rules" required></textarea><br><br>
+
+            <label for="securityDeposit">Security Deposit:</label><br>
+            <input class="input" type="number" id="securityDeposit" name="securityDeposit" required><br><br>
+
+            <label for="description">Description: that you want to show on you main page</label><br>
+            <textarea id="description" class="input" name="description" required></textarea><br>
+
+            <label for="additionalDetails">Additional Details </label><br>
+            <textarea id="additionalDetails" class="input" name="additionalDetails" required></textarea><br>
+
+            <label for="tenantContract">Upload copy of Tenant Contract</label><br>
+            <div id="tenantContract-container">
+                <div class="input-group">
+                    <input type="file" id="tenantContract" name="tenantContract" accept=".jpg, .jpeg, .png, .pdf">
+                </div>
+            </div>
+
+            <input type="checkbox" value="TermsofService" required>Agree to <a href="TermsofService">Terms of
+                Service</a>
+
+            <input class="submit" type="submit" value="Submit">
+        </form>
+    </div>
+
+    <script>
+        // Function to dynamically add image input fields
+        function addImageField() {
+            const container = document.getElementById('image-container');
+            const newImageInput = document.createElement('div');
+            newImageInput.className = 'input-group';
+            newImageInput.innerHTML = '<input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required><button type="button" onclick="removeField(this)">-</button>';
+            container.appendChild(newImageInput);
+        }
+
+        // Function to dynamically add location input fields
+        function addLocationField() {
+            const container = document.getElementById('location-container');
+            const newLocationInput = document.createElement('div');
+            newLocationInput.className = 'input-group';
+            newLocationInput.innerHTML = `
+        <input type="text" class="input" name="locations[]" required><button type="button" onclick="removeField(this)">-</button>`;
+            container.appendChild(newLocationInput);
+        }
+
+        // Function to dynamically add amenities input fields
+
+        function addAmenityField() {
+            const container = document.getElementById('amenity-container');
+            const newAmenityInput = document.createElement('div');
+            newAmenityInput.className = 'input-group';
+            newAmenityInput.innerHTML = '<input type="text" class="input" name="amenities[]" required><button type="button" onclick="removeField(this)">-</button>';
+            container.appendChild(newAmenityInput);
+        }
+
+        // Generic function to remove an input field
+        function removeField(button) {
+            const container = button.parentNode.parentNode;
+            container.removeChild(button.parentNode);
+        }
+
+
+        function addRoomField() {
+            const container = document.getElementById('room-container');
+            const roomCount = container.getElementsByClassName('input-group').length;
+            const newRoomInput = document.createElement('div');
+            newRoomInput.className = 'input-group';
+            newRoomInput.innerHTML = `
+        <select name="rooms[${roomCount}][type]" required>
+            <option value="">Select your room type</option>
+            <option value="single">Single</option>
+            <option value="double">Double</option>
+            <option value="triple">Triple</option>
+            <option value="morethanthree">More than Three</option>
+        </select>
+        <input type="number" name="rooms[${roomCount}][price]" placeholder="Price" required>
+        <input type="number" name="rooms[${roomCount}][capacity]" placeholder="Total no of Rooms" required>
+        <input type="number" name="rooms[${roomCount}][availableRooms]" placeholder="Number of available Rooms" required>
+
+        <select name="rooms[${roomCount}][available]" required>
+            <option value="true">Available</option>
+            <option value="false">Not Available</option>
+        </select>
+        <button type="button" onclick="removeField(this)">-</button>
+    `;
+            container.appendChild(newRoomInput);
+        }
+
+    </script>
+
+    <script>
+        document.getElementById('pincode').addEventListener('blur', async function () {
+            const pincode = this.value.trim();
+            if (pincode.length === 6) {
+                try {
+                    // Fetch data from the Indian Postal API
+                    const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+                    const data = await response.json();
+
+                    if (data[0].Status === "Success") {
+                        // Fill state and city fields
+                        document.getElementById('state').value = data[0].PostOffice[0].State;
+                        document.getElementById('city').value = data[0].PostOffice[0].District;
+
+                        // Populate the locality dropdown
+                        const localityDropdown = document.getElementById('locality');
+                        localityDropdown.innerHTML = '<option value="">Select Locality</option>';
+                        data[0].PostOffice.forEach(postOffice => {
+                            const option = document.createElement('option');
+                            option.value = postOffice.Name;
+                            option.textContent = postOffice.Name;
+                            localityDropdown.appendChild(option);
+                        });
+                    } else {
+                        alert('Invalid Pincode. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error fetching pincode details:', error);
+                    alert('Failed to fetch details. Please try again later.');
+                }
+            } else {
+                alert('Please enter a valid 6-digit pincode.');
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>

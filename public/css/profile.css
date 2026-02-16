@@ -46,9 +46,11 @@
         .navbar:hover {
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
         }
+
         .manage{
             border: none;
         }
+
         .navbar a,
         .dropbtn {
             color: #333;
@@ -69,14 +71,11 @@
             transform: scale(1.05);
         }
 
-
-
         /* Dropdown Styling */
         .dropdown {
             position: relative;
             display: inline-block;
         }
-
 
         .dropdown-content {
             display: none;
@@ -151,15 +150,15 @@
             padding: 20px;
         }
 
-        .card-body h4 {
+        .card-body h6 {
             font-weight: 600;
             margin-bottom: 10px;
-            color: white;
+            color: #333;
         }
 
         .card-body p {
             margin: 0;
-            color: white;
+            color:white;
         }
 
         .profile-img {

@@ -1,5 +1,5 @@
+//Booking.js
 const mongoose = require('mongoose');
-const room = require('../models/Room');
 
 const bookingSchema = new mongoose.Schema({
   mobile: {
@@ -30,8 +30,8 @@ const bookingSchema = new mongoose.Schema({
   },
   status: { 
     type: String, 
-    enum: ['Pending', 'Confirmed', 'Cancelled'],
-    default: 'Pending' 
+    enum: ['Pending waiting for owner confirmation', 'Confirmed', 'Cancelled'],
+    default: 'Pending waiting for owner confirmation' 
   },
   username: { 
     type: String,
@@ -48,4 +48,8 @@ const bookingSchema = new mongoose.Schema({
     required: true }, // Reference to the owner
 });
 
-module.exports = mongoose.model('Booking', bookingSchema);
+bookingSchema.index({ user: 1, createdAt: -1 });
+bookingSchema.index({ propertyID: 1, status: 1 });
+bookingSchema.index({ room: 1, startDate: 1, endDate: 1 });
+
+module.exports = mongoose.models.Booking || mongoose.model('Booking', bookingSchema);

@@ -1,88 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Property</title>
+    <link rel="stylesheet" href="../..//css/management.css">
     <style>
         .input-group {
             margin-bottom: 10px;
         }
     </style>
 </head>
+
 <body>
-    <h1>Add Property</h1>
-    <form action="/admin/properties/add" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br>
+    <div class="form">
+        <h1>Add Property</h1>
+        <form class="add" action="/admin/properties/add" method="POST" enctype="multipart/form-data">
+            <label for="ownerName">Owner Name:</label><br>
+            <input class="input" type="text" id="ownerName" name="ownerName" required><br><br>
 
-        <label>Locations:</label>
-        <div id="location-container">
-            <div class="input-group">
-                <input type="text" name="locations[]" required>
-                <button type="button" onclick="addLocationField()">+</button>
+            <label for="contactNumber">Contact Number:</label><br>
+            <input class="input" type="tel" id="contactNumber" name="contactNumber" required><br><br>
+
+            <label for="email">Email:</label><br>
+            <input class="input" type="email" id="email" name="email" required><br><br>
+
+            <label for="propertyName">Property Name:</label><br>
+            <input class="input" type="text" id="propertyName" name="propertyName" required><br><br>
+
+            <label for="type">Type:</label><br>
+            <select class="select" id="type" name="type">
+                <option value="PG">PG</option>
+                <option value="Hostel">Hostel</option>
+                <option value="PG with Mess">PG with Mess</option>
+            </select><br><br>
+
+            <label for="address">Address:</label><br>
+            <input class="input" type="text" id="address" name="address" required><br><br>
+
+            <label for="map">Google Map link</label><br>
+            <input class="input" type="text" id="map" name="map" required><br><br>
+
+            <label for="locations">Locations</label>
+            <div id="location-container">
+                <div class="input-group">
+                    <p>Eg:distance from nearest bus stand :- 1.3km</p>
+                    <input class="input" type="text" id="location" name="locations[]"
+                        placeholder="Eg:Delhi bus stand :- 15.6km" required>
+                    <input class="input" type="text" id="location" name="locations[]"
+                        placeholder="Eg:New Delhi Railway Station:- 12km" required>
+                    <input class="input" type="text" id="location" name="locations[]" placeholder="Eg:Landmark:-0.5km"
+                        required>
+                </div>
             </div>
-        </div>
-
-        <label for="type">Type:</label>
-        <input type="text" id="type" name="type" required><br>
-
-        <label for="map">Map:</label>
-        <input type="text" id="map" name="map"><br>
+            <button type="button" onclick="addLocationField()">+</button>
+            <br><br>
 
 
-        <label for="owner">owner</label>
-        <input type="text" id="owner" name="owner" required><br>
+            <label for="landmark">Landmark</label><br>
+            <input class="input" type="text" id="landmark" name="landmark" required><br><br>
 
-
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" required></textarea><br>
-
-        <!-- Image Inputs -->
-        <label>Images:</label>
-        <div id="image-container">
-            <div class="input-group">
-                <input type="text" name="images[]" required>
-                <button type="button" onclick="addImageField()">+</button>
+            <label for="image">Upload Images or PDFs (Minimum 5):</label><br>
+            <div id="image-container">
+                <div class="input-group">
+                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
+                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
+                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
+                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
+                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
+                    <button type="button" onclick="addImageField()">+</button>
+                </div>
             </div>
-        </div>
+            <br>
 
-        <!-- Amenity Inputs -->
-        <label>Amenities:</label>
-        <div id="amenity-container">
-            <div class="input-group">
-                <input type="text" name="amenities[]" required>
-                <button type="button" onclick="addAmenityField()">+</button>
+            <label for="gender">Allowed Gender:</label><br>
+            <select class="select" id="gender" name="gender">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="unisex">Unisex</option>
+            </select><br><br>
+
+            <label>Rooms:</label>
+            <div id="room-container">
+                <div class="input-group">
+                    <!-- <input type="text" name="rooms[0][type]" placeholder="Room Type" required> -->
+                    <select name="rooms[0][type]">
+                        <option value="">Select your room type</option>
+                        <option value="single">Single</option>
+                        <option value="double">Double</option>
+                        <option value="triple">Triple</option>
+                        <option value="morethanthree">More than Three</option>
+                    </select>
+                    <input type="number" name="rooms[0][price]" placeholder="Price" required>
+                    <input type="number" name="rooms[0][capacity]" placeholder="Total no of Rooms" required>
+                    <input type="number" name="rooms[0][availableRooms]" placeholder="Number of available Rooms" required>
+
+                    <select name="rooms[0][available]" required>
+                        <option value="true">Available</option>
+                        <option value="false">Not Available</option>
+                    </select>
+                    <button type="button" onclick="addRoomField()">+</button>
+                </div>
             </div>
-        </div>
 
-        <!-- Room Inputs -->
-        <label>Rooms:</label>
-        <div id="room-container">
-            <div class="input-group">
-                <input type="text" name="rooms[0][number]" placeholder="Room Number" required>
-                <input type="text" name="rooms[0][type]" placeholder="Room Type" required>
-                <input type="number" name="rooms[0][price]" placeholder="Price" required>
-                <input type="number" name="rooms[0][capacity]" placeholder="nober of room available" required>
 
-                <select name="rooms[0][available]" required>
-                    <option value="true">Available</option>
-                    <option value="false">Not Available</option>
-                </select>
-                <button type="button" onclick="addRoomField()">+</button>
+            <label>Amenities:</label>
+            <div id="amenity-container">
+                <div class="input-group">
+                    <input class="input" type="text" id="amenities" name="amenities" required>
+                    <button type="button" onclick="addAmenityField()">+</button>
+                </div>
             </div>
-        </div>
 
-        <button type="submit">Add Property</button>
-    </form>
+
+            <label for="rules">House Rules:</label><br>
+            <textarea class="input" id="rules" name="rules" required></textarea><br><br>
+
+            <label for="securityDeposit">Security Deposit:</label><br>
+            <input class="input" type="number" id="securityDeposit" name="securityDeposit" required><br><br>
+
+            <label for="description">Description: that you want to show on you main page</label><br>
+            <textarea id="description" class="input" name="description" required></textarea><br>
+
+            <label for="additionalDetails">Additional Details </label><br>
+            <textarea id="additionalDetails" class="input" name="additionalDetails" required></textarea><br>
+
+            <label for="tenantContract">Upload copy of Tenant Contract</label><br>
+            <div id="tenantContract-container">
+                <div class="input-group">
+                    <input type="file" id="tenantContract" name="tenantContract" accept=".jpg, .jpeg, .png, .pdf">
+                </div>
+            </div>
+
+            <input type="checkbox" value="TermsofService" required>Agree to <a href="TermsofService">Terms of
+                Service</a>
+
+            <input class="submit" type="submit" value="Submit">
+        </form>
+    </div>
 
     <script>
-         // Function to dynamically add image input fields
-         function addLocationField() {
+        // Function to dynamically add image input fields
+        function addLocationField() {
             const container = document.getElementById('location-container');
             const newLocationInput = document.createElement('div');
             newLocationInput.className = 'input-group';
-            newLocationInput.innerHTML = '<input type="text" name="Location[]" required><button type="button" onclick="removeField(this)">-</button>';
+            newLocationInput.innerHTML = '<input type="text" class="input" name="Location[]" required><button type="button" onclick="removeField(this)">-</button>';
             container.appendChild(newLocationInput);
         }
 
@@ -93,7 +157,7 @@
             const container = document.getElementById('image-container');
             const newImageInput = document.createElement('div');
             newImageInput.className = 'input-group';
-            newImageInput.innerHTML = '<input type="text" name="images[]" required><button type="button" onclick="removeField(this)">-</button>';
+            newImageInput.innerHTML = '<input type="text" class="input" name="images[]" required><button type="button" onclick="removeField(this)">-</button>';
             container.appendChild(newImageInput);
         }
 
@@ -102,7 +166,7 @@
             const container = document.getElementById('amenity-container');
             const newAmenityInput = document.createElement('div');
             newAmenityInput.className = 'input-group';
-            newAmenityInput.innerHTML = '<input type="text" name="amenities[]" required><button type="button" onclick="removeField(this)">-</button>';
+            newAmenityInput.innerHTML = '<input type="text" class="input" name="amenities[]" required><button type="button" onclick="removeField(this)">-</button>';
             container.appendChild(newAmenityInput);
         }
 
@@ -126,7 +190,7 @@
             container.appendChild(newRoomInput);
         }
 
-        
+
         // Generic function to remove an input field
         function removeField(button) {
             const container = button.parentNode.parentNode;
@@ -134,4 +198,5 @@
         }
     </script>
 </body>
+
 </html>

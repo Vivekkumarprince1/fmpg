@@ -1,3 +1,4 @@
+<!-- search-page -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,16 +9,18 @@
     <meta content="" name="keywords">
     <meta content="" name="description">
 
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
     <link rel="icon" href="img/logo.png" type="image/icon type">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap"
+        rel="stylesheet">
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -33,299 +36,156 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/footer.css">
+    <style>
+        .filter-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-section select, 
+.filter-section button {
+    padding: 10px;
+    font-size: 16px;
+}
+
+    </style>
 </head>
 
 <body>
     <!-- header start -->
     <%- include('header') %>
-    <!-- header end -->
+        <!-- header end -->
 
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <!-- <h6 class="section-title bg-white text-center text-primary px-3">Best rooms</h6> -->
-                <!-- <h1 class="mb-5">Search Results</h1> -->
-            </div>
-            <div class="row g-4 justify-content-center">
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="package-item">
+        <div class="container-xxl py-5">
+            <div class="container">
+    
+                <!-- Filter Section -->
+                <div class="filter-section">
+                    <select id="gender-filter" class="form-select">
+                        <option value="all">All Genders</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="unisex">Unisex</option>
+                    </select>
+    
                     
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="PG-photos/mundi-1.jpg" alt="">
-                        </div>
-                        <div class="d-flex border-bottom" style="color: #808b8d;">
-                            <small class="flex-fill text-center border-end py-2">shared Room</small>
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-calendar-alt text-primary me-2"></i>1 Month</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>2 Person</small>
-                        </div>
-                        <div class="text-center p-4">
-                            <h3 class="mb-0">Divine Home (Mundi)</h3>
-                            <h6 class="mb-0">Rs 3000.00</h6>
-                            <div class="mb-3">
-                                <!-- <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small> -->
-                            </div>
-                            <!-- <p> Each room is fully furnished with a cozy bed, a spacious wardrobe, a study desk, and ample lighting to create an ideal environment for both relaxation and productivity. With high-speed internet, air conditioning, and a dedicated bathroom, you can enjoy all the comforts of home.</p> -->
-                            <div class="d-flex justify-content-center mb-2">
-                                <!-- <a href="Divine-Home" class="btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;">Read More</a> -->
-                                <button class="book-btn btn-primary btn " style="border-radius: 30px;" id="book-btn" onclick="readmore_D()">Book Now</button>
-                                <script>
-                                    const readmore_D = () => {
-                                        const propertyID = "66cf6e331ae3bc6245e85ace";
-                                        const queryString = `PropertyID=${propertyID}`;
-                                        window.location.href = `/readmore?${queryString}`;
-                                    };
-                                </script>
-                            </div>
-                        </div>
-                    </div>
+                    <select id="sorting-filter" class="form-select sort">
+                        <option value="relevant">Most Relevant</option>
+                        <option value="low-to-high">Price: Low to High</option>
+                        <option value="high-to-low">Price: High to Low</option>
+                        <option value="distance">Distance</option>
+                    </select>
                 </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="package-item">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="PG-photos/sahara-1.jpg" alt="">
-                        </div>
-                        <div class="d-flex border-bottom" style="color: #808b8d;">
-                            <small class="flex-fill text-center border-end py-2">Single/Double Room</small>
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-calendar-alt text-primary me-2"></i>1 Month</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>1/2 Person</small>
-                        </div>
-                        <div class="text-center p-4">
-                            <h3 class="mb-0">Sahara PG</h3>
-                            <h6 class="mb-0">Rs 4500/2500.00</h6>
-                            <div class="mb-3">
-                                <!-- <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small> -->
+
+                <!-- Properties List -->
+                <div class="row g-4 justify-content-center" id="properties-list">
+                    <% properties.forEach(property => { %>
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="package-item" style="height: 500px;" onclick="readmore('<%= property._id %>')">
+                            <div class="overflow-hidden">
+                                <img class="img-fluid" style="height: 300px;" src="<%= property.images[0] %>"
+                                    alt="<%= property.propertyName %>">
                             </div>
-                            <!-- <p>Our double rooms are designed to provide a spacious and cozy living environment for two. Each room is fully furnished with two comfortable beds, ample storage space, study desks, and plenty of natural light. </p> -->
-                            <div class="d-flex justify-content-center mb-2">
-                                <!-- <a href="Sahara-PG" class="btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;">Read More</a> -->
-                                <button class="book-btn btn-primary btn " style="border-radius: 30px;" id="book-btn" onclick="readmore_S()">Book Now</button>
-                                <script>
-                                    const readmore_S = () => {
-                                        const propertyID = "66cf92976bf755e4d885c799";
-                                        const queryString = `PropertyID=${propertyID}`;
-                                        window.location.href = `/readmore?${queryString}`;
-                                    };
-                                </script> 
+                            <div class="d-flex border-bottom" style="color: #808b8d;">
+                                <small class="flex-fill text-center border-end py-2"><%= property.type %></small>
+                                <small class="flex-fill text-center border-end py-2"><i
+                                        class="fa fa-calendar-alt text-primary me-2"></i>Per Month</small>
+                                <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i><%= property.capacity %></small>
+                            </div>
+                            <div class="text-center p-4">
+                                <h3 class="mb-0"><%= property.propertyName %></h3>
+                                
+                                <div class="room-prices">
+                                    <% if (property.rooms && property.rooms.length > 0) { %>
+                                    <h6 class="mb-0">Starting Price: <%= property.rooms[0] ? property.rooms[0].price : 'N/A' %></h6>
+                                    <% } else { %>
+                                    
+                                    <h6 class="mb-0">No rooms available</h6>
+                                    <% } %>
                                 </div>
                             </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="package-item">
-                        <!-- <a href="Radhe-Shyam-PG"> -->
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="PG-photos/radheshyam-1.jpg" alt="">
-                        </div>
-                        <div class="d-flex border-bottom" style="color: #808b8d;">
-                            <small class="flex-fill text-center border-end py-2">shared room</small>
-                            <small class="flex-fill text-center border-end py-2">1 Month </small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>2 Person</small>
-                        </div>
-                        <div class="text-center p-4">
-                            <h3 class="mb-0"> RadheShyam PG</h3>
-                            <h6 class="mb-0"> Rs 3000.00 Each</h6>
-                            <div class="mb-3">
-                                <!-- <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small> -->
-                            </div>
-                            <!-- <p>Our hostel offers clean and comfortable accommodations with secure facilities, friendly staff, and vibrant common areas that foster social interactions. It is conveniently located, providing Hyginic food and additional perks like free Wi-Fi and organized activities.</p> -->
                             <div class="d-flex justify-content-center mb-2">
-                                <!-- <a href="Radhe-Shyam-PG" class="btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;">Read More</a> -->
-                                <button class="book-btn btn-primary btn " style="border-radius: 30px;" id="book-btn" onclick="readmore_R()">Book Now</button>
-                                <script>
-                                    const readmore_R = () => {
-                                        const propertyID = "66cf8d9f028162a0701ff6f4";
-                                        const queryString = `PropertyID=${propertyID}`;
-                                        window.location.href = `/readmore?${queryString}`;
-                                    };
-                                </script> 
-                                 </div>
+                                <button class="book-btn btn-primary btn" style="border-radius: 30px;" id="book-btn"
+                                    onclick="readmore('<%= property._id %>')">Book Now</button>
+                            </div>
                         </div>
-                    <!-- </a> -->
                     </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="package-item">
-                        <!-- <a href="Heaven-PG"> -->
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="PG-photos/heaven-1.jpg" alt="">
-                        </div>
-                        <div class="d-flex border-bottom" style="color: #808b8d;">
-                            <small class="flex-fill text-center border-end py-2">Shared Room</small>
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-calendar-alt text-primary me-2"></i>1 Month</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>2 Person</small>
-                        </div>
-                        <div class="text-center p-4">
-                            <h3 class="mb-0">Heaven PG</h3>
-                            <h6 class="mb-0">Rs 3000.00</h6>
-                            <div class="mb-3">
-                                <!-- <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small> -->
-                            </div>
-                            <!-- <p> Each room is fully furnished with a cozy bed, a spacious wardrobe, a study desk, and ample lighting to create an ideal environment for both relaxation and productivity. With high-speed internet, air conditioning, and a dedicated bathroom, you can enjoy all the comforts of home.</p> -->
-                            <div class="d-flex justify-content-center mb-2">
-                                <!-- <a href="Heaven-PG" class="btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;">Read More</a> -->
-                                <button class="book-btn btn-primary btn " style="border-radius: 30px;" id="book-btn" onclick="readmore_H()">Book Now</button>
-                                <script>
-                                    const readmore_H = () => {
-                                        const propertyID = "66cf9a0ef0110d2094e8329a";
-                                        const queryString = `PropertyID=${propertyID}`;
-                                        window.location.href = `/readmore?${queryString}`;
-                                    };
-                                </script> </div>
-                        </div>
-                    <!-- </a> -->
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="package-item">
-                        <a href="White-House-PG">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="PG-photos\white-house-1.jpg" alt="">
-                        </div>
-                        <div class="d-flex border-bottom" style="color: #808b8d;">
-                            <small class="flex-fill text-center border-end py-2">Double Room</small>
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-calendar-alt text-primary me-2"></i>1 Month</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>2 Person</small>
-                        </div>
-                        <div class="text-center p-4">
-                            <h3 class="mb-0">White House PG</h3>
-                            <h6 class="mb-0">Rs 2500.00</h6>
-                            <div class="mb-3">
-                                <!-- <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small> -->
-                            </div>
-                            <!-- <p>Our double rooms are designed to provide a spacious and cozy living environment for two. Each room is fully furnished with two comfortable beds, ample storage space, study desks, and plenty of natural light. </p> -->
-                            <div class="d-flex justify-content-center mb-2">
-                                <a href="White-House-PG" class="btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;">Read More</a>
-                                <a href="White-House-PG" class="btn btn-sm btn-primary px-3" style="border-radius: 0 30px 30px 0;">Book Now</a>
-                            </div>
-                        </div>
-                    </a>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="package-item">
-                        <!-- <a href="Shivalik-PG"> -->
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="PG-photos/shivalik-1.jpg" alt="">
-                        </div>
-                        <div class="d-flex border-bottom" style="color: #808b8d;">
-                            <small class="flex-fill text-center border-end py-2">Hostel</small>
-                            <small class="flex-fill text-center border-end py-2">1 Month </small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>2 Person</small>
-                        </div>
-                        <div class="text-center p-4">
-                            <h3 class="mb-0"> Shivalik PG</h3>
-                            <h6 class="mb-0"> Rs 3500.00</h6>
-                            <div class="mb-3">
-                                <!-- <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small> -->
-                            </div>
-                            <!-- <p>Our hostel offers clean and comfortable accommodations with secure facilities, friendly staff, and vibrant common areas that foster social interactions. It is conveniently located, providing Hyginic food and additional perks like free Wi-Fi and organized activities.</p> -->
-                            <div class="d-flex justify-content-center mb-2">
-                                <!-- <a href="Shivalik-PG" class="btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;">Read More</a> -->
-                                <button class="book-btn btn-primary btn " style="border-radius: 30px;" id="book-btn" onclick="readmore_Si()">Book Now</button>
-                                <script>
-                                    const readmore_Si = () => {
-                                        const propertyID = "66cf9f7fe6f60af58ed6954d";
-                                        const queryString = `PropertyID=${propertyID}`;
-                                        window.location.href = `/readmore?${queryString}`;
-                                    };
-                                </script>
-                            </div>
-                        </div>
-                    <!-- </a> -->
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="package-item">
-                        <!-- <a href="Shivalik-PG"> -->
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="PG-photos/dadra-1.jpg" alt="">
-                        </div>
-                        <div class="d-flex border-bottom" style="color: #808b8d;">
-                            <small class="flex-fill text-center border-end py-2">Hostel</small>
-                            <small class="flex-fill text-center border-end py-2">1 Month </small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>2 Person</small>
-                        </div>
-                        <div class="text-center p-4">
-                            <h3 class="mb-0"> Dadra-farm PG</h3>
-                            <h6 class="mb-0"> Rs 1200.00 </h6>
-                            <div class="mb-3">
-                                <!-- <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small> -->
-                            </div>
-                            <!-- <p>Our hostel offers clean and comfortable accommodations with secure facilities, friendly staff, and vibrant common areas that foster social interactions. It is conveniently located, providing Hyginic food and additional perks like free Wi-Fi and organized activities.</p> -->
-                            <div class="d-flex justify-content-center mb-2">
-                                <!-- <a href="Shivalik-PG" class="btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;">Read More</a> -->
-                                <button class="book-btn btn-primary btn " style="border-radius: 30px;" id="book-btn" onclick="readmore_Dadra()">Book Now</button>
-                                <script>
-                                    const readmore_Dadra = () => {
-                                        const propertyID = "66cfa380712e965bbca4c607";
-                                        const queryString = `PropertyID=${propertyID}`;
-                                        window.location.href = `/readmore?${queryString}`;
-                                    };
-                                </script>
-                                
-                            </div>
-                        </div>
-                    <!-- </a> -->
-                    </div>
-
+                    <% }) %>
                 </div>
             </div>
         </div>
-    </div>
-   
+        <!--footer start-->
+        <%- include('footer') %>
+        <!--footer end-->
 
 
+        <!-- Template Javascript -->
+        <script src="js/main.js"></script>
 
-
-     <!--footer start-->
-     <%- include('footer') %>
-     <!--footer end-->
-     
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
-
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/wow/wow.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+        <!-- Filter & Distance Logic -->
+       
+            <script>
+                const readmore = (propertyID) => {
+                    const queryString = `propertyID=${propertyID}`;
+                    window.location.href = `/readmore?${queryString}`;
+                };
+            </script>
+            <script>
+                document.getElementById('gender-filter').addEventListener('change', applyFilters);
+                document.getElementById('sorting-filter').addEventListener('change', applyFilters);
+            
+                async function applyFilters() {
+                    const gender = document.getElementById('gender-filter').value;
+                    const sort = document.getElementById('sorting-filter').value;
+            
+                    let queryParams = new URLSearchParams({ gender, sort });
+            
+                    // If the user selected "Distance", get their location
+                    if (sort === 'distance') {
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(async (position) => {
+                                const lat = position.coords.latitude;
+                                const lng = position.coords.longitude;
+            
+                                queryParams.append('lat', lat);
+                                queryParams.append('lng', lng);
+            
+                                // Fetch filtered properties using AJAX
+                                await fetchProperties(queryParams);
+                            }, (error) => {
+                                alert("Unable to retrieve your location");
+                                console.error(error);
+                            });
+                        } else {
+                            alert("Geolocation is not supported by this browser.");
+                        }
+                    } else {
+                        // Fetch filtered properties using AJAX
+                        await fetchProperties(queryParams);
+                    }
+                }
+            
+                // Function to fetch the filtered properties using Fetch API
+                async function fetchProperties(queryParams) {
+                    try {
+                        const response = await fetch(`/search-page?${queryParams.toString()}`);
+                        const data = await response.text();
+            
+                        // Extract the properties list part of the HTML
+                        const parser = new DOMParser();
+                        const htmlDoc = parser.parseFromString(data, 'text/html');
+                        const propertiesList = htmlDoc.getElementById('properties-list').innerHTML;
+            
+                        // Update the properties list without reloading the page
+                        document.getElementById('properties-list').innerHTML = propertiesList;
+                    } catch (error) {
+                        console.error("Error fetching properties:", error);
+                    }
+                }
+            </script>
+            
 </body>
 
 </html>

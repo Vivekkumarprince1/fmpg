@@ -5,22 +5,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FMPG</title>
-    <link rel="icon" href="img/logo.png" type="image/icon type">
-    <!-- <link rel="stylesheet" href="/stylesheets/style.css"> -->
     <link rel="stylesheet" href="/css/profile.css">
+    <link rel="icon" href="img/logo.png" type="image/icon type">
     <script>
         function confirmAction(action, event) {
-          event.preventDefault(); // Prevent the form from submitting immediately
-          const confirmation = confirm(`Are you sure you want to ${action} this booking?`);
-          if (confirmation) {
-            event.target.submit(); // Submit the form if confirmed
-          }
+            event.preventDefault(); // Prevent the form from submitting immediately
+
+            const confirmation = confirm(`Are you sure you want to ${action} this booking?`);
+
+            if (confirmation) {
+                event.target.submit(); // Submit the form if confirmed
+            }
         }
-      </script>
+    </script>
 </head>
 
 <body>
-    <%- include('profile-nav') %>
+    <div class="container">
+        <!-- Navbar -->
+        <div class="navbar">
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <div class="dropdown">
+                <button class="dropbtn manage"><i class="fas fa-cogs"></i> Manage</button>
+                <div class="dropdown-content">
+                        <div class="logout">
+                            <% if (user.role === 'owner') { %>
+                                <!-- Show this option only if the user's role is 'owner' -->
+                                <!-- <a href="#" onclick="loadContent('/owner/pendingProperty', 'owner'); return false;">Pending bookings</a> -->
+                                <a href="/owner/pendingProperty" return false>owner</a>
+                                
+                            <% } %>
+    
+                            <a href="settings" return false;>Settings</a>
+                            <a href="referandearn" return false;>Refer And Earn</a>
+                            <a href="/logout" class="btn" style="background-color: red;" onsubmit="confirmAction('Logout', event);">Logout</a>
+                        </div>
+                
+                </div>
+            </div>
+        </div>
+    
+        <!-- User Card -->
+        <div class="card">
+            <div class="card-header">
+                <img src="https://img.icons8.com/bubbles/100/000000/user.png" alt="User Profile Image" class="profile-img">
+                <h2>Welcome,<%=  user.username %>!</h2>
+                <p>ID: <%= user._id %></p>
+            </div>
+            <div class="card-body">
+                <!-- <h3>Information</h3> -->
+                <p>Email: <%= user.email %></p>
+                <p>Phone: <%= user.mobile %></p>
+            </div>
+        </div>
+    
+        <div class="profile-section">
+            <h3>Referral Program</h3>
+            <div class="referral-credits">
+                <h4>Your Total Referral Credits:</h4>
+                <p><strong>
+                        <%= user.referralCredits %>
+                    </strong> credits</p>
+            </div>
+        </div>
+        <p>Share this link with your friends and earn rewards:</p>
+        <input type="text" readonly value="<%= user.referralLink %>" id="referralLink">
+        <button onclick="copyReferralLink()">Copy Link</button>
+
+
+        <div class="share-referral">
+            <h4>Share your referral link:</h4>
+
+            <!-- Share via WhatsApp -->
+            <a href="https://api.whatsapp.com/send?text=Join%20our%20platform%20with%20this%20link:%20<%= user.referralLink %>"
+                target="_blank">
+                <button class="btn btn-whatsapp">Share on WhatsApp</button>
+            </a>
+
+            <!-- Share via Email -->
+            <a
+                href="mailto:?subject=Join%20our%20platform&body=Join%20our%20platform%20using%20this%20referral%20link:%20<%= user.referralLink %>">
+                <button class="btn btn-email">Share via Email</button>
+            </a>
+
+            <!-- Share on Facebook -->
+            <a href="https://www.facebook.com/sharer/sharer.php?u=<%= user.referralLink %>" target="_blank">
+                <button class="btn btn-facebook">Share on Facebook</button>
+            </a>
+
+            <!-- Share on Twitter -->
+            <a href="https://twitter.com/intent/tweet?text=Join%20our%20platform%20with%20this%20link:%20<%= user.referralLink %>"
+                target="_blank">
+                <button class="btn btn-twitter">Share on Twitter</button>
+            </a>
+        </div>
+        </div>
+
+        <script>
+            function copyReferralLink() {
+                const link = document.getElementById("referralLink");
+                link.select();
+                document.execCommand("copy");
+                alert("Referral link copied to clipboard");
+            }
+        </script>
 
         <h6 class="m-b-20 m-t-40 p-b-5 b-b-default f-w-600">Booking</h6>
         <div class="row">
@@ -31,42 +119,62 @@
                             <p><strong>Booking ID:</strong>
                                 <%= booking._id %>
                             </p>
-                            <% if (booking.room) { %>
-                                <% if (booking.room.property) { %>
-                                    <p><strong>Property Name:</strong>
-                                        <%= booking.room.property.name %>
-                                    </p>
-                                    <% } %>
-                                        <!-- <p><strong>property owner</strong><%= booking.propertyID.owner%></p> -->
-                                        <p><strong>Room Type:</strong>
-                                            <%= booking.room.type %>
-                                        </p>
-                                        <% } else { %>
-                                            <p><strong>Room Type:</strong> Not specified</p>
-                                            <% } %>
-                                                <p><strong>Start Date:</strong>
-                                                    <%= booking.startDate.toDateString() %>
-                                                </p>
-                                                <p><strong>End Date:</strong>
-                                                    <%= booking.endDate.toDateString() %>
-                                                </p>
-                                                <p><strong>Special Request:</strong>
-                                                    <%= booking.specialRequest || 'None' %>
-                                                </p>
-                                                <p><strong>Status</strong>
-                                                    <%= booking.status %>
-                                                </p>
-                        </li>
-                        <% }) %>
-                </ol>
-                <% } else { %>
-                    <div>No Bookings Available</div>
+                    <% if (booking.room) { %>
+                    <% if (booking.room.property) { %>
+                        <p><strong>Property Name:</strong>
+                            <%= booking.propertyID && booking.propertyID.propertyName ? booking.propertyID.propertyName : 'N/A' %>
+                        </p>
                     <% } %>
+                    <!-- <p><strong>property owner</strong><%= booking.propertyID.owner%></p> -->
+                    <p><strong>Room Type:</strong>
+                        <%= booking.room.type %>
+                    </p>
+                    <% } else { %>
+                        <p><strong>Room Type:</strong> Not specified</p>
+                    <% } %>
+                            <p><strong>Start Date:</strong>
+                                <%= booking.startDate.toDateString() %>
+                            </p>
+                            <p><strong>End Date:</strong>
+                                <%= booking.endDate.toDateString() %>
+                            </p>
+                            <p><strong>Special Request:</strong>
+                                <%= booking.specialRequest || 'None' %>
+                            </p>
+                            <p><strong>Status</strong>
+                                <%= booking.status %>
+                            </p>
+                            <% if (booking.status !== 'Cancelled') { %>
+                                <button class="btn submit" type="button" onclick="editBooking('<%= booking._id %>')">Edit Booking</button>
+                          
+                            <button class="btn submit" type="button" onclick="cancellBooking('<%= booking._id %>')" >cancel booking</button>
+                            <% } %>
+                            <script>
+                                console.log("object");
+                                function editBooking(bookingId) {
+                                  // Redirect to the edit booking page with booking ID in the URL or as a query parameter
+                                  window.location.href = `api/bookings/edit/${bookingId}`;
+                                }
+                              function cancellBooking(bookingId) {
+                                    // Redirect to the cancel booking page with booking ID in the URL or as a query parameter
+                                    const confirmation=confirm("Are you sure you want to cancel");
+                                    if(confirmation){
+                                    
+                                    window.location.href = `api/bookings/cancel/${bookingId}`;
+                                    }
+                                }
+                                        
+                            </script>                     
+                        </li>
+                    <% }) %>
+                </ol>
+            <% } else { %>
+                <div>No Bookings Available</div>
+            <% } %>
         </div>
-
+        
         <div id="dynamic-content">
-            
-            <!-- Dynamic content will be loaded here -->
+        <!-- Dynamic content will be loaded here -->
         </div>
 
         </div>
@@ -79,9 +187,8 @@
                     })
                     .catch(error => console.error('Error loading content:', error));
             }
-    
+
             // Optionally load the default content when the page loads
-            // loadContent('/dashboard', 'profile');
         </script>
 </body>
 

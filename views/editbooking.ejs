@@ -1,0 +1,29 @@
+<!-- editBooking.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Booking</title>
+</head>
+<body>
+  <h1>Edit Booking</h1>
+  
+  <form action="/api/bookings/edit/<%= booking._id %>?_method=PUT" method="POST">
+
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate" name="startDate" value="<%= booking.startDate.toISOString().split('T')[0] %>">
+    
+    <label for="endDate">End Date:</label>
+    <input type="date" id="endDate" name="endDate" value="<%= booking.endDate.toISOString().split('T')[0] %>">
+
+    <label for="status">Status:</label>
+    
+      <%= booking.status %>
+
+    <label for="specialRequest">Special Request:</label>
+    <textarea id="specialRequest" name="specialRequest"><%= booking.specialRequest %></textarea>
+
+    <button type="submit">Save Changes</button>
+  </form>
+</body>
+</html>

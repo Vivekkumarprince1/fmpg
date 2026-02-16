@@ -1,55 +1,94 @@
 // userSchema.js
 const mongoose = require("mongoose");
-const plm = require("passport-local-mongoose");
-const db=require("../mongodb/db.js");
-const bcrypt = require('bcryptjs'); // Ensure bcrypt is required
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const db = require("../mongodb/db.js");
+
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   mobile: {
-    type: Number,
-    required: true
+    type: String,
+    required: true,
   },
   password: {
-    type: String
+    type: String,
   },
   role: {
     type: String,
-    enum: ['user', 'admin', 'superadmin','owner'],
-    default: 'user'
+    enum: ["user", "admin", "superadmin", "owner"],
+    default: "user",
   },
-  resetPasswordOTP: String, // Add this field
-  resetPasswordExpires: Date
+  resetPasswordOTP: String,
+  resetPasswordExpires: Date,
+  referralLink: {
+    type: String,
+    unique: true,
+  },
+  referredBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  referralCredits: {
+    type: Number,
+    default: 0,
+  },
 });
 
+userSchema.index({ email: 1 }, { unique: true });
+userSchema.index({ username: 1 }, { unique: true });
+userSchema.index({ mobile: 1 });
+
 // Hash password before saving
-userSchema.pre('save', function (next) {
-  if (!this.isModified('password')) return next();
-  bcrypt.hash(this.password, 10, (err, hash) => {
-    if (err) return next(err);
-    this.password = hash;
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  try {
+    // Hash password
+    // const salt = await bcrypt.genSalt(10);
+    // this.password = await bcrypt.hash(this.password, salt);
+
+    // Generate referral link using user ID
+    if (!this.referralLink) {
+      this.referralLink = `https://www.fmpg.in/signup?ref=${this._id}`;
+    }
     next();
-  });
+  } catch (err) {
+    next(err);
+  }
 });
 
 // Verify password
-userSchema.methods.comparePassword = function (candidatePassword, cb) {
-  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-    if (err) return cb(err);
-    cb(null, isMatch);
-  });
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  try {
+    return await bcrypt.compare(candidatePassword, this.password);
+  } catch (err) {
+    throw new Error(err);
+  }
 };
 
-userSchema.plugin(plm);
+// Generate JWT token
+userSchema.methods.generateAuthToken = function () {
+  const payload = {
+    id: this._id,
+    username: this.username,
+    email: this.email,
+    role: this.role,
+  };
+  const secretKey = process.env.JWT_SECRET;
+  if (!secretKey) {
+    throw new Error('JWT_SECRET is not configured');
+  }
+  const options = { expiresIn: "7d" }; // Set token expiration
 
-const User = mongoose.models.User || mongoose.model('User', userSchema);
+  return jwt.sign(payload, secretKey, options);
+};
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.models.user || mongoose.model('user', userSchema);

@@ -1,38 +1,36 @@
+//Property.js
 const mongoose = require('mongoose');
-const { type } = require('os');
 
 // Define the schemaconst
  propertySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  locations: {
-    type: [String],
-    required: true, // Array of stringsrequired: true
-  },
-  type: {
-    type: String,
-    required: true
-  },
-  images: {
-    type: [String], // Array of strings, assuming URLs or file pathsrequired: true
-  },
-  map: {
-    type: String// Assuming this is a URL or a string representing map info
-  },
-  amenities: {
-    type: [String], // Array of strings, e.g., 'WiFi', 'Parking'required: true
-  },
-  description: {
-    type: String,
-    required: true
-  },
+  propertyName: {type: String,required: true},
+  userId: {type: mongoose.Schema.Types.ObjectId,ref: 'users'},
+  locations: {type: [String],required: true, },
+  type: {type: String, enum:['PG','Hostel','Flat','PG with Mess'],required: true},
+  images: {type: [String],},
+  tenantContract: {type: String,},
+  map: {type: String},
+  amenities: {type: [String]},
+  additionalDetails: {type: String},
+  description: {type: String,required: true},
   rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'room' }],
-  owner: { type: String,require:true }
+  ownerName: { type: String,require:true },
+  gender: { type: String, enum: ['male', 'female', 'unisex'] },
+  lat: Number, // Latitude for distance calculation
+  lng: Number, // Longitude for distance calculation
+  rules: { type: String, required: true },
+  securityDeposit: { type: Number, required: true },
+  status:{type: String,enum: ['Pending', 'Confirmed', 'Cancelled'],default: 'Confirmed' ,},
+  email: { type: String, required: true },
+  contactNumber: { type: String, required: true },
+  address: { type: String, required: true },
+  landmark: { type: String, required: true },
 });
 
-// Create the model
-const Property = mongoose.model('Property', propertySchema);
+  propertySchema.index({ type: 1, gender: 1, status: 1 });
+  propertySchema.index({ email: 1 });
+  propertySchema.index({ contactNumber: 1 });
+  propertySchema.index({ propertyName: 'text', description: 'text', address: 'text' });
 
-module.exports = Property;
+// Create the model
+  module.exports = mongoose.models.Property || mongoose.model('Property', propertySchema);

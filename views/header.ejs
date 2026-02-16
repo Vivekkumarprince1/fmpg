@@ -4,6 +4,19 @@
             <span class="sr-only">Loading...</span>
         </div>
     </div>
+    <script>
+        (function () {
+            function hideSpinner() {
+                var spinner = document.getElementById('spinner');
+                if (!spinner) return;
+                spinner.classList.remove('show');
+                spinner.style.display = 'none';
+            }
+
+            window.addEventListener('load', hideSpinner);
+            setTimeout(hideSpinner, 3000);
+        })();
+    </script>
     <!-- Spinner End -->
 
     <!-- Topbar Start -->
@@ -36,7 +49,7 @@
     <div class="container-fluid position-relative p-0">
         <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
             <a href="/" class="navbar-brand p-0">
-                <h1 class="text-primary m-0"><i class="fa"><img src="img/logo.png" alt=""></i>FMPG</h1>
+                <h1 class="text-primary m-0"><i class="fa"><img src="/img/logo.png" alt=""></i>FMPG</h1>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="fa fa-bars"></span>
@@ -50,7 +63,7 @@
                         <a href="#" class="nav-link dropdown-toggle <%= page === 'pages' ? 'active' : '' %>" data-bs-toggle="dropdown">Pages</a>
                         <div class="dropdown-menu m-0">
                             <a href="destination" class="dropdown-item <%= page === 'destination' ? 'active' : '' %>">Destination</a>
-                            <a href="team" class="dropdown-item <%= page === 'team' ? 'active' : '' %>">Team</a>
+                            <a href="fooding" class="dropdown-item <%= page === 'team' ? 'active' : '' %>">Fooding</a>
                         </div>
                     </div>
                     <a href="contact" class="nav-item nav-link <%= page === 'contact' ? 'active' : '' %>">Contact</a>
