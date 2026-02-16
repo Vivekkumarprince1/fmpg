@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 const Contact = require('../models/Contact'); 
 const Owner = require('../models/owner');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { uploadPropertyAssets, isCloudinaryConfigured } = require('../middleware/cloudinaryUpload');
 const { deleteFromCloudinary } = require('../config/cloudinary');
 const { isAuthenticated, authorizeAdmin } = require('../middleware/auth'); // Adjust path as needed
@@ -412,15 +413,8 @@ router.post('/properties/add', uploadPropertyAssets, isAuthenticated, async (req
       tenantContract: tenantContractPath,
     });
 
-    // Use JWT to authenticate and get the logged-in user's email
-    const token = req.cookies.token || req.headers['authorization'];
-    if (!token) {
-      return res.status(401).send('Authentication token is missing.');
-    }
-
-    // Verify the JWT token and get the user info
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'myjwt');
-    const userEmail = decoded.email; // Extract the email from the decoded JWT payload
+    // Get the logged-in user's email from the decoded JWT payload via isAuthenticated middleware
+    const userEmail = req.user.email;
 
     // Check if the user already exists
     let user = await User.findOne({ email: userEmail });
@@ -597,11 +591,24 @@ router.post('/properties/delete/:id', isAuthenticated, async (req, res) => {
     // Proceed with deleting the property
     const propertyId = req.params.id;
 
-    const deletedProperty = await Property.findByIdAndDelete(propertyId);
-    
-    if (!deletedProperty) {
+    const property = await Property.findById(propertyId);
+    if (!property) {
       return res.status(404).send('Property not found');
     }
+
+    // Delete associated images from Cloudinary
+    if (property.images && property.images.length > 0) {
+      for (const imageUrl of property.images) {
+        await deleteFromCloudinary(imageUrl);
+      }
+    }
+
+    // Delete associated tenant contract from Cloudinary
+    if (property.tenantContract) {
+      await deleteFromCloudinary(property.tenantContract);
+    }
+
+    const deletedProperty = await Property.findByIdAndDelete(propertyId);
 
     // Redirect to properties page after deletion
     res.redirect('/admin/properties');

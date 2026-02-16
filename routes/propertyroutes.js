@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const Property = require('../models/Property'); // Ensure the path is correct
 const rooms=require("../models/Room")
+const { deleteFromCloudinary } = require('../config/cloudinary');
 
 // Create a new property
 router.get('/createproperty', async (req, res) => {
@@ -132,10 +133,24 @@ router.put('/properties/:id', async (req, res) => {
 // Delete a property by ID
 router.delete('/properties/:id', async (req, res) => {
   try {
-    const property = await Property.findByIdAndDelete(req.params.id); // Fixed typo
+    const property = await Property.findById(req.params.id);
     if (!property) {
       return res.status(404).json({ error: 'Property not found' });
     }
+
+    // Delete associated images from Cloudinary
+    if (property.images && property.images.length > 0) {
+      for (const imageUrl of property.images) {
+        await deleteFromCloudinary(imageUrl);
+      }
+    }
+
+    // Delete associated tenant contract from Cloudinary
+    if (property.tenantContract) {
+      await deleteFromCloudinary(property.tenantContract);
+    }
+
+    await Property.findByIdAndDelete(req.params.id); // Fixed typo
     res.status(200).json({ message: 'Property deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
