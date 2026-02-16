@@ -9,16 +9,35 @@ const options = {
   retryWrites: true,
 };
 
-mongoose.connect(dbUrl, options)
-  .then(() => console.log('MongoDB connected'))
-  .catch((err) => {
-    console.error('MongoDB connection error:', err);
-    process.exit(1); // Exit the process with a non-zero status code
-  });
+let connectionPromise;
+
+function connectDB() {
+  if (mongoose.connection.readyState === 1) {
+    return Promise.resolve(mongoose.connection);
+  }
+
+  if (!connectionPromise) {
+    connectionPromise = mongoose.connect(dbUrl, options)
+      .then((connection) => {
+        console.log('MongoDB connected');
+        return connection;
+      })
+      .catch((err) => {
+        connectionPromise = null;
+        console.error('MongoDB connection error:', err);
+        throw err;
+      });
+  }
+
+  return connectionPromise;
+}
+
+connectDB();
 
 mongoose.connection.on('disconnected', () => {
   console.log('MongoDB disconnected. Reconnecting...');
-  mongoose.connect(dbUrl, options).catch((err) => {
+  connectionPromise = null;
+  connectDB().catch((err) => {
     console.error('MongoDB reconnection failed:', err);
   });
 });

@@ -189,6 +189,33 @@ Hosting: Use platforms like Heroku, AWS, or DigitalOcean to host the Node.js app
 MongoDB: Use MongoDB Atlas for database hosting.
 Environment Variables: Ensure all environment variables are properly set in your hosting platform.
 
+## Deploy on Vercel (Serverless)
+
+This project is now configured to run on Vercel serverless functions.
+
+### What was added
+- `api/index.js` as the Vercel function entrypoint
+- `vercel.json` route mapping all traffic to Express
+- `app.js` updated to avoid `app.listen()` in serverless runtime
+
+### Required environment variables in Vercel
+Set these in **Project Settings → Environment Variables**:
+- `NODE_ENV=production`
+- `MONGODB_URI` (MongoDB Atlas connection string)
+- `SESSION_SECRET`
+- `JWT_SECRET`
+- `EMAIL_USER`, `EMAIL_PASS` (if using OTP/email flows)
+- `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET` (if payment is enabled)
+- `ALLOWED_ORIGINS` (comma-separated origins, e.g. `https://your-app.vercel.app`)
+
+### Deploy steps
+1. Push code to GitHub.
+2. Import the repository in Vercel.
+3. Configure environment variables.
+4. Deploy.
+
+For local development, continue using `npm start` or `npm run dev`.
+
 8. Extending the Application
 To extend the FMPG platform:
 
