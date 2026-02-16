@@ -22880,7 +22880,7 @@ address p {
 /* Sidebar */
 .mdc-drawer {
   background: linear-gradient(#2a1c5a, #4b3a6e);
-  background: url(../../images/sidebar/sidebar-bg.jpg);
+  background: url(https://res.cloudinary.com/di0cwploq/image/upload/v1771226595/fmpg/static/assets/images/sidebar/sidebar-bg_dfupbm.jpg);
   position: fixed;
 }
 

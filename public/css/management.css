@@ -4,7 +4,7 @@
     width: 100%;
   }
   
-  .customers td, #customers th {
+  .customers td, .customers th {
     border: 2px solid #b9b9b9;
     padding: 8px;
     text-align: center;
