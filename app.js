@@ -51,8 +51,8 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
 }));
 app.use(compression());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: process.env.STATIC_MAX_AGE || '1d',
