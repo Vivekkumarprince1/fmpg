@@ -65,6 +65,7 @@ router.post('/confirm/:ownerId', isAuthenticated, async (req, res) => {
       description: owner.description,
       rooms: owner.rooms, // Assuming the owner has rooms data
       ownerName: owner.ownerName,
+      city: owner.city, // Copy city from owner
       tenantContract: owner.tenantContract, // Use the owner's tenant contract if uploaded
     });
 
@@ -389,7 +390,7 @@ router.post('/properties/add', uploadPropertyAssets, isAuthenticated, async (req
     }
 
     // Extract property data
-    const { propertyName, locations, type, gender, amenities, map, ownerName, description, rules, landmark, address, contactNumber, email, securityDeposit, additionalDetails } = req.body;
+    const { propertyName, locations, type, gender, amenities, map, ownerName, description, rules, landmark, address, contactNumber, email, securityDeposit, additionalDetails, city } = req.body;
 
     // Create the new property
     const newProperty = new Property({
@@ -410,6 +411,7 @@ router.post('/properties/add', uploadPropertyAssets, isAuthenticated, async (req
       description,
       rooms, // Add room references to property
       ownerName,
+      city: city || 'Hoshiarpur', // Default city if not provided
       tenantContract: tenantContractPath,
     });
 
@@ -484,7 +486,7 @@ router.post('/properties/edit/:id', uploadPropertyAssets, isAuthenticated, async
     }
 
     // Extract property details from the request body
-    const { propertyName, locations, type, gender, map, ownerName, description, rules, landmark, address, contactNumber, email, securityDeposit, additionalDetails } = req.body;
+    const { propertyName, locations, type, gender, map, ownerName, description, rules, landmark, address, contactNumber, email, securityDeposit, additionalDetails, city } = req.body;
 
     // Handle uploaded images
     let images = req.body.existingImages || property.images; // If no new images are uploaded, use existing ones
@@ -564,6 +566,7 @@ router.post('/properties/edit/:id', uploadPropertyAssets, isAuthenticated, async
       images, // Now images contain both existing and new ones
       amenities: req.body['amenities'] || property.amenities,
       rooms: updatedRooms,
+      city: city || property.city,
       tenantContract: tenantContractPath
     };
 

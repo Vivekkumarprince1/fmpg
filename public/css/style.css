@@ -287,7 +287,7 @@
 
 /*** Booking ***/
 .booking {
-    background: linear-gradient(rgba(15, 23, 43, .7), rgba(15, 23, 43, .7)), url(../img/booking.jpg);
+    background: linear-gradient(rgba(15, 23, 43, .7), rgba(15, 23, 43, .7)), url(https://res.cloudinary.com/di0cwploq/image/upload/v1771226937/fmpg/static/img/booking-bg_fzgx9k.jpg);
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;

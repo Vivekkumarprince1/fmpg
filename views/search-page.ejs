@@ -63,20 +63,23 @@
     
                 <!-- Filter Section -->
                 <div class="filter-section">
+                    <input type="text" id="city-filter" class="form-control" placeholder="City" value="<%= city %>">
+                    
                     <select id="gender-filter" class="form-select">
-                        <option value="all">All Genders</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="unisex">Unisex</option>
+                        <option value="all" <%= gender === 'all' ? 'selected' : '' %>>All Genders</option>
+                        <option value="male" <%= gender === 'male' ? 'selected' : '' %>>Male</option>
+                        <option value="female" <%= gender === 'female' ? 'selected' : '' %>>Female</option>
+                        <option value="unisex" <%= gender === 'unisex' ? 'selected' : '' %>>Unisex</option>
                     </select>
     
                     
                     <select id="sorting-filter" class="form-select sort">
-                        <option value="relevant">Most Relevant</option>
-                        <option value="low-to-high">Price: Low to High</option>
-                        <option value="high-to-low">Price: High to Low</option>
-                        <option value="distance">Distance</option>
+                        <option value="relevant" <%= sort === 'relevant' ? 'selected' : '' %>>Most Relevant</option>
+                        <option value="low-to-high" <%= sort === 'low-to-high' ? 'selected' : '' %>>Price: Low to High</option>
+                        <option value="high-to-low" <%= sort === 'high-to-low' ? 'selected' : '' %>>Price: High to Low</option>
+                        <option value="distance" <%= sort === 'distance' ? 'selected' : '' %>>Distance</option>
                     </select>
+                    <button class="btn btn-primary" onclick="applyFilters()">Search</button>
                 </div>
 
                 <!-- Properties List -->
@@ -135,12 +138,16 @@
             <script>
                 document.getElementById('gender-filter').addEventListener('change', applyFilters);
                 document.getElementById('sorting-filter').addEventListener('change', applyFilters);
+                document.getElementById('city-filter').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') applyFilters();
+                });
             
                 async function applyFilters() {
                     const gender = document.getElementById('gender-filter').value;
                     const sort = document.getElementById('sorting-filter').value;
+                    const city = document.getElementById('city-filter').value;
             
-                    let queryParams = new URLSearchParams({ gender, sort });
+                    let queryParams = new URLSearchParams({ gender, sort, city });
             
                     // If the user selected "Distance", get their location
                     if (sort === 'distance') {

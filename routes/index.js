@@ -28,7 +28,19 @@ router.get('/', async function (req, res, next) {
     req.session.success = null;
 
     // Fetch properties from the database
-    const properties = await Property.find().populate('rooms'); // Populate rooms if needed
+    let query = {};
+    const lastCity = req.session.lastCity;
+    
+    // Fetch all properties but we will sort them to show lastCity first
+    const properties = await Property.find(query).populate('rooms');
+    
+    if (lastCity) {
+      properties.sort((a, b) => {
+        if (a.city === lastCity && b.city !== lastCity) return -1;
+        if (a.city !== lastCity && b.city === lastCity) return 1;
+        return 0;
+      });
+    }
 
     // Render the index view with properties
     res.render('index', { properties, success, page: 'home', title: 'Home' });
@@ -76,6 +88,15 @@ router.get('/api/bookings', (req, res) => {
       fetchedAt: new Date().toISOString(),
     },
   });
+});
+
+router.get('/api/cities', async (req, res) => {
+  try {
+    const cities = await Property.distinct('city');
+    res.json(cities);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 router.get('/TermsAndConditions', function (req, res, next) {
@@ -203,15 +224,27 @@ const extractLatLngFromMapUrl = (url) => {
   }
 };
 
-// Route to filter and sort properties, including by distance
+// Route to filter and sort properties, including by distance and city
 router.get('/search-page', async (req, res) => {
   try {
-    const { gender = 'all', sort = '', lat, lng } = req.query;
+    let { gender = 'all', sort = '', lat, lng, city } = req.query;
 
-    // Initialize query with optional gender filter
+    // Use session/cookie as fallback for city if not provided
+    if (!city && !lat && !lng) {
+      city = req.session.lastCity || 'Hoshiarpur';
+    }
+
+    if (city) {
+      req.session.lastCity = city;
+    }
+
+    // Initialize query
     let query = {};
     if (gender && gender !== 'all') {
       query.gender = gender;
+    }
+    if (city) {
+      query.city = new RegExp(city, 'i');
     }
 
     // Fetch filtered properties
@@ -219,24 +252,57 @@ router.get('/search-page', async (req, res) => {
 
     // Sort properties based on selected criteria
     if (sort === 'low-to-high') {
-      properties = properties.sort((a, b) => a.rooms[0]?.price - b.rooms[0]?.price);
+      properties = properties.sort((a, b) => (a.rooms[0]?.price || Infinity) - (b.rooms[0]?.price || Infinity));
     } else if (sort === 'high-to-low') {
-      properties = properties.sort((a, b) => b.rooms[0]?.price - a.rooms[0]?.price);
+      properties = properties.sort((a, b) => (b.rooms[0]?.price || 0) - (a.rooms[0]?.price || 0));
     } else if (sort === 'distance' && lat && lng) {
+      const userLat = parseFloat(lat);
+      const userLng = parseFloat(lng);
+
       properties = properties.map(property => {
-        const coordinates = extractLatLngFromMapUrl(property.map);
-        if (coordinates) {
-          property.distance = getDistanceFromLatLonInKm(lat, lng, coordinates.lat, coordinates.lng);
+        // Prefer explicit lat/lng fields if available
+        if (property.lat && property.lng) {
+          property.distance = getDistanceFromLatLonInKm(userLat, userLng, property.lat, property.lng);
         } else {
-          property.distance = Infinity; // Assign a large number if no coordinates are found
+          const coordinates = extractLatLngFromMapUrl(property.map);
+          if (coordinates) {
+            property.distance = getDistanceFromLatLonInKm(userLat, userLng, coordinates.lat, coordinates.lng);
+          } else {
+            property.distance = Infinity;
+          }
         }
         return property;
       });
-      properties.sort((a, b) => a.distance - b.distance); // Sort by nearest distance
+      properties.sort((a, b) => a.distance - b.distance);
+    } else if (!sort && lat && lng) {
+        // Default sort by distance if location shared but no specific sort selected
+        const userLat = parseFloat(lat);
+        const userLng = parseFloat(lng);
+        properties = properties.map(property => {
+          if (property.lat && property.lng) {
+            property.distance = getDistanceFromLatLonInKm(userLat, userLng, property.lat, property.lng);
+          } else {
+            const coordinates = extractLatLngFromMapUrl(property.map);
+            if (coordinates) {
+              property.distance = getDistanceFromLatLonInKm(userLat, userLng, coordinates.lat, coordinates.lng);
+            } else {
+              property.distance = Infinity;
+            }
+          }
+          return property;
+        }).sort((a, b) => a.distance - b.distance);
     }
 
-    res.render('search-page', { page: 'search-page', title: 'Search result', properties: properties, gender, sort });
+    res.render('search-page', { 
+      page: 'search-page', 
+      title: 'Search result', 
+      properties, 
+      gender, 
+      sort,
+      city: city || ''
+    });
   } catch (err) {
+    console.error("Error in /search-page:", err);
     res.status(500).json({ error: err.message });
   }
 });

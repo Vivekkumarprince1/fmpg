@@ -1,5 +1,21 @@
 // List of places for dropdown search suggestions
-const places = ["Delhi", "Hoshiarpur", "Mumbai", "Chandigarh", "Bangalore", "Kolkata", "Chennai", "Hyderabad"];
+let places = [];
+async function fetchCities() {
+    try {
+        const response = await fetch('/api/cities');
+        if (response.ok) {
+            places = await response.json();
+            // Add some defaults if none found in DB
+            if (places.length === 0) {
+                places = ["Delhi", "Hoshiarpur", "Mumbai", "Chandigarh", "Bangalore", "Kolkata", "Chennai", "Hyderabad"];
+            }
+        }
+    } catch (err) {
+        console.error('Error fetching cities:', err);
+        places = ["Delhi", "Hoshiarpur", "Mumbai", "Chandigarh", "Bangalore", "Kolkata", "Chennai", "Hyderabad"];
+    }
+}
+fetchCities();
 const input = document.getElementById('input');
 const searchBtn = document.getElementById('search-btn');
 const dropdown = document.getElementById('dropdown');
@@ -59,17 +75,15 @@ input.addEventListener('input', function () {
 
 // Button click handler for search
 searchBtn.addEventListener('click', function () {
-    const inputValue = input.value.trim().toLowerCase();
+    const inputValue = input.value.trim();
 
-    if (inputValue === "hoshiarpur") {
-        console.log("clicked");
-        window.open("search-page", "_blank");
+    if (inputValue) {
+        console.log("Searching for:", inputValue);
+        window.open(`search-page?city=${encodeURIComponent(inputValue)}`, "_blank");
         input.value = ""; // Clear the input field
         dropdown.innerHTML = ''; // Clear dropdown
         dropdown.style.display = 'none'; // Hide dropdown
         searchBtn.disabled = true; // Disable search button after click
-    } else {
-        window.open("404");
     }
 });
 
