@@ -146,6 +146,10 @@ router.get('/destination', function (req, res, next) {
   res.render('destination', { page: 'destination', title: 'Destination' });
 });
 
+router.get('/fooding', function (req, res, next) {
+  res.render('fooding', { page: 'fooding', title: 'Fooding' });
+});
+
 router.get('/readmore', async function (req, res, next) {
   try {
     const propertyID = req.query.propertyID;  // Use lowercase 'propertyID'

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>FMPG</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+    <link rel="icon" href="img/logo.png" type="image/icon type">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/animate/animate.min.css" rel="stylesheet">
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/footer.css">
+</head>
+
+<body>
+    <!-- header start -->
+    <%- include('header') %>
+        <!-- header end -->
+
+    <!-- Coming Soon Start -->
+    <div class="container-fluid bg-light">
+        <div class="container min-vh-100 d-flex align-items-center justify-content-center">
+            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+    
+                <img src="<%= assetUrl('img/logo.png') %>" alt="FMPG Logo"
+                    style="width: 110px; height: 110px; object-fit: contain;" class="mb-4">
+    
+                <h5 class="section-title bg-light text-center text-primary px-3">
+                    FMPG Fooding
+                </h5>
+    
+                <h1 class="display-2 fw-bold mb-3">
+                    Coming Soon
+                </h1>
+    
+                <p class="fs-5 text-muted mb-4" style="max-width: 700px;">
+                    We are preparing something delicious for you.
+                    Our Fooding services will be launched soon with
+                    quality food, better experience, and amazing hospitality.
+                </p>
+    
+                <div class="d-flex justify-content-center gap-4 mt-4 flex-wrap">
+    
+                    <div class="bg-white shadow rounded p-4">
+                        <i class="fa-solid fa-utensils fa-2x text-primary mb-3"></i>
+                        <h5>Delicious Food</h5>
+                    </div>
+    
+                    <div class="bg-white shadow rounded p-4">
+                        <i class="fa-solid fa-bowl-food fa-2x text-primary mb-3"></i>
+                        <h5>Premium Service</h5>
+                    </div>
+    
+                    <div class="bg-white shadow rounded p-4">
+                        <i class="fa-solid fa-clock fa-2x text-primary mb-3"></i>
+                        <h5>Launching Soon</h5>
+                    </div>
+    
+                </div>
+    
+            </div>
+        </div>
+    </div>
+    <!-- Coming Soon End -->
+    </body>
+</html>

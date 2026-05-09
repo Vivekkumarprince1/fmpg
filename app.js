@@ -29,6 +29,7 @@ const ownerRoutes = require('./routes/ownerroutes');
 const bookingRoutes = require('./routes/bookingroutes'); 
 const settingsRoutes = require('./routes/settingsRautes');
 const authRoutes = require('./routes/authroutes');
+// const foodRoutes = require('./routes/foodroutes');
 
 var app = express();
 app.set('trust proxy', 1);
