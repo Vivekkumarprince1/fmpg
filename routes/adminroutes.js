@@ -14,6 +14,7 @@ const jwt = require('jsonwebtoken');
 const { uploadPropertyAssets, isCloudinaryConfigured } = require('../middleware/cloudinaryUpload');
 const { deleteFromCloudinary } = require('../config/cloudinary');
 const { isAuthenticated, authorizeAdmin } = require('../middleware/auth'); // Adjust path as needed
+const AuditLog = require('../models/AuditLog');
 
 
 router.get('/form', function (req, res, next) {
@@ -81,6 +82,15 @@ router.post('/confirm/:ownerId', isAuthenticated, async (req, res) => {
 
     // Remove the owner from the Owner collection
     await Owner.findByIdAndDelete(req.params.ownerId);
+
+    // Audit Log
+    await AuditLog.create({
+      action: 'CONFIRM_OWNER',
+      admin: req.user.userId,
+      targetType: 'Property',
+      targetId: newProperty._id,
+      details: { propertyName: newProperty.propertyName, ownerEmail: owner.email }
+    });
 
     // Send success message and redirect
     req.session.success = 'Owner confirmed and added as a property';
@@ -279,7 +289,19 @@ router.post('/users/edit/:id', isAuthenticated, async (req, res) => {
 
 // Delete a user
 router.post('/users/delete/:id', isAuthenticated, async (req, res) => {
-  await User.findByIdAndDelete(req.params.id);
+  const userId = req.params.id;
+  const user = await User.findById(userId);
+  if (user) {
+    await User.findByIdAndDelete(userId);
+    // Audit Log
+    await AuditLog.create({
+      action: 'DELETE_USER',
+      admin: req.user.userId,
+      targetType: 'User',
+      targetId: userId,
+      details: { username: user.username, email: user.email }
+    });
+  }
   res.redirect('/admin/users');
 });
 
@@ -613,6 +635,15 @@ router.post('/properties/delete/:id', isAuthenticated, async (req, res) => {
 
     const deletedProperty = await Property.findByIdAndDelete(propertyId);
 
+    // Audit Log
+    await AuditLog.create({
+      action: 'DELETE_PROPERTY',
+      admin: req.user.userId,
+      targetType: 'Property',
+      targetId: propertyId,
+      details: { propertyName: property.propertyName }
+    });
+
     // Redirect to properties page after deletion
     res.redirect('/admin/properties');
   } catch (err) {
@@ -941,5 +972,21 @@ router.get('/messages', isAuthenticated, async (req, res) => {
 //   }
 //   res.redirect('/login');
 // }
+
+// View audit logs
+router.get('/audit-logs', isAuthenticated, async (req, res) => {
+  try {
+    const logs = await AuditLog.find({})
+      .populate('admin', 'username email')
+      .sort({ timestamp: -1 })
+      .limit(100);
+
+    const admin = await User.findOne({ email: req.user.email });
+    res.render('admin/auditLogs', { logs, admin });
+  } catch (err) {
+    console.error('Error fetching audit logs:', err);
+    res.status(500).send('Server Error');
+  }
+});
 
 module.exports = router;

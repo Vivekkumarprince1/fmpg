@@ -85,7 +85,7 @@
                         </div>
 
                         <!-- Password Input -->
-                        <div class="input-div pass" id="passwordLogin">
+                        <div class="input-div one" id="passwordLogin">
                             <div class="i">
                                 <i class="fas fa-lock"></i>
                             </div>
@@ -96,18 +96,16 @@
                             </div>
                         </div>
 
-                        <div class="input-div pass" id="otpLogin">
+                        <div class="input-div one" id="otpLogin">
                             <div class="i">
                                 <i class="fas fa-lock"></i>
                             </div>
                             <div class="div">
                                 <h5>OTP</h5>
-                                <input type="" class="input" id="otp" name="otp" required>
-                                <!-- <i class="fas fa-eye show-password" id="togglePassword"></i> -->
+                                <input type="text" class="input" id="otp" name="otp" style="padding-right: 130px;"
+                                    required>
                                 <button type="button" id="sendOtp" class="small-btn sent-otp">Send OTP</button>
-
                             </div>
-
                         </div>
 
                         <!-- OTP Input -->
@@ -156,7 +154,7 @@
         authMethodRadios.forEach(radio => {
             radio.addEventListener('change', function () {
                 if (this.value === 'otp') {
-                    otpLoginDiv.style.display = 'block';
+                    otpLoginDiv.style.display = 'grid';
                     passwordLoginDiv.style.display = 'none';
                     passwordInput.removeAttribute('required');
                     passwordInput.disabled = true;
@@ -164,7 +162,7 @@
                     document.getElementById('otp').setAttribute('required', 'true');
                 } else {
                     otpLoginDiv.style.display = 'none';
-                    passwordLoginDiv.style.display = 'block';
+                    passwordLoginDiv.style.display = 'grid';
                     passwordInput.setAttribute('required', 'true');
                     passwordInput.disabled = false;
                     document.getElementById('otp').removeAttribute('required');
@@ -178,7 +176,7 @@
             const defaultRadio = document.querySelector('[name="authMethod"]:checked');
             if (defaultRadio) {
                 if (defaultRadio.value === 'otp') {
-                    otpLoginDiv.style.display = 'block';
+                    otpLoginDiv.style.display = 'grid';
                     passwordLoginDiv.style.display = 'none';
                     passwordInput.removeAttribute('required');
                     passwordInput.disabled = true;
@@ -186,7 +184,7 @@
                     document.getElementById('otp').setAttribute('required', 'true');
                 } else {
                     otpLoginDiv.style.display = 'none';
-                    passwordLoginDiv.style.display = 'block';
+                    passwordLoginDiv.style.display = 'grid';
                     passwordInput.setAttribute('required', 'true');
                     passwordInput.disabled = false;
                     document.getElementById('otp').removeAttribute('required');

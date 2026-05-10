@@ -1,0 +1,60 @@
+<%- include('partials/header') %>
+
+    <div class="mdc-layout-grid">
+        <div class="mdc-layout-grid__inner">
+            <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+                <div class="mdc-card p-0">
+                    <h6 class="card-title card-padding pb-0">Administrative Audit Logs</h6>
+                    <div class="table-responsive">
+                        <table class="table table-hoverable">
+                            <thead>
+                                <tr>
+                                    <th class="text-left">Timestamp</th>
+                                    <th>Admin</th>
+                                    <th>Action</th>
+                                    <th>Target Type</th>
+                                    <th>Target ID</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% logs.forEach(log=> { %>
+                                    <tr>
+                                        <td class="text-left">
+                                            <%= new Date(log.timestamp).toLocaleString('en-IN') %>
+                                        </td>
+                                        <td>
+                                            <%= log.admin ? log.admin.username : 'Unknown' %>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="mdc-button mdc-button--outlined 
+                                            <%= log.action.includes('DELETE') ? 'mdc-button--secondary' : 'mdc-button--primary' %>">
+                                                <%= log.action %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <%= log.targetType %>
+                                        </td>
+                                        <td><small>
+                                                <%= log.targetId || 'N/A' %>
+                                            </small></td>
+                                        <td>
+                                            <% if (log.details) { %>
+                                                <pre
+                                                    style="font-size: 11px; margin: 0;"><%= JSON.stringify(log.details, null, 2) %></pre>
+                                                <% } else { %>
+                                                    N/A
+                                                    <% } %>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
