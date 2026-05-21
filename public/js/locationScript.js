@@ -33,7 +33,7 @@ input.addEventListener('input', function () {
     if (inputValue) {
         const filteredPlaces = places.filter(place => 
             place.toLowerCase().includes(inputValue)
-        );
+        ).slice(0, 10);
 
         // Show suggestions if available
         if (filteredPlaces.length > 0) {
@@ -79,7 +79,7 @@ searchBtn.addEventListener('click', function () {
 
     if (inputValue) {
         console.log("Searching for:", inputValue);
-        window.open(`search-page?city=${encodeURIComponent(inputValue)}`, "_blank");
+        window.location.href = `search-page?city=${encodeURIComponent(inputValue)}`;
         input.value = ""; // Clear the input field
         dropdown.innerHTML = ''; // Clear dropdown
         dropdown.style.display = 'none'; // Hide dropdown

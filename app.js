@@ -1,6 +1,10 @@
 //app.js
 require('dotenv').config({ path: './.env' });
 
+// Workaround for Node.js v22+ / c-ares DNS resolution bug on Windows
+const dns = require('dns');
+dns.setServers(['1.1.1.1', '8.8.8.8']);
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');

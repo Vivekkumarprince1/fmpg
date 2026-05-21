@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 
+// Workaround for Node.js v22+ / c-ares DNS resolution bug on Windows
+// const dns = require('dns');
+// dns.setServers(['1.1.1.1', '8.8.8.8']);
+
 const dbUrl = process.env.MONGODB_URI || 'mongodb://localhost:27017/fmpg';
 
 const options = {

@@ -92,12 +92,51 @@ router.get('/api/bookings', (req, res) => {
 
 router.get('/api/cities', async (req, res) => {
   try {
-    const cities = await Property.distinct('city');
-    res.json(cities);
+    // 1. Fetch active cities from properties in DB
+    const activeCities = await Property.distinct('city');
+
+    // 2. Load static list from JSON using require() for full Vercel serverless compatibility
+    let staticCities = [];
+    try {
+      const citiesData = require('../config/indian-cities.json');
+      staticCities = citiesData.map(item => item.name.trim());
+    } catch (requireErr) {
+      console.error("Error loading static cities JSON via require:", requireErr);
+    }
+
+    // 3. Merge and deduplicate, keeping active cities first
+    const finalSet = new Set();
+    const resultList = [];
+
+    // Push active cities first (preserving their exact DB casing)
+    activeCities.forEach(city => {
+      if (city) {
+        const clean = city.trim();
+        if (clean && !finalSet.has(clean.toLowerCase())) {
+          finalSet.add(clean.toLowerCase());
+          resultList.push(clean);
+        }
+      }
+    });
+
+    // Append static cities
+    staticCities.forEach(city => {
+      if (city) {
+        const clean = city.trim();
+        if (clean && !finalSet.has(clean.toLowerCase())) {
+          finalSet.add(clean.toLowerCase());
+          resultList.push(clean);
+        }
+      }
+    });
+
+    res.json(resultList);
   } catch (err) {
+    console.error("Error in /api/cities:", err);
     res.status(500).json({ error: err.message });
   }
 });
+
 
 router.get('/TermsAndConditions', function (req, res, next) {
   res.render('TermsAndConditions', { page: 'TermsAndConditions', title: 'TermsAndConditions' });

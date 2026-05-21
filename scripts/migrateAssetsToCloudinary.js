@@ -1,5 +1,9 @@
 require('dotenv').config();
 
+// Workaround for Node.js v22+ / c-ares DNS resolution bug on Windows
+// const dns = require('dns');
+// dns.setServers(['1.1.1.1', '8.8.8.8']);
+
 const path = require('path');
 const fs = require('fs');
 const mongoose = require('mongoose');
