@@ -74,15 +74,15 @@
                             <button type="button" class="absolute right-4 text-text-secondary hover:text-primary transition-colors cursor-pointer pop-3d" id="near-me-btn" title="Detect location">
                                 <i class="fa-solid fa-location-crosshairs text-lg"></i>
                             </button>
+
+                            <!-- Suggestions Dropdown list (Aligned directly with the input box) -->
+                            <div class="suggestions-container absolute top-full left-0 right-0 mt-3 rounded-2xl border border-border-color bg-white p-2 shadow-xl z-[999] max-h-56 overflow-y-auto text-text-primary text-left" id="dropdown" style="display: none;"></div>
                         </div>
 
                         <!-- Search submit button -->
                         <button type="button" class="px-8 py-4 bg-primary text-white font-black uppercase tracking-wider text-sm rounded-2xl shadow-md hover:bg-primary-hover hover:scale-[1.02] transition-all cursor-pointer disabled:opacity-50 disabled:pointer-events-none pop-3d" id="search-btn" disabled style="box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15)">
                             <i class="fa fa-search mr-2"></i> Find PG
                         </button>
-
-                        <!-- Suggestions Dropdown list -->
-                        <div class="suggestions-container absolute top-full left-0 right-0 mt-3 rounded-2xl border border-border-color bg-white p-2 shadow-xl z-[999] max-h-56 overflow-y-auto text-text-primary text-left" id="dropdown" style="display: none;"></div>
                     </div>
                 </div>
             </div>
@@ -489,23 +489,6 @@
                 setTimeout(() => alertMessage.remove(), 1000); // Remove from DOM fully after fade-out transition completes
             }
         }, 4000);
-
-        // Near-Me dynamic GPS redirect script binding
-        const searchButton = document.getElementById('search-btn');
-        if (searchButton) {
-            searchButton.addEventListener('click', function () {
-                const inputVal = document.getElementById('input').value.trim();
-                const userLat = sessionStorage.getItem('userLat');
-                const userLng = sessionStorage.getItem('userLng');
-                if (inputVal) {
-                    window.location.href = `/search-page?query=${encodeURIComponent(inputVal)}`;
-                } else if (userLat && userLng) {
-                    window.location.href = `/search-page?lat=${userLat}&lng=${userLng}`;
-                } else {
-                    alert("Please enter a location query or use Detect Location.");
-                }
-            });
-        }
     </script>
 </body>
 

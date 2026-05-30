@@ -15,9 +15,9 @@ const { isAuthenticated, authorizeAdmin } = require('../middleware/auth'); // Ad
 
 /* GET home page. */
 
-router.get('/a',async (req, res) => {
+router.get('/a', async (req, res) => {
   await res.render('admin/a');
-  });
+});
 
 router.get('/', async function (req, res, next) {
   try {
@@ -28,7 +28,19 @@ router.get('/', async function (req, res, next) {
     req.session.success = null;
 
     // Fetch properties from the database
-    const properties = await Property.find().populate('rooms'); // Populate rooms if needed
+    let query = {};
+    const lastCity = req.session.lastCity;
+
+    // Fetch all properties but we will sort them to show lastCity first
+    const properties = await Property.find(query).populate('rooms');
+
+    if (lastCity) {
+      properties.sort((a, b) => {
+        if (a.city === lastCity && b.city !== lastCity) return -1;
+        if (a.city !== lastCity && b.city === lastCity) return 1;
+        return 0;
+      });
+    }
 
     // Render the index view with properties
     res.render('index', { properties, success, page: 'home', title: 'Home' });
@@ -78,6 +90,54 @@ router.get('/api/bookings', (req, res) => {
   });
 });
 
+router.get('/api/cities', async (req, res) => {
+  try {
+    // 1. Fetch active cities from properties in DB
+    const activeCities = await Property.distinct('city');
+
+    // 2. Load static list from JSON using require() for full Vercel serverless compatibility
+    let staticCities = [];
+    try {
+      const citiesData = require('../config/indian-cities.json');
+      staticCities = citiesData.map(item => item.name.trim());
+    } catch (requireErr) {
+      console.error("Error loading static cities JSON via require:", requireErr);
+    }
+
+    // 3. Merge and deduplicate, keeping active cities first
+    const finalSet = new Set();
+    const resultList = [];
+
+    // Push active cities first (preserving their exact DB casing)
+    activeCities.forEach(city => {
+      if (city) {
+        const clean = city.trim();
+        if (clean && !finalSet.has(clean.toLowerCase())) {
+          finalSet.add(clean.toLowerCase());
+          resultList.push(clean);
+        }
+      }
+    });
+
+    // Append static cities
+    staticCities.forEach(city => {
+      if (city) {
+        const clean = city.trim();
+        if (clean && !finalSet.has(clean.toLowerCase())) {
+          finalSet.add(clean.toLowerCase());
+          resultList.push(clean);
+        }
+      }
+    });
+
+    res.json(resultList);
+  } catch (err) {
+    console.error("Error in /api/cities:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 router.get('/TermsAndConditions', function (req, res, next) {
   res.render('TermsAndConditions', { page: 'TermsAndConditions', title: 'TermsAndConditions' });
 });
@@ -101,10 +161,10 @@ router.get('/referandearn', isAuthenticated, async function (req, res, next) {
     }
 
     // Render the 'referandearn' page with the user details
-    res.render('referandearn', { 
-      page: 'referandearn', 
-      title: 'Refer and Earn', 
-      user 
+    res.render('referandearn', {
+      page: 'referandearn',
+      title: 'Refer and Earn',
+      user
     });
   } catch (err) {
     console.error('Error in /referandearn route:', err.message);
@@ -144,6 +204,10 @@ router.get('/contact', function (req, res, next) {
 
 router.get('/destination', function (req, res, next) {
   res.render('destination', { page: 'destination', title: 'Destination' });
+});
+
+router.get('/fooding', function (req, res, next) {
+  res.render('fooding', { page: 'fooding', title: 'Fooding' });
 });
 
 router.get('/readmore', async function (req, res, next) {
@@ -199,15 +263,27 @@ const extractLatLngFromMapUrl = (url) => {
   }
 };
 
-// Route to filter and sort properties, including by distance
+// Route to filter and sort properties, including by distance and city
 router.get('/search-page', async (req, res) => {
   try {
-    const { gender = 'all', sort = '', lat, lng } = req.query;
+    let { gender = 'all', sort = '', lat, lng, city } = req.query;
 
-    // Initialize query with optional gender filter
+    // Use session/cookie as fallback for city if not provided
+    if (!city && !lat && !lng) {
+      city = req.session.lastCity || 'Hoshiarpur';
+    }
+
+    if (city) {
+      req.session.lastCity = city;
+    }
+
+    // Initialize query
     let query = {};
     if (gender && gender !== 'all') {
       query.gender = gender;
+    }
+    if (city) {
+      query.city = new RegExp(city, 'i');
     }
 
     // Fetch filtered properties
@@ -215,24 +291,57 @@ router.get('/search-page', async (req, res) => {
 
     // Sort properties based on selected criteria
     if (sort === 'low-to-high') {
-      properties = properties.sort((a, b) => a.rooms[0]?.price - b.rooms[0]?.price);
+      properties = properties.sort((a, b) => (a.rooms[0]?.price || Infinity) - (b.rooms[0]?.price || Infinity));
     } else if (sort === 'high-to-low') {
-      properties = properties.sort((a, b) => b.rooms[0]?.price - a.rooms[0]?.price);
+      properties = properties.sort((a, b) => (b.rooms[0]?.price || 0) - (a.rooms[0]?.price || 0));
     } else if (sort === 'distance' && lat && lng) {
+      const userLat = parseFloat(lat);
+      const userLng = parseFloat(lng);
+
       properties = properties.map(property => {
-        const coordinates = extractLatLngFromMapUrl(property.map);
-        if (coordinates) {
-          property.distance = getDistanceFromLatLonInKm(lat, lng, coordinates.lat, coordinates.lng);
+        // Prefer explicit lat/lng fields if available
+        if (property.lat && property.lng) {
+          property.distance = getDistanceFromLatLonInKm(userLat, userLng, property.lat, property.lng);
         } else {
-          property.distance = Infinity; // Assign a large number if no coordinates are found
+          const coordinates = extractLatLngFromMapUrl(property.map);
+          if (coordinates) {
+            property.distance = getDistanceFromLatLonInKm(userLat, userLng, coordinates.lat, coordinates.lng);
+          } else {
+            property.distance = Infinity;
+          }
         }
         return property;
       });
-      properties.sort((a, b) => a.distance - b.distance); // Sort by nearest distance
+      properties.sort((a, b) => a.distance - b.distance);
+    } else if (!sort && lat && lng) {
+      // Default sort by distance if location shared but no specific sort selected
+      const userLat = parseFloat(lat);
+      const userLng = parseFloat(lng);
+      properties = properties.map(property => {
+        if (property.lat && property.lng) {
+          property.distance = getDistanceFromLatLonInKm(userLat, userLng, property.lat, property.lng);
+        } else {
+          const coordinates = extractLatLngFromMapUrl(property.map);
+          if (coordinates) {
+            property.distance = getDistanceFromLatLonInKm(userLat, userLng, coordinates.lat, coordinates.lng);
+          } else {
+            property.distance = Infinity;
+          }
+        }
+        return property;
+      }).sort((a, b) => a.distance - b.distance);
     }
 
-    res.render('search-page', { page: 'search-page', title: 'Search result', properties: properties, gender, sort });
+    res.render('search-page', {
+      page: 'search-page',
+      title: 'Search result',
+      properties,
+      gender,
+      sort,
+      city: city || ''
+    });
   } catch (err) {
+    console.error("Error in /search-page:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -317,7 +426,7 @@ router.get('/profile', isAuthenticated, async function (req, res) {
     const user = await userModel.findOne({ email: req.user.email });
     if (!user) {
       console.error('User not found in database.');
-      return res.redirect('/login',{error}); // Redirect if user is not found
+      return res.redirect('/login', { error }); // Redirect if user is not found
     }
 
     // Generate referral link if not set
@@ -338,7 +447,7 @@ router.get('/profile', isAuthenticated, async function (req, res) {
       req.flash('success', 'Successfully logged in as owner!');
       console.log(bookings);
       return res.render('profile', { user, bookings });
-      
+
     }
 
     console.log(bookings);
@@ -350,7 +459,7 @@ router.get('/profile', isAuthenticated, async function (req, res) {
 });
 
 
-router.get('/dashboard', isAuthenticated , (req, res) => {
+router.get('/dashboard', isAuthenticated, (req, res) => {
   res.render('admin/dashboard', { admin: req.user });
 });
 

@@ -129,7 +129,14 @@
             const gender = document.getElementById('gender-filter').value;
             const sort = document.getElementById('sorting-filter').value;
     
+            // Extract active city query parameter from current URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const city = urlParams.get('city');
+    
             let queryParams = new URLSearchParams({ gender, sort });
+            if (city) {
+                queryParams.append('city', city);
+            }
     
             // If the user selected "Distance", request geolocation access
             if (sort === 'distance') {
@@ -157,6 +164,9 @@
         // Fetch matching properties asynchronously without full reload
         async function fetchProperties(queryParams) {
             try {
+                // Update browser URL query parameters dynamically
+                window.history.replaceState(null, '', `?${queryParams.toString()}`);
+
                 const response = await fetch(`/search-page?${queryParams.toString()}`);
                 const data = await response.text();
     

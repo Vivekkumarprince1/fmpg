@@ -1,5 +1,21 @@
 // List of places for dropdown search suggestions
-const places = ["Delhi", "Hoshiarpur", "Mumbai", "Chandigarh", "Bangalore", "Kolkata", "Chennai", "Hyderabad"];
+let places = [];
+async function fetchCities() {
+    try {
+        const response = await fetch('/api/cities');
+        if (response.ok) {
+            places = await response.json();
+            // Add some defaults if none found in DB
+            if (places.length === 0) {
+                places = ["Delhi", "Hoshiarpur", "Mumbai", "Chandigarh", "Bangalore", "Kolkata", "Chennai", "Hyderabad"];
+            }
+        }
+    } catch (err) {
+        console.error('Error fetching cities:', err);
+        places = ["Delhi", "Hoshiarpur", "Mumbai", "Chandigarh", "Bangalore", "Kolkata", "Chennai", "Hyderabad"];
+    }
+}
+fetchCities();
 const input = document.getElementById('input');
 const searchBtn = document.getElementById('search-btn');
 const dropdown = document.getElementById('dropdown');
@@ -9,30 +25,64 @@ if (!input || !searchBtn || !dropdown) {
     window.addEventListener('load', checkAndUpdateLocation);
 } else {
 
+let activeIndex = -1;
+let currentSuggestions = [];
+
+function removeActiveHighlight() {
+    const items = dropdown.querySelectorAll('.suggestion-item');
+    items.forEach(item => {
+        item.classList.remove('bg-primary/10', 'text-primary');
+    });
+}
+
+function updateActiveSuggestion() {
+    removeActiveHighlight();
+    if (activeIndex >= 0 && activeIndex < currentSuggestions.length) {
+        const items = dropdown.querySelectorAll('.suggestion-item');
+        const activeItem = items[activeIndex];
+        if (activeItem) {
+            activeItem.classList.add('bg-primary/10', 'text-primary');
+            activeItem.scrollIntoView({ block: 'nearest' });
+        }
+    }
+}
+
 // Function to filter and display suggestions based on input
 input.addEventListener('input', function () {
     const inputValue = input.value.trim().toLowerCase();
     dropdown.innerHTML = ''; // Clear previous suggestions
+    currentSuggestions = [];
+    activeIndex = -1; // Reset active suggestion index
 
     if (inputValue) {
         const filteredPlaces = places.filter(place => 
             place.toLowerCase().includes(inputValue)
-        );
+        ).slice(0, 10);
+
+        currentSuggestions = filteredPlaces;
 
         // Show suggestions if available
         if (filteredPlaces.length > 0) {
             dropdown.style.display = 'block';
-            filteredPlaces.forEach(place => {
+            filteredPlaces.forEach((place, index) => {
                 const div = document.createElement('div');
                 div.textContent = place;
-                div.classList.add('dropdown-item');
+                // Add premium Tailwind CSS classes matching the clean green/white UI
+                div.className = "px-4 py-3 rounded-xl hover:bg-primary/10 hover:text-primary cursor-pointer font-bold transition-all duration-200 text-sm text-text-primary suggestion-item";
+                div.dataset.index = index;
 
-                // On clicking a suggestion, fill input with the selected value
+                // Sync mouse hover with keyboard highlighted activeIndex
+                div.addEventListener('mouseenter', function () {
+                    activeIndex = index;
+                    updateActiveSuggestion();
+                });
+
+                // On clicking a suggestion, trigger search immediately for premium UX
                 div.addEventListener('click', function () {
                     input.value = place;
                     dropdown.innerHTML = ''; // Clear dropdown
                     dropdown.style.display = 'none'; // Hide dropdown
-                    searchBtn.disabled = false; // Enable search button after selection
+                    window.location.href = `/search-page?city=${encodeURIComponent(place)}`;
                 });
 
                 dropdown.appendChild(div);
@@ -57,19 +107,60 @@ input.addEventListener('input', function () {
     searchBtn.disabled = input.value.trim() === '';
 });
 
-// Button click handler for search
-searchBtn.addEventListener('click', function () {
-    const inputValue = input.value.trim().toLowerCase();
+// Handle keydown on search input field to support arrow keys, escape, and enter
+input.addEventListener('keydown', function (e) {
+    const isDropdownOpen = dropdown.style.display === 'block';
 
-    if (inputValue === "hoshiarpur") {
-        console.log("clicked");
-        window.open("search-page", "_blank");
+    if (isDropdownOpen) {
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (currentSuggestions.length > 0) {
+                activeIndex = (activeIndex + 1) % currentSuggestions.length;
+                updateActiveSuggestion();
+            }
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (currentSuggestions.length > 0) {
+                activeIndex = (activeIndex - 1 + currentSuggestions.length) % currentSuggestions.length;
+                updateActiveSuggestion();
+            }
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (activeIndex >= 0 && activeIndex < currentSuggestions.length) {
+                const items = dropdown.querySelectorAll('.suggestion-item');
+                if (items[activeIndex]) {
+                    items[activeIndex].click();
+                }
+            } else {
+                const inputValue = input.value.trim();
+                if (inputValue) {
+                    searchBtn.click();
+                }
+            }
+        } else if (e.key === 'Escape') {
+            dropdown.style.display = 'none';
+        }
+    } else {
+        if (e.key === 'Enter') {
+            const inputValue = input.value.trim();
+            if (inputValue) {
+                searchBtn.click();
+            }
+        }
+    }
+});
+
+// Button click handler for search (uses absolute routing path)
+searchBtn.addEventListener('click', function () {
+    const inputValue = input.value.trim();
+
+    if (inputValue) {
+        console.log("Searching for:", inputValue);
+        window.location.href = `/search-page?city=${encodeURIComponent(inputValue)}`;
         input.value = ""; // Clear the input field
         dropdown.innerHTML = ''; // Clear dropdown
         dropdown.style.display = 'none'; // Hide dropdown
         searchBtn.disabled = true; // Disable search button after click
-    } else {
-        window.open("404");
     }
 });
 
@@ -128,12 +219,12 @@ nearMeBtn.addEventListener('click', function () {
     const userLng = localStorage.getItem('userLng');
 
     if (userLat && userLng) {
-        window.open(`search-page?lat=${userLat}&lng=${userLng}`, "_blank");
+        window.open(`/search-page?lat=${userLat}&lng=${userLng}`, "_blank");
     } else if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
-            window.open(`search-page?lat=${latitude}&lng=${longitude}`, "_blank");
+            window.open(`/search-page?lat=${latitude}&lng=${longitude}`, "_blank");
         }, function () {
             alert('Unable to retrieve your location.');
         });
