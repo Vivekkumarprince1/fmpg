@@ -31,19 +31,21 @@ function toAssetUrl(value) {
     .replace(/^\/+/, '')
     .replace(/^public\//, '');
 
+  let url = value;
   if (staticAssetMap[normalizedPath]) {
-    return staticAssetMap[normalizedPath];
+    url = staticAssetMap[normalizedPath];
+  } else if (!/^https?:\/\//i.test(value)) {
+    url = value.startsWith('/') ? value : `/${value.replace(/^public\//, '')}`;
   }
 
-  if (/^https?:\/\//i.test(value)) {
-    return value;
+  // Apply Cloudinary optimizations if it's a Cloudinary URL
+  if (isCloudinaryUrl(url) && !url.includes('/f_auto,q_auto')) {
+    url = url.replace(/\/upload\/(v\d+\/)?/, (match, version) => {
+      return `/upload/f_auto,q_auto/${version || ''}`;
+    });
   }
 
-  if (value.startsWith('/')) {
-    return value;
-  }
-
-  return `/${value.replace(/^public\//, '')}`;
+  return url;
 }
 
 async function deleteFromCloudinary(url) {

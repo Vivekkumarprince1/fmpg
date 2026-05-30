@@ -415,9 +415,7 @@ router.get('/service', function (req, res, next) {
   res.render('service', { page: 'service', title: 'Service' });
 });
 
-router.get('/team', function (req, res, next) {
-  res.render('team', { page: 'team', title: 'Team' });
-});
+
 
 
 router.get('/profile', isAuthenticated, async function (req, res) {

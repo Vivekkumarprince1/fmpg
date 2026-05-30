@@ -13,7 +13,27 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { uploadPropertyAssets, isCloudinaryConfigured } = require('../middleware/cloudinaryUpload');
 const { deleteFromCloudinary } = require('../config/cloudinary');
-const { isAuthenticated, authorizeAdmin } = require('../middleware/auth'); // Adjust path as needed
+const { isAuthenticated, authorizeAdmin, authorizeSupperAdmin } = require('../middleware/auth'); // Adjust path as needed
+const AuditLog = require('../models/AuditLog');
+
+
+// Middleware to guarantee res.locals.admin is always set for EJS layouts
+router.use((req, res, next) => {
+  const authHeader = req.headers['authorization'] || '';
+  const bearerToken = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  const token = req.cookies.token || bearerToken;
+  
+  if (token && process.env.JWT_SECRET) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decoded;
+      res.locals.admin = decoded;
+    } catch (err) {
+      // Ignore token verification errors here
+    }
+  }
+  next();
+});
 
 
 router.get('/form', function (req, res, next) {
@@ -65,6 +85,7 @@ router.post('/confirm/:ownerId', isAuthenticated, async (req, res) => {
       description: owner.description,
       rooms: owner.rooms, // Assuming the owner has rooms data
       ownerName: owner.ownerName,
+      city: owner.city, // Copy city from owner
       tenantContract: owner.tenantContract, // Use the owner's tenant contract if uploaded
     });
 
@@ -80,6 +101,15 @@ router.post('/confirm/:ownerId', isAuthenticated, async (req, res) => {
 
     // Remove the owner from the Owner collection
     await Owner.findByIdAndDelete(req.params.ownerId);
+
+    // Audit Log
+    await AuditLog.create({
+      action: 'CONFIRM_OWNER',
+      admin: req.user.userId,
+      targetType: 'Property',
+      targetId: newProperty._id,
+      details: { propertyName: newProperty.propertyName, ownerEmail: owner.email }
+    });
 
     // Send success message and redirect
     req.session.success = 'Owner confirmed and added as a property';
@@ -278,7 +308,19 @@ router.post('/users/edit/:id', isAuthenticated, async (req, res) => {
 
 // Delete a user
 router.post('/users/delete/:id', isAuthenticated, async (req, res) => {
-  await User.findByIdAndDelete(req.params.id);
+  const userId = req.params.id;
+  const user = await User.findById(userId);
+  if (user) {
+    await User.findByIdAndDelete(userId);
+    // Audit Log
+    await AuditLog.create({
+      action: 'DELETE_USER',
+      admin: req.user.userId,
+      targetType: 'User',
+      targetId: userId,
+      details: { username: user.username, email: user.email }
+    });
+  }
   res.redirect('/admin/users');
 });
 
@@ -389,7 +431,7 @@ router.post('/properties/add', uploadPropertyAssets, isAuthenticated, async (req
     }
 
     // Extract property data
-    const { propertyName, locations, type, gender, amenities, map, ownerName, description, rules, landmark, address, contactNumber, email, securityDeposit, additionalDetails } = req.body;
+    const { propertyName, locations, type, gender, amenities, map, ownerName, description, rules, landmark, address, contactNumber, email, securityDeposit, additionalDetails, city } = req.body;
 
     // Create the new property
     const newProperty = new Property({
@@ -410,6 +452,7 @@ router.post('/properties/add', uploadPropertyAssets, isAuthenticated, async (req
       description,
       rooms, // Add room references to property
       ownerName,
+      city: city || 'Hoshiarpur', // Default city if not provided
       tenantContract: tenantContractPath,
     });
 
@@ -484,7 +527,7 @@ router.post('/properties/edit/:id', uploadPropertyAssets, isAuthenticated, async
     }
 
     // Extract property details from the request body
-    const { propertyName, locations, type, gender, map, ownerName, description, rules, landmark, address, contactNumber, email, securityDeposit, additionalDetails } = req.body;
+    const { propertyName, locations, type, gender, map, ownerName, description, rules, landmark, address, contactNumber, email, securityDeposit, additionalDetails, city } = req.body;
 
     // Handle uploaded images
     let images = req.body.existingImages || property.images; // If no new images are uploaded, use existing ones
@@ -564,6 +607,7 @@ router.post('/properties/edit/:id', uploadPropertyAssets, isAuthenticated, async
       images, // Now images contain both existing and new ones
       amenities: req.body['amenities'] || property.amenities,
       rooms: updatedRooms,
+      city: city || property.city,
       tenantContract: tenantContractPath
     };
 
@@ -609,6 +653,15 @@ router.post('/properties/delete/:id', isAuthenticated, async (req, res) => {
     }
 
     const deletedProperty = await Property.findByIdAndDelete(propertyId);
+
+    // Audit Log
+    await AuditLog.create({
+      action: 'DELETE_PROPERTY',
+      admin: req.user.userId,
+      targetType: 'Property',
+      targetId: propertyId,
+      details: { propertyName: property.propertyName }
+    });
 
     // Redirect to properties page after deletion
     res.redirect('/admin/properties');
@@ -942,5 +995,21 @@ router.get('/messages', isAuthenticated, async (req, res) => {
 //   }
 //   res.redirect('/login');
 // }
+
+// View audit logs (restricted to admin & superadmin)
+router.get('/audit-logs', isAuthenticated, authorizeAdmin, async (req, res) => {
+  try {
+    const logs = await AuditLog.find({})
+      .populate('admin', 'username email')
+      .sort({ timestamp: -1 })
+      .limit(100);
+
+    const admin = await User.findOne({ email: req.user.email });
+    res.render('admin/auditLogs', { logs, admin });
+  } catch (err) {
+    console.error('Error fetching audit logs:', err);
+    res.status(500).send('Server Error');
+  }
+});
 
 module.exports = router;

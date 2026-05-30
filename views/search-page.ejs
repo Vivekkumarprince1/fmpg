@@ -87,7 +87,7 @@
                             
                             <div class="text-sm font-semibold text-text-secondary">
                                 <% if (property.rooms && property.rooms.length > 0) { %>
-                                    <span class="text-slate-500 font-medium">Starting Price:</span> <span class="text-primary font-bold text-base">₹<%= property.rooms[0] ? property.rooms[0].price : 'N/A' %></span>
+                                    <span class="text-slate-500 font-medium">Starting Price:</span> <span class="text-primary font-bold text-base">₹<%= Math.min(...property.rooms.map(r => r.price || Infinity)) %></span>
                                 <% } else { %>
                                     <span class="text-rose-500 font-medium"><i class="fa fa-info-circle mr-1"></i> No rooms available</span>
                                 <% } %>

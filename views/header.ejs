@@ -40,9 +40,9 @@
                 <i class="fa fa-phone-alt text-primary"></i>
                 <span>+91 7321835093</span>
             </a>
-            <a href="mailto:fmpg974@gmail.com" class="flex items-center gap-2 hover:text-primary transition-colors duration-300">
+            <a href="mailto:contact@fmpg.in" class="flex items-center gap-2 hover:text-primary transition-colors duration-300">
                 <i class="fa fa-envelope text-primary"></i>
-                <span>fmpg974@gmail.com</span>
+                <span>contact@fmpg.in</span>
             </a>
         </div>
         <div class="flex items-center gap-4">
@@ -67,7 +67,6 @@
 <!-- Topbar End -->
 
 <!-- Navbar & Hero Start -->
-<div class="w-full relative z-[1000]">
     <!-- Navbar Container -->
     <header id="sticky-header" class="w-full py-5 px-6 md:px-12 transition-all duration-500 border-b border-transparent bg-transparent z-[1000]">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
@@ -101,11 +100,6 @@
 
             <!-- Actions Controls -->
             <div class="flex items-center gap-4">
-                <!-- List Property Premium Button -->
-                <a href="owner/newOwner" class="hidden sm:inline-flex px-5 py-2 bg-slate-950 text-white font-heading text-xs font-bold rounded-full border border-slate-900 hover:bg-transparent hover:text-slate-950 hover:border-slate-950 transition-all duration-300 shadow-sm uppercase tracking-wider">
-                    List Property
-                </a>
-
                 <!-- Profile Button -->
                 <a href="/profile" class="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary-hover shadow-md hover:scale-105 transition-all duration-300" aria-label="User Profile" style="box-shadow: 0 4px 14px rgba(5, 150, 105, 0.2)">
                     <i class="fa-regular fa-user"></i>
@@ -133,32 +127,11 @@
                 <div class="h-[1px] bg-border-color/30 my-1"></div>
                 <a href="destination" class="px-4 py-2.5 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors <%= page === 'destination' ? 'text-primary bg-primary/10' : 'text-text-primary' %>">Destinations</a>
                 <a href="fooding" class="px-4 py-2.5 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors">Fooding</a>
-                <a href="owner/newOwner" class="px-4 py-2.5 rounded-xl hover:bg-primary/10 hover:text-primary text-primary transition-colors">List Your Property</a>
                 <div class="h-[1px] bg-border-color/30 my-1"></div>
                 <a href="contact" class="px-4 py-2.5 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors <%= page === 'contact' ? 'text-primary bg-primary/10' : 'text-text-primary' %>">Contact</a>
             </nav>
         </div>
     </header>
-
-    <!-- Elegant Minimal Breadcrumbs (Satisfying user comment: No dark/large hero section on inner pages) -->
-    <% if (page !== 'home' && typeof title !== 'undefined') { %>
-    <div class="w-full bg-white border-b border-border-color-light py-8 relative">
-        <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-fade-in-up">
-            <div>
-                <span class="text-primary font-bold text-xs uppercase tracking-widest">Find My PG</span>
-                <h1 class="font-heading text-3xl font-black text-text-primary tracking-tight mt-1">
-                    <%= title %>
-                </h1>
-            </div>
-            <nav class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-text-secondary">
-                <a href="/" class="hover:text-primary transition-colors duration-300">Home</a>
-                <i class="fa fa-chevron-right text-[10px] opacity-40 text-primary"></i>
-                <span class="text-primary font-extrabold"><%= title %></span>
-            </nav>
-        </div>
-    </div>
-    <% } %>
-</div>
 
 <!-- Header Stickiness Logic & Sidebars Script -->
 <script>

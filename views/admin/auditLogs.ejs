@@ -1,0 +1,137 @@
+<%- include('partials/header') %>
+
+<div class="p-6 space-y-6 animate-fade-in-up">
+  <!-- Section Title & CTAs -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border-color pb-4">
+    <div>
+      <h1 class="text-3xl font-extrabold font-heading text-primary">Administrative Audit Logs</h1>
+      <p class="text-text-secondary text-sm mt-1">Review historical log entries of system actions, user deletions, property approvals, and security updates.</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <a href="/profile" class="inline-flex items-center gap-2 bg-bg-card hover:bg-border-color border border-border-color text-text-primary px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300">
+        <i class="fa-solid fa-arrow-left"></i>
+        Profile
+      </a>
+    </div>
+  </div>
+
+  <!-- Audit Logs Card -->
+  <div class="glass-panel rounded-2xl overflow-hidden shadow-xl border border-border-color">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse bg-bg-card">
+        <thead>
+          <tr class="bg-primary text-white">
+            <th class="p-4 font-heading font-semibold text-sm">Timestamp</th>
+            <th class="p-4 font-heading font-semibold text-sm">Administrator</th>
+            <th class="p-4 font-heading font-semibold text-sm">Action</th>
+            <th class="p-4 font-heading font-semibold text-sm">Target</th>
+            <th class="p-4 font-heading font-semibold text-sm">Target ID</th>
+            <th class="p-4 font-heading font-semibold text-sm">Details</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border-color">
+          <% if (logs && logs.length > 0) { %>
+            <% logs.forEach(log => { %>
+              <tr class="hover:bg-primary/5 transition-colors duration-200">
+                <!-- Timestamp -->
+                <td class="p-4 text-xs font-semibold text-text-secondary whitespace-nowrap">
+                  <div class="flex items-center gap-2">
+                    <i class="fa-regular fa-clock text-primary/60"></i>
+                    <span><%= new Date(log.timestamp).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }) %></span>
+                  </div>
+                </td>
+                
+                <!-- Administrator Info -->
+                <td class="p-4 text-sm font-semibold text-text-primary">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-xs uppercase shadow-inner">
+                      <%= log.admin ? log.admin.username.charAt(0).toUpperCase() : 'U' %>
+                    </div>
+                    <div>
+                      <span class="block"><%= log.admin ? log.admin.username : 'Unknown Admin' %></span>
+                      <span class="block text-[10px] text-text-secondary font-medium"><%= log.admin ? log.admin.email : 'N/A' %></span>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Action Badge -->
+                <td class="p-4 text-sm">
+                  <% 
+                    let actionBadge = "bg-primary/10 text-primary border border-primary/20";
+                    if (log.action.includes('DELETE') || log.action.includes('REJECT')) {
+                      actionBadge = "bg-red-500/10 text-red-500 border border-red-500/20";
+                    } else if (log.action.includes('CREATE') || log.action.includes('CONFIRM')) {
+                      actionBadge = "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20";
+                    } else if (log.action.includes('UPDATE')) {
+                      actionBadge = "bg-amber-500/10 text-amber-500 border border-amber-500/20";
+                    }
+                  %>
+                  <span class="inline-flex items-center px-3 py-1 rounded-lg text-[10px] font-black tracking-wider uppercase <%= actionBadge %>">
+                    <%= log.action %>
+                  </span>
+                </td>
+
+                <!-- Target Type Badge -->
+                <td class="p-4 text-sm">
+                  <% 
+                    let targetBadge = "bg-purple-500/10 text-purple-500 border border-purple-500/20";
+                    if (log.targetType === 'User') {
+                      targetBadge = "bg-blue-500/10 text-blue-500 border border-blue-500/20";
+                    } else if (log.targetType === 'Property') {
+                      targetBadge = "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20";
+                    } else if (log.targetType === 'Settings') {
+                      targetBadge = "bg-pink-500/10 text-pink-500 border border-pink-500/20";
+                    }
+                  %>
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase <%= targetBadge %>">
+                    <%= log.targetType %>
+                  </span>
+                </td>
+
+                <!-- Target ID -->
+                <td class="p-4 text-xs font-mono text-text-secondary whitespace-nowrap">
+                  <%= log.targetId || 'N/A' %>
+                </td>
+
+                <!-- Details Panel -->
+                <td class="p-4 text-xs">
+                  <% if (log.details && Object.keys(log.details).length > 0) { %>
+                    <details class="group cursor-pointer select-none">
+                      <summary class="list-none flex items-center gap-1 font-bold text-primary hover:text-primary-hover select-none focus:outline-none">
+                        <i class="fa-solid fa-chevron-right text-[8px] transition-transform duration-200 group-open:rotate-90"></i>
+                        <span>Inspect Payload</span>
+                      </summary>
+                      <div class="mt-2 p-3 bg-slate-950 text-slate-100 rounded-xl font-mono text-[10px] shadow-inner select-all overflow-x-auto max-w-[280px] md:max-w-xs xl:max-w-md">
+                        <pre class="m-0 leading-relaxed"><%= JSON.stringify(log.details, null, 2) %></pre>
+                      </div>
+                    </details>
+                  <% } else { %>
+                    <span class="text-text-secondary italic">No metadata available</span>
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" class="p-16 text-center text-text-secondary font-medium">
+                <i class="fa-solid fa-receipt text-4xl text-border-color mb-3 block animate-pulse"></i>
+                No administrative logs recorded.
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Close Sidebar & Main wrappers opened in partials/header -->
+      </div>
+   </div>
+
+<!-- vendor scripts -->
+<script src="<%= assetUrl('assets/vendors/js/vendor.bundle.base.js') %>"></script>
+<script src="<%= assetUrl('assets/js/material.js') %>"></script>
+<script src="<%= assetUrl('assets/js/misc.js') %>"></script>
+</body>
+</html>

@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
   propertyName: {type: String,required: true},
   userId: {type: mongoose.Schema.Types.ObjectId,ref: 'users'},
   locations: {type: [String],required: true, },
+  city: {type: String, required: true, default: 'Hoshiarpur'}, // Added city field
   type: {type: String, enum:['PG','Hostel','Flat','PG with Mess'],required: true},
   images: {type: [String],},
   tenantContract: {type: String,},
@@ -27,10 +28,10 @@ const mongoose = require('mongoose');
   landmark: { type: String, required: true },
 });
 
-  propertySchema.index({ type: 1, gender: 1, status: 1 });
+  propertySchema.index({ type: 1, gender: 1, status: 1, city: 1 });
   propertySchema.index({ email: 1 });
   propertySchema.index({ contactNumber: 1 });
-  propertySchema.index({ propertyName: 'text', description: 'text', address: 'text' });
+  propertySchema.index({ propertyName: 'text', description: 'text', address: 'text', city: 'text' });
 
 // Create the model
   module.exports = mongoose.models.Property || mongoose.model('Property', propertySchema);

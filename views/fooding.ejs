@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Fooding Services - FMPG</title>
+    <!-- Include central Tailwind Configuration -->
+    <%- include('tailwind-head') %>
+</head>
+
+<body class="bg-bg-body text-text-primary transition-colors duration-300">
+    <!-- Header Start -->
+    <%- include('header') %>
+    <!-- Header End -->
+
+    <!-- Coming Soon Hero Section -->
+    <div class="relative min-h-[85vh] flex items-center justify-center py-24 px-6 overflow-hidden bg-grid-pattern">
+        <!-- Glow accents -->
+        <div class="absolute top-1/4 left-1/4 h-[300px] w-[300px] rounded-full bg-primary/5 blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/4 h-[300px] w-[300px] rounded-full bg-secondary/5 blur-[120px] pointer-events-none"></div>
+
+        <div class="max-w-5xl mx-auto text-center relative z-10 animate-fade-in-up flex flex-col items-center">
+            <!-- Floating Premium Logo Icon -->
+            <div class="h-28 w-28 rounded-[2rem] bg-white border border-border-color shadow-emerald flex items-center justify-center p-5 hover:scale-105 transition-premium mb-10 card-3d pop-3d" style="box-shadow: var(--shadow-emerald)">
+                <img src="<%= assetUrl('img/logo.png') %>" alt="FMPG Logo" class="h-full w-full object-contain">
+            </div>
+
+            <span class="text-primary font-heading font-extrabold text-sm tracking-widest uppercase mb-4 px-5 py-2 rounded-full bg-primary/10 border border-primary/20 animate-pulse">
+                FMPG Fooding
+            </span>
+
+            <h1 class="font-heading text-4xl sm:text-5xl md:text-7xl font-black text-text-primary tracking-tight mb-6 leading-tight">
+                Deliciously <span class="bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">Coming Soon</span>
+            </h1>
+
+            <p class="text-text-secondary leading-relaxed text-lg max-w-2xl mb-14 font-medium">
+                We are preparing something absolutely delicious for you! Our premium Fooding services will be launched soon, featuring healthy, hygienically curated dining plans, custom meal choices, and doorstep delivery for absolute convenience.
+            </p>
+
+            <!-- Features Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 w-full">
+                <!-- Delicious Food -->
+                <div class="card-3d glass-panel p-8 text-center flex flex-col items-center gap-4 hover:border-primary/30 transition-premium">
+                    <div class="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary text-2xl shadow-sm mb-2 pop-3d">
+                        <i class="fa-solid fa-utensils"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-extrabold text-text-primary">Delicious Food</h3>
+                    <p class="text-text-secondary text-sm leading-relaxed font-semibold">Hygienic, fresh, and gourmet meals crafted daily by verified chefs.</p>
+                </div>
+
+                <!-- Premium Service -->
+                <div class="card-3d glass-panel p-8 text-center flex flex-col items-center gap-4 hover:border-primary/30 transition-premium">
+                    <div class="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary text-2xl shadow-sm mb-2 pop-3d">
+                        <i class="fa-solid fa-bowl-food"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-extrabold text-text-primary">Premium Service</h3>
+                    <p class="text-text-secondary text-sm leading-relaxed font-semibold">Seamless custom meal plans, room delivery, and easy schedule adjustments.</p>
+                </div>
+
+                <!-- Launching Soon -->
+                <div class="card-3d glass-panel p-8 text-center flex flex-col items-center gap-4 hover:border-primary/30 transition-premium">
+                    <div class="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary text-2xl shadow-sm mb-2 pop-3d">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <h3 class="font-heading text-xl font-extrabold text-text-primary">Launching Soon</h3>
+                    <p class="text-text-secondary text-sm leading-relaxed font-semibold">Get ready for early-bird discounts and exclusive member perks upon release.</p>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="mt-16 flex flex-col sm:flex-row gap-4 items-center">
+                <a href="/" class="px-8 py-4 bg-primary hover:bg-primary-hover text-white font-heading font-extrabold text-sm rounded-full transition-premium shadow-emerald hover:-translate-y-0.5 uppercase tracking-wider">
+                    Return to Home
+                </a>
+                <a href="contact" class="px-8 py-4 bg-bg-card hover:bg-border-color border border-border-color text-text-primary font-heading font-extrabold text-sm rounded-full transition-premium hover:-translate-y-0.5 uppercase tracking-wider">
+                    Contact Enquiries
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Start -->
+    <%- include('footer') %>
+    <!-- Footer End -->
+
+    <!-- Main JavaScript -->
+    <script src="js/main.js"></script>
+</body>
+
+</html>

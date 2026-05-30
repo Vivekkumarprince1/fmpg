@@ -262,7 +262,12 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 gsap-stagger">
-            <% properties.slice(0, 3).forEach(property => { %>
+            <% properties.slice(0, 3).forEach(property => { 
+                let startingPrice = null;
+                if (property.rooms && property.rooms.length > 0) {
+                    startingPrice = Math.min(...property.rooms.map(r => r.price || Infinity));
+                }
+            %>
                 <article class="card-3d glass-panel rounded-[32px] overflow-hidden cursor-pointer flex flex-col group transition-premium bg-white gsap-stagger-item" onclick="readmore('<%= property._id %>')">
                     <!-- Media Gallery with luxury accents -->
                     <div class="relative overflow-hidden aspect-[4/3] w-full border-b border-border-color-light">
@@ -313,7 +318,7 @@
                         <div class="pt-4 border-t border-border-color-light flex justify-between items-center">
                             <div class="flex flex-col">
                                 <span class="text-[9px] font-black text-text-secondary uppercase tracking-widest">Rate Starts At</span>
-                                <span class="text-xl font-black text-primary font-heading tracking-tight">₹<%= property.price || 'Call' %> <span class="text-[10px] text-text-secondary font-medium">/mo</span></span>
+                                <span class="text-xl font-black text-primary font-heading tracking-tight">₹<%= (startingPrice && startingPrice !== Infinity) ? startingPrice : 'Call' %> <span class="text-[10px] text-text-secondary font-medium">/mo</span></span>
                             </div>
                             <button class="px-6 py-3 bg-slate-950 hover:bg-primary hover:scale-[1.02] text-white text-xs font-black uppercase tracking-wider rounded-2xl shadow-sm transition-all cursor-pointer pop-3d" onclick="event.stopPropagation(); readmore('<%= property._id %>')">
                                 Book Stay
