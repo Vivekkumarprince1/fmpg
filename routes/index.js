@@ -92,8 +92,13 @@ router.get('/api/bookings', (req, res) => {
 
 router.get('/api/cities', async (req, res) => {
   try {
-    // 1. Fetch active cities from properties in DB
-    const activeCities = await Property.distinct('city');
+    // 1. Fetch active cities from properties in DB with connection check safety
+    let activeCities = [];
+    try {
+      activeCities = await Property.distinct('city');
+    } catch (dbErr) {
+      console.warn("Could not retrieve active properties from database (proceeding with static cities):", dbErr.message);
+    }
 
     // 2. Load static list from JSON using require() for full Vercel serverless compatibility
     let staticCities = [];
@@ -109,15 +114,17 @@ router.get('/api/cities', async (req, res) => {
     const resultList = [];
 
     // Push active cities first (preserving their exact DB casing)
-    activeCities.forEach(city => {
-      if (city) {
-        const clean = city.trim();
-        if (clean && !finalSet.has(clean.toLowerCase())) {
-          finalSet.add(clean.toLowerCase());
-          resultList.push(clean);
+    if (Array.isArray(activeCities)) {
+      activeCities.forEach(city => {
+        if (city) {
+          const clean = city.trim();
+          if (clean && !finalSet.has(clean.toLowerCase())) {
+            finalSet.add(clean.toLowerCase());
+            resultList.push(clean);
+          }
         }
-      }
-    });
+      });
+    }
 
     // Append static cities
     staticCities.forEach(city => {
