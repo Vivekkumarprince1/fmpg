@@ -1,144 +1,212 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('partials/header') %>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>admin</title>
-  <!-- plugins:css -->
-  <link rel="stylesheet" href="../../assets/vendors/mdi/css/materialdesignicons.min.css">
-  <link rel="stylesheet" href="../../assets/vendors/mdi/css/materialdesignicons.min.css">
-  <link rel="stylesheet" href="../../assets/vendors/css/vendor.bundle.base.css">
-  <!-- endinject -->
-  <!-- Plugin css for this page -->
-  <link rel="stylesheet" href="../../assets/vendors/flag-icon-css/css/flag-icon.min.css">
-  <link rel="stylesheet" href="../../assets/vendors/jvectormap/jquery-jvectormap.css">
-  <!-- End plugin css for this page -->
-
-  <!-- Layout styles -->
-  <link rel="stylesheet" href="../../assets/css/demo/style.css">
-  <link rel="stylesheet" href="../../css/management.css">
-  <!-- End layout styles -->
-
-  <!-- <link rel="shortcut icon" href="../assets/images/favicon.png" /> -->
-  <link rel="icon" href="../img/logo.png" type="image/icon type">
-</head>
-
-<body>
-  <script src="../../assets/js/preloader.js"></script>
-  <div class="body-wrapper">
-    <!-- partial:partials/_sidebar.html -->
-    <%- include('partials/_sidebar') %>
-      <!-- partial -->
-      <div class="main-wrapper mdc-drawer-app-content">
-        <!-- partial:partials/_navbar.html -->
-        <%-include('partials/_navbar') %>
-
-    <div class="owner-details">
-        <h2>Owner Information</h2>
-        <p><strong>Name:</strong> <%= owner.ownerName %></p>
-        <p><strong>Email:</strong> <%= owner.email %></p>
-        <p><strong>Contact Number:</strong> <%= owner.contactNumber %></p>
-        <p><strong>Property Name:</strong> <%= owner.propertyName %></p>
-        <p><strong>Type:</strong> <%= owner.type %></p>
-        <p><strong>Status:</strong> <%= owner.status %></p>
-        <p><strong>Address:</strong> <%= owner.address %></p>
-        <p><strong>UserId</strong> <%= owner.userId %></p>
-
-
-        <h3>Locations</h3>
-        <ul>
-            <% owner.locations.forEach(location => { %>
-                <li><%= location %></li>
-            <% }) %>
-        </ul>
-
-        <h3>Rooms</h3>
-        <table border="1" style="width: 100%; text-align: center;" class="customers">
-            <thead>
-                <tr>
-                    <th>Room Number</th>
-                    <th>Type</th>
-                    <th>Capacity</th>
-                    <th>Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% owner.rooms.forEach(room => { %>
-                    <tr>
-                        
-                        <td><%= room.type %></td>
-                        <td><%= room.capacity %></td>
-                        <td><%= room.availableRooms %></td>
-                        <td><%= room.price %></td>
-                    </tr>
-                <% }) %>
-            </tbody>
-        </table>
-
-        <h3>Security Deposit</h3>
-        <p><%= owner.securityDeposit %></p>
-
-        <h3>Rules</h3>
-        <p><%= owner.rules %></p>
-
-        <h3>Amenities</h3>
-        <ul>
-            <% owner.amenities.forEach(amenity => { %>
-                <li><%= amenity %></li>
-            <% }) %>
-        </ul>
-
-        <h3>Description</h3>
-        <p><%= owner.description %></p>
-
-        <h3>Additional Details</h3>
-        <p><%= owner.additionalDetails %></p>
-
-        <h3>Tenant Contract</h3>
-        <ul>
-            <% if (owner.tenantContract) { %>
-                <li>
-                    <a href="<%= assetUrl(owner.tenantContract) %>" target="_blank">
-                        <%= owner.tenantContract.split('/').pop() %>
-                    </a>
-                </li>
-            <% } else { %>
-                <li>No Tenant Contract</li>
-            <% } %>
-        </ul>
-
-        <h3>Images</h3>
-        <ul>
-            <% owner.images.forEach(image => { %>
-                <li>
-                    <a href="<%= assetUrl(image) %>" target="_blank">
-                        <%= image.split('/').pop() %>
-                    </a>
-                </li>
-            <% }) %>
-        </ul>
-
-        <div>
-            <a href="/admin/newOwnerrequest"><button>Back to Owner Listings</button></a>
-        </div>
+<div class="p-6 space-y-6">
+  <!-- Title / Action bar -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border-color pb-4">
+    <div>
+      <h1 class="text-3xl font-extrabold font-heading text-primary">Owner Request Details</h1>
+      <p class="text-text-secondary text-sm mt-1">Review onboarding application parameters, sample contract documents, and room metrics.</p>
     </div>
+    <div>
+      <a href="/admin/newOwnerrequest" class="inline-flex items-center gap-2 bg-bg-card hover:bg-border-color border border-border-color text-text-primary px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300">
+        <i class="fa-solid fa-arrow-left"></i>
+        Back to Owner Listings
+      </a>
+    </div>
+  </div>
+
+  <!-- Primary Detail Cards Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    
+    <!-- Card 1: Owner Information -->
+    <div class="glass-panel rounded-2xl p-6 border border-border-color shadow-lg space-y-4">
+      <h3 class="font-heading font-extrabold text-base border-b border-border-color pb-2 flex items-center gap-2 text-primary">
+        <i class="fa-solid fa-user-tie"></i>
+        Owner Information
+      </h3>
+      <div class="space-y-3 text-sm">
+        <p class="flex justify-between"><span class="text-text-secondary">Owner Name:</span> <span class="font-semibold text-text-primary"><%= owner.ownerName %></span></p>
+        <p class="flex justify-between"><span class="text-text-secondary">Email Address:</span> <span class="font-semibold text-text-primary"><%= owner.email %></span></p>
+        <p class="flex justify-between"><span class="text-text-secondary">Contact Number:</span> <span class="font-mono font-semibold text-text-primary"><%= owner.contactNumber %></span></p>
+        <p class="flex justify-between"><span class="text-text-secondary">User Account Link ID:</span> <span class="font-mono text-xs font-semibold text-text-primary"><%= owner.userId %></span></p>
+      </div>
+    </div>
+
+    <!-- Card 2: Property Specifications -->
+    <div class="glass-panel rounded-2xl p-6 border border-border-color shadow-lg space-y-4">
+      <h3 class="font-heading font-extrabold text-base border-b border-border-color pb-2 flex items-center gap-2 text-primary">
+        <i class="fa-solid fa-building"></i>
+        Property Specifications
+      </h3>
+      <div class="space-y-3 text-sm">
+        <p class="flex justify-between"><span class="text-text-secondary">Property Name:</span> <span class="font-bold text-text-primary"><%= owner.propertyName %></span></p>
+        <p class="flex justify-between"><span class="text-text-secondary">Accommodation Type:</span> <span class="font-semibold text-text-primary capitalize"><%= owner.type %></span></p>
+        <p class="flex justify-between"><span class="text-text-secondary">Security Deposit (₹):</span> <span class="font-bold text-primary">₹<%= owner.securityDeposit %></span></p>
+        <div class="flex justify-between items-center">
+          <span class="text-text-secondary">Verification Status:</span>
+          <% 
+            let statusBadge = "bg-amber-500/10 text-amber-500 border border-amber-500/20";
+            if (owner.status.toLowerCase().includes('confirm') || owner.status.toLowerCase().includes('approved') || owner.status.toLowerCase().includes('active')) {
+              statusBadge = "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20";
+            }
+          %>
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider <%= statusBadge %>">
+            <%= owner.status %>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Address & Geo Landmarks -->
+    <div class="glass-panel rounded-2xl p-6 border border-border-color shadow-lg space-y-4">
+      <h3 class="font-heading font-extrabold text-base border-b border-border-color pb-2 flex items-center gap-2 text-primary">
+        <i class="fa-solid fa-map-location-dot"></i>
+        Address & Geo
+      </h3>
+      <div class="space-y-2 text-sm">
+        <p class="text-text-primary font-medium leading-relaxed mb-2"><%= owner.address %></p>
+        <a href="<%= owner.map %>" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary-hover font-semibold transition-colors">
+          <i class="fa-solid fa-up-right-from-square"></i> Open Google Maps Coordinates
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Rooms, Locations, and Verification Uploads -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    
+    <!-- Table: Room Inventory -->
+    <div class="glass-panel rounded-2xl p-6 border border-border-color shadow-lg space-y-4">
+      <h3 class="font-heading font-extrabold text-base border-b border-border-color pb-2 text-primary flex items-center gap-2">
+        <i class="fa-solid fa-list-ol"></i> Room Inventory Slots
+      </h3>
+      <div class="overflow-x-auto rounded-xl border border-border-color">
+        <table class="w-full text-left border-collapse bg-bg-card">
+          <thead>
+            <tr class="bg-primary text-white">
+              <th class="p-3 font-heading font-semibold text-xs">Room Type</th>
+              <th class="p-3 font-heading font-semibold text-xs text-center">Bed Capacity</th>
+              <th class="p-3 font-heading font-semibold text-xs text-center">Available Units</th>
+              <th class="p-3 font-heading font-semibold text-xs text-right">Price per month (₹)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border-color">
+            <% owner.rooms.forEach(room => { %>
+              <tr class="hover:bg-primary/5 transition-colors">
+                <td class="p-3 text-xs font-semibold text-text-primary capitalize"><%= room.type %></td>
+                <td class="p-3 text-xs text-center text-text-secondary"><%= room.capacity %> Bed(s)</td>
+                <td class="p-3 text-xs text-center text-text-secondary"><%= room.availableRooms %> Unit(s)</td>
+                <td class="p-3 text-xs text-right font-bold text-primary">₹<%= room.price %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Lists: Amenities & Dynamic Landmarks -->
+    <div class="glass-panel rounded-2xl p-6 border border-border-color shadow-lg space-y-6">
+      <!-- Amenities list -->
+      <div>
+        <h3 class="font-heading font-extrabold text-base border-b border-border-color pb-2 text-primary flex items-center gap-2 mb-3">
+          <i class="fa-solid fa-circle-check"></i> Amenities Included
+        </h3>
+        <div class="flex flex-wrap gap-2">
+          <% owner.amenities.forEach(amenity => { %>
+            <span class="bg-primary/10 text-primary border border-primary/20 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 bg-primary rounded-full"></span>
+              <%= amenity %>
+            </span>
+          <% }) %>
+        </div>
+      </div>
+
+      <!-- Transit Distance metrics -->
+      <div>
+        <h3 class="font-heading font-extrabold text-base border-b border-border-color pb-2 text-primary flex items-center gap-2 mb-3">
+          <i class="fa-solid fa-road"></i> Nearby Locations / Transit
+        </h3>
+        <ul class="space-y-2 text-sm text-text-secondary">
+          <% owner.locations.forEach(location => { %>
+            <li class="flex items-center gap-2 bg-bg-body/70 border border-border-color px-3 py-2 rounded-xl">
+              <i class="fa-solid fa-circle-dot text-primary text-[10px]"></i>
+              <span class="font-medium text-text-primary"><%= location %></span>
+            </li>
+          <% }) %>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Documents & Description Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Description Box -->
+    <div class="glass-panel rounded-2xl p-6 border border-border-color shadow-lg space-y-3 md:col-span-2">
+      <h3 class="font-heading font-extrabold text-base text-primary flex items-center gap-2">
+        <i class="fa-solid fa-align-left"></i> Description & House Rules
+      </h3>
+      <div class="space-y-4 text-sm text-text-secondary">
+        <div>
+          <span class="block text-[10px] uppercase font-bold tracking-widest text-text-secondary mb-1">PG Listing Summary</span>
+          <p class="leading-relaxed bg-bg-body/75 border border-border-color p-3.5 rounded-xl text-text-primary"><%= owner.description %></p>
+        </div>
+        <div>
+          <span class="block text-[10px] uppercase font-bold tracking-widest text-text-secondary mb-1">Onsite Accommodations Rules</span>
+          <p class="leading-relaxed bg-bg-body/75 border border-border-color p-3.5 rounded-xl text-text-primary"><%= owner.rules %></p>
+        </div>
+        <% if (owner.additionalDetails) { %>
+          <div>
+            <span class="block text-[10px] uppercase font-bold tracking-widest text-text-secondary mb-1">Additional Details / Features</span>
+            <p class="leading-relaxed bg-bg-body/75 border border-border-color p-3.5 rounded-xl text-text-primary"><%= owner.additionalDetails %></p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Verification Files attachments -->
+    <div class="glass-panel rounded-2xl p-6 border border-border-color shadow-lg space-y-4">
+      <h3 class="font-heading font-extrabold text-base border-b border-border-color pb-2 text-primary flex items-center gap-2">
+        <i class="fa-solid fa-file-shield"></i> Verification Attachments
+      </h3>
+      
+      <div class="space-y-4">
+        <!-- Sample contract -->
+        <div>
+          <span class="block text-[10px] uppercase font-bold tracking-wider text-text-secondary mb-1.5">Tenant Sample Contract</span>
+          <% if (owner.tenantContract) { %>
+            <a href="<%= assetUrl(owner.tenantContract) %>" target="_blank" class="flex items-center justify-between bg-primary/5 hover:bg-primary/10 border border-primary/20 p-3 rounded-xl transition-all group">
+              <span class="text-xs font-semibold text-primary truncate max-w-[200px]"><%= owner.tenantContract.split('/').pop() %></span>
+              <i class="fa-solid fa-file-arrow-down text-primary group-hover:translate-y-0.5 transition-transform"></i>
+            </a>
+          <% } else { %>
+            <div class="text-xs text-text-secondary font-medium italic border border-border-color p-3 rounded-xl bg-bg-body/60">No contract doc uploaded.</div>
+          <% } %>
+        </div>
+
+        <!-- Media Carousel links -->
+        <div>
+          <span class="block text-[10px] uppercase font-bold tracking-wider text-text-secondary mb-1.5">Listed Property Media Gallery</span>
+          <div class="space-y-2">
+            <% owner.images.forEach((image, idx) => { %>
+              <a href="<%= assetUrl(image) %>" target="_blank" class="flex items-center justify-between bg-bg-body/70 hover:bg-border-color border border-border-color p-2.5 rounded-xl text-xs font-medium text-text-secondary transition-all group">
+                <span class="truncate max-w-[200px]"><i class="fa-solid fa-image text-primary mr-1.5"></i>Image_<%= idx + 1 %></span>
+                <i class="fa-solid fa-up-right-from-square group-hover:scale-110 transition-transform"></i>
+              </a>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<!-- plugins:js -->
-<script src="../../assets/vendors/js/vendor.bundle.base.js"></script>
-<!-- endinject -->
-<!-- Plugin js for this page-->
-<script src="../../assets/vendors/chartjs/Chart.min.js"></script>
-<script src="../../assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
-<script src="../../assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-<!-- End plugin js for this page-->
-<!-- inject:js -->
-<script src="../../assets/js/material.js"></script>
-<script src="../../assets/js/misc.js"></script>
-<!-- endinject -->
-<!-- Custom js for this page-->
-<script src="../../assets/js/dashboard.js"></script>
-<!-- End custom js for this page-->
+
+<!-- Close Sidebar & Main wrappers opened in partials/header -->
+      </div>
+   </div>
+
+<!-- vendor scripts -->
+<script src="<%= assetUrl('assets/vendors/js/vendor.bundle.base.js') %>"></script>
+<script src="<%= assetUrl('assets/js/material.js') %>"></script>
+<script src="<%= assetUrl('assets/js/misc.js') %>"></script>
 </body>
-</html> 
+</html>

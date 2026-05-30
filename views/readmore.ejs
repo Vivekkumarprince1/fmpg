@@ -1,169 +1,245 @@
-<!-- readmore.ejs -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Properties</title>
-    <link rel="icon" href="img/logo.png" type="image/icon type">
-    <link rel="stylesheet" href="/css/readmorestyle.css">
-</head>
-<body>
-    <div class="property">
-        <h1>Property Details</h1>
-        <h2><%= properties.name %></h2>
-        <div class="property-card" id="properties">
-            <!-- <base href="https://s3-us-west-2.amazonaws.com/s.cdpn.io/4273/"> -->
+    <title><%= properties.propertyName %> - FMPG</title>
+    <!-- Include central Tailwind Configuration -->
+    <%- include('tailwind-head') %>
     
-            <div id="slider">
-                <figure>
-                    <!-- <img src="austin-fireworks.jpg" alt onclick="openFullScreen(this)">
-                    <img src="taj-mahal_copy.jpg" alt onclick="openFullScreen(this)">
-                    <img src="ibiza.jpg" alt onclick="openFullScreen(this)">
-                    <img src="ankor-wat.jpg" alt onclick="openFullScreen(this)">
-                    <img src="austin-fireworks.jpg" alt onclick="openFullScreen(this)"> -->
-                    <% properties.images.forEach(function(image) { %>
-                        <img src="<%= image %>" alt="Image of <%= properties.name %>" onclick="openFullScreen(this)">
-                    <% }) %>
-                </figure>
-                <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
-                <button class="next" onclick="moveSlide(1)">&#10095;</button>
-            </div>
+    <style>
+        /* Slider styling overrides for pure CSS transitions */
+        #slider-figure {
+            display: flex;
+            width: 100%;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        #slider-figure img {
+            width: 100%;
+            flex-shrink: 0;
+            object-fit: cover;
+            aspect-ratio: 16/9;
+        }
 
-            <p><strong>Description:</strong> <%= properties.description %></p>
+        /* Modal styling */
+        #fullScreenModal {
+            display: none;
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+
+<body class="bg-bg-body text-text-primary transition-colors duration-300">
+
+    <!-- Header Start -->
+    <%- include('header') %>
+    <!-- Header End -->
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        
+        <!-- Grid Layout: Split Column for Desktop (7:5) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             
-            <p><strong>Type:</strong> <%= properties.type %></p>
-            <div class="amenities">
-                <strong>Amenities:</strong>
-                <% properties.amenities.forEach(function(amenity) { %>
-                    <span class="amenity"><%= amenity %></span>
-                <% }) %>
-            </div>
+            <!-- Left Column: Details & Images (7 Cols) -->
+            <div class="lg:col-span-7 flex flex-col gap-8">
+                <!-- Gallery Box -->
+                <div class="relative rounded-3xl overflow-hidden shadow-xl border border-border-color bg-slate-900 group">
+                    <div id="slider" class="overflow-hidden w-full relative">
+                        <figure id="slider-figure">
+                            <% properties.images.forEach(function(image) { %>
+                                <img src="<%= image %>" alt="Image of <%= properties.propertyName %>" class="cursor-zoom-in active:scale-95 transition-all" onclick="openFullScreen(this)">
+                            <% }) %>
+                        </figure>
+                    </div>
 
-           
-
-            <!-- Room Type Selection -->
-            <div class="room-selection">
-                <label for="room">Select Room Type:</label>
-                <select id="room" onchange="updateRoomIDAndPrice()">
-                    <% properties.rooms.forEach(function(room) { %>
-                        <option value="<%= room._id %>" data-price="<%= room.price %>"><%= room.type %></option>
-                    <% }) %>
-                </select>
-            </div>
-
-
-            <div class="location-map-container">
-                <!-- Google Map iframe -->
-                <div class="google-map">
-                    <iframe src="<%= properties.map %>" width="100%" height="200" style="border:0;" allowfullscreen=""></iframe>
+                    <!-- Slide Controls -->
+                    <button class="prev absolute left-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full bg-slate-950/40 hover:bg-primary backdrop-blur-md text-white flex items-center justify-center transition-colors cursor-pointer" onclick="moveSlide(-1)">&#10094;</button>
+                    <button class="next absolute right-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full bg-slate-950/40 hover:bg-primary backdrop-blur-md text-white flex items-center justify-center transition-colors cursor-pointer" onclick="moveSlide(1)">&#10095;</button>
                 </div>
-                
-                <!-- Location details -->
-                <div class="location-details">
-                    <h3><strong>Location:</strong></h3>
-                    <% properties.locations.forEach(function(loc) { %>
-                        <pre><b><p class="location-item"><%= loc %></p></b></pre>
-                    <% }) %>
+
+                <!-- Description Card -->
+                <div class="glass-panel p-8 rounded-3xl flex flex-col gap-4">
+                    <h2 class="font-heading text-2xl font-black text-text-primary">About this accommodation</h2>
+                    <p class="text-text-secondary leading-relaxed font-medium text-base">
+                        <%= properties.description %>
+                    </p>
+                </div>
+
+                <!-- Amenities Block -->
+                <div class="glass-panel p-8 rounded-3xl flex flex-col gap-4">
+                    <h2 class="font-heading text-2xl font-black text-text-primary">What this place offers</h2>
+                    <div class="flex flex-wrap gap-3">
+                        <% properties.amenities.forEach(function(amenity) { %>
+                            <span class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-primary/10 border border-primary/20 text-primary font-bold text-sm">
+                                <i class="fa-solid fa-circle-check text-xs text-primary"></i> <%= amenity %>
+                            </span>
+                        <% }) %>
+                    </div>
+                </div>
+
+                <!-- Location Map and Pre -->
+                <div class="glass-panel p-8 rounded-3xl flex flex-col gap-6">
+                    <h2 class="font-heading text-2xl font-black text-text-primary">Location Details</h2>
+                    
+                    <% if (properties.map) { %>
+                        <div class="rounded-2xl overflow-hidden border border-border-color shadow-inner">
+                            <iframe src="<%= properties.map %>" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    <% } %>
+
+                    <div class="flex flex-col gap-3">
+                        <h3 class="font-heading text-lg font-bold text-text-primary"><i class="fa fa-map-marker-alt text-primary mr-1"></i> Address Inclusions:</h3>
+                        <div class="flex flex-col gap-2 pl-2">
+                            <% properties.locations.forEach(function(loc) { %>
+                                <div class="p-3 bg-bg-body border border-border-color rounded-xl font-mono text-sm text-text-secondary font-bold">
+                                    <%= loc %>
+                                </div>
+                            <% }) %>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="room-price">
-                <p><strong>Rent:</strong> <span id="roomPrice"><%= properties.rooms[0].price %></span> per Month</p>
-            </div>
 
-            
-            <div class="book-now-container">
-                <button class="book-now" onClick="bookButton()">Book Now</button>
+            <!-- Right Column: Sticky Booking Card (5 Cols) -->
+            <div class="lg:col-span-5 lg:sticky lg:top-28">
+                <div class="glass-panel p-8 rounded-3xl bg-bg-card border-border-color shadow-2xl flex flex-col gap-6">
+                    
+                    <!-- Header of Card -->
+                    <div class="flex justify-between items-start pb-4 border-b border-border-color">
+                        <div class="flex flex-col gap-1">
+                            <h1 class="font-heading text-2xl font-black text-text-primary"><%= properties.propertyName %></h1>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase self-start">
+                                <i class="fa-solid fa-tag"></i> <%= properties.type %>
+                            </span>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <span class="text-3xl font-black text-primary">₹<span id="roomPrice"><%= properties.rooms[0].price %></span></span>
+                            <span class="text-xs text-text-secondary font-medium">per Month</span>
+                        </div>
+                    </div>
+
+                    <!-- Room Selector Option -->
+                    <div class="flex flex-col gap-2">
+                        <label for="room" class="text-sm font-bold text-text-secondary"><i class="fa fa-bed text-primary mr-1"></i> Choose Room Type:</label>
+                        <div class="relative">
+                            <select id="room" onchange="updateRoomIDAndPrice()" class="w-full bg-bg-body border border-border-color rounded-2xl py-4 px-4 text-base font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors cursor-pointer appearance-none">
+                                <% properties.rooms.forEach(function(room) { %>
+                                    <option value="<%= room._id %>" data-price="<%= room.price %>"><%= room.type %></option>
+                                <% }) %>
+                            </select>
+                            <i class="fa fa-chevron-down text-text-secondary text-sm absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                        </div>
+                    </div>
+
+                    <!-- Extra pricing breakdown for Premium look -->
+                    <div class="flex flex-col gap-3 py-4 border-y border-border-color text-sm font-semibold">
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary">Security Deposit (Refundable)</span>
+                            <span class="text-text-primary">₹1,000</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary">Maintenance & Electricity</span>
+                            <span class="text-text-primary">As per usage</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary">Internet (High-speed WiFi)</span>
+                            <span class="text-emerald-500">Free</span>
+                        </div>
+                    </div>
+
+                    <!-- Book Now Button -->
+                    <button class="w-full py-4 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl shadow-lg shadow-primary/20 hover:scale-[1.01] transition-all text-center cursor-pointer" onClick="bookButton()">
+                        Proceed to Booking
+                    </button>
+                    
+                    <p class="text-center text-xs text-text-secondary font-medium"><i class="fa fa-lock text-emerald-500 mr-1"></i> Your transaction is fully encrypted & safe</p>
+                </div>
             </div>
         </div>
+    </main>
+
+    <!-- Fullscreen Gallery Modal -->
+    <div id="fullScreenModal" class="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-950/95" onclick="closeFullScreen()">
+        <button class="absolute top-6 right-6 h-12 w-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-2xl transition-colors cursor-pointer" onclick="closeFullScreen()">
+            <i class="fa fa-times"></i>
+        </button>
+        <img class="max-w-[90%] max-h-[85%] object-contain rounded-2xl shadow-2xl animate-scale-up" id="fullScreenImage" onclick="event.stopPropagation()">
     </div>
 
-    <!-- Fullscreen modal -->
-    <div id="fullScreenModal" class="modal">
-        <span class="close" onclick="closeFullScreen()">&times;</span>
-        <img class="modal-content" id="fullScreenImage">
-    </div>
+    <!-- Footer Start -->
+    <%- include('footer') %>
+    <!-- Footer End -->
 
+    <!-- Gallery Slider Interactions -->
     <script>
         let currentSlide = 0;
-        const slides = document.querySelectorAll('#slider figure img');
+        const slides = document.querySelectorAll('#slider-figure img');
         const totalSlides = slides.length;
 
         function moveSlide(n) {
             currentSlide = (currentSlide + n + totalSlides) % totalSlides;
-            document.querySelector('#slider figure').style.transform = `translateX(-${currentSlide * 100}%)`;
+            const figure = document.getElementById('slider-figure');
+            if (figure) {
+                figure.style.transform = `translateX(-${currentSlide * 100}%)`;
+            }
         }
 
-        // Function for auto sliding
         function autoSlide() {
             moveSlide(1);
         }
 
-        // Set interval for auto sliding (change every 3 seconds)
-        let slideInterval = setInterval(autoSlide, 3000);
+        let slideInterval = setInterval(autoSlide, 3500);
 
-        // Pause auto sliding when user interacts with buttons
         function pauseAutoSlide() {
             clearInterval(slideInterval);
-            slideInterval = setInterval(autoSlide, 3000); // Resume auto-slide after the next action
+            slideInterval = setInterval(autoSlide, 3500);
         }
 
         document.querySelector('.prev').addEventListener('click', pauseAutoSlide);
         document.querySelector('.next').addEventListener('click', pauseAutoSlide);
 
-        // Open full screen when image is clicked
         function openFullScreen(img) {
             const modal = document.getElementById("fullScreenModal");
             const modalImg = document.getElementById("fullScreenImage");
-            modal.style.display = "flex";  // Changed to flex for centering
+            modal.style.display = "flex";
             modalImg.src = img.src;
-            document.querySelector('.prev').style.display = 'none';
-            document.querySelector('.next').style.display = 'none';
         }
 
-        // Close full screen
         function closeFullScreen() {
             const modal = document.getElementById("fullScreenModal");
             modal.style.display = "none";
-            document.querySelector('.prev').style.display = 'block';
-            document.querySelector('.next').style.display = 'block';
-        }
-
-        // Close modal when clicking outside of the image
-        window.onclick = function(event) {
-            const modal = document.getElementById("fullScreenModal");
-            if (event.target == modal) {
-                closeFullScreen();
-            }
         }
     </script>
 
-<script>
-    let selectedRoomID;
+    <!-- Room Selection Sync and checkout redirect -->
+    <script>
+        let selectedRoomID;
 
-    // Function to update room ID and price
-    function updateRoomIDAndPrice() {
-        const roomSelect = document.getElementById('room');
-        selectedRoomID = roomSelect.value;
-        const selectedPrice = roomSelect.options[roomSelect.selectedIndex].getAttribute('data-price');
-        document.getElementById('roomPrice').innerText = selectedPrice;
-    }
-
-    // Book Button function to redirect with selected room ID and property ID
-        function bookButton() {
-        if (selectedRoomID) {
-            const propertyID = "<%= properties._id %>";
-            const queryString = `roomID=${selectedRoomID}&propertyID=${propertyID}`;
-            window.location.href = `/booking?${queryString}`;
-        } else {
-            alert('Please select a room type.');
+        function updateRoomIDAndPrice() {
+            const roomSelect = document.getElementById('room');
+            if (!roomSelect) return;
+            selectedRoomID = roomSelect.value;
+            const selectedPrice = roomSelect.options[roomSelect.selectedIndex].getAttribute('data-price');
+            document.getElementById('roomPrice').innerText = selectedPrice;
         }
-    }
 
-    // Initialize the room ID and price with the first option's value
-    document.addEventListener('DOMContentLoaded', () => {
-        updateRoomIDAndPrice();
-    });
-</script>
+        function bookButton() {
+            if (selectedRoomID) {
+                const propertyID = "<%= properties._id %>";
+                const queryString = `roomID=${selectedRoomID}&propertyID=${propertyID}`;
+                window.location.href = `/booking?${queryString}`;
+            } else {
+                alert('Please select a room type.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateRoomIDAndPrice();
+        });
+    </script>
 </body>
+
 </html>

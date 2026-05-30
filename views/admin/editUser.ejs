@@ -1,33 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit User</title>
-    <link rel="stylesheet" href="/css/management.css">
+    <title>Edit User - FMPG Admin</title>
+    <link rel="icon" href="/img/logo.png" type="image/icon type">
+    
+    <!-- Central Tailwind CSS & Theme Config -->
+    <%- include('../tailwind-head') %>
 </head>
-<body>
-    <div class="form">
-    <h1>Edit User</h1>
-    <form class="add" action="/admin/users/edit/<%= user._id %>" method="POST">
-        <label for="username">Username:</label>
-        <input class="input" type="text" id="username" name="username" value="<%= user.username %>" required><br>
-        <label for="email">Email:</label>
-        <input class="input" type="email" id="email" name="email" value="<%= user.email %>" required><br>
-        <label for="mobile">Mobile:</label>
-        <input class="input" type="text" id="mobile" name="mobile" value="<%= user.mobile %>" required><br>
-        <label for="role">Role:</label>
-<select class="input" id="role" name="role" required>
 
-    <option value="superadmin" <%= user.role === "superadmin" ? "selected" : "" %>>SuperAdmin</option>
-    <option value="admin" <%= user.role === "admin" ? "selected" : "" %>>Admin</option>
-    <option value="user" <%= user.role === "user" ? "selected" : "" %>>User</option>
-    <option value="owner" <%= user.role === "owner" ? "selected" : "" %>>Owner</option>
+<body class="bg-bg-body text-text-primary min-h-screen flex items-center justify-center py-12 px-4 transition-colors duration-300">
+    <div class="glass-panel max-w-lg w-full rounded-2xl p-8 md:p-10 animate-fade-in-up relative overflow-hidden shadow-xl">
+        <!-- Decorative Glow -->
+        <div class="absolute -top-12 -left-12 w-32 h-32 bg-primary/10 rounded-full blur-2xl"></div>
+        
+        <div class="relative z-10">
+            <!-- Header bar -->
+            <div class="flex items-center justify-between border-b border-border-color pb-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                        <i class="fa-solid fa-user-pen text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold font-heading">Edit User</h1>
+                        <p class="text-xs text-text-secondary mt-0.5">User ID: <span class="font-mono text-primary font-bold"><%= user._id %></span></p>
+                    </div>
+                </div>
+                <a href="/admin/users" class="text-xs text-text-secondary hover:text-primary font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> Users List
+                </a>
+            </div>
 
-</select>
+            <!-- Form -->
+            <form action="/admin/users/edit/<%= user._id %>" method="POST" class="space-y-5">
+                <div>
+                    <label for="username" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Username</label>
+                    <input type="text" id="username" name="username" value="<%= user.username %>" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" required>
+                </div>
 
-        <button class="submit" type="submit">Save Changes</button>
-    </form>
-</div>
+                <div>
+                    <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Email Address</label>
+                    <input type="email" id="email" name="email" value="<%= user.email %>" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 font-mono text-sm" required>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="mobile" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Mobile</label>
+                        <input type="text" id="mobile" name="mobile" value="<%= user.mobile %>" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 font-mono text-sm" required>
+                    </div>
+                    <div>
+                        <label for="role" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Access Role</label>
+                        <select id="role" name="role" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 appearance-none" required>
+                            <option value="superadmin" <%= user.role === "superadmin" ? "selected" : "" %>>SuperAdmin</option>
+                            <option value="admin" <%= user.role === "admin" ? "selected" : "" %>>Admin</option>
+                            <option value="user" <%= user.role === "user" ? "selected" : "" %>>User</option>
+                            <option value="owner" <%= user.role === "owner" ? "selected" : "" %>>Owner</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3 pt-2">
+                    <a href="/admin/users" class="flex-1 text-center bg-bg-body hover:bg-border-color border border-border-color text-text-primary font-semibold py-3 rounded-xl transition-all duration-300">
+                        Cancel
+                    </a>
+                    <button type="submit" class="flex-grow bg-primary hover:bg-primary-hover text-white font-bold py-3.5 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/35 transition-all duration-300 cursor-pointer">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
+
 </html>

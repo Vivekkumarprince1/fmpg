@@ -1,16 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error</title>
-    <link rel="icon" href="img/logo.png" type="image/icon type">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error - FMPG</title>
+  <link rel="icon" href="/img/logo.png" type="image/icon type">
+  
+  <!-- Central Tailwind CSS & Theme Config -->
+  <%- include('tailwind-head') %>
 </head>
-<body>
-    <div class="container">
-        <h1>Error: <%= message %></h1>
-        <p><%= error.status %> - <%= error.message %></p>
-        <a href="/">Go back to home</a>
+
+<body class="bg-bg-body text-text-primary min-h-screen flex flex-col items-center justify-center py-16 px-4 transition-colors duration-300">
+  <div class="glass-panel max-w-lg w-full rounded-2xl p-8 md:p-10 text-center animate-fade-in-up shadow-xl relative overflow-hidden">
+    <!-- Decorative orange glow -->
+    <div class="absolute -top-12 -right-12 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl"></div>
+    
+    <div class="relative z-10">
+      <!-- Error Icon -->
+      <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-amber-500/10 text-amber-500 mb-6">
+        <i class="fa-solid fa-circle-exclamation text-3xl"></i>
+      </div>
+      
+      <!-- Heading -->
+      <h1 class="text-3xl font-extrabold font-heading tracking-tight mb-2">Something Went Wrong</h1>
+      <p class="text-text-secondary font-body mb-6">We encountered an issue while processing your request.</p>
+      
+      <!-- Error Box -->
+      <div class="bg-red-500/5 border border-red-500/10 rounded-xl p-5 mb-8 text-left">
+        <h3 class="text-red-500 font-semibold font-heading text-sm uppercase tracking-wider mb-2">Error Details</h3>
+        <p class="text-text-primary font-medium text-base mb-1"><%= message %></p>
+        <% if (typeof error !== 'undefined' && error) { %>
+          <p class="text-xs text-text-secondary font-mono bg-bg-body/80 rounded border border-border-color p-2 overflow-x-auto mt-2">
+            Status: <%= error.status || '500' %> | <%= error.message || 'Internal Server Error' %>
+          </p>
+        <% } %>
+      </div>
+
+      <!-- Action Button -->
+      <a href="/" class="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300">
+        <i class="fa-solid fa-arrow-left"></i>
+        Back to Safety
+      </a>
     </div>
+  </div>
 </body>
+
 </html>

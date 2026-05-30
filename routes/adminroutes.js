@@ -895,8 +895,12 @@ router.get('/booking/view/:id', isAuthenticated, async (req, res) => {
     const properties = await Property.find({});
     const rooms = await Room.find({});
     
+    // Extract admin user from decoded JWT token
+    const email = req.user.email;
+    const admin = await User.findOne({ email });
+    
     // Render the view, passing the populated booking and other data
-    res.render('admin/view', { booking, users, properties, rooms });
+    res.render('admin/view', { booking, users, properties, rooms, admin });
   } catch (err) {
     console.error('Error fetching booking details:', err);
     res.status(500).send('Server Error');

@@ -1,188 +1,95 @@
-<header class="mdc-top-app-bar">
-        <div class="mdc-top-app-bar__row">
-          <div class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button sidebar-toggler">menu</button>
-            <span class="mdc-top-app-bar__title">Greetings Clyde!</span>
-            <div class="mdc-text-field mdc-text-field--outlined mdc-text-field--with-leading-icon search-text-field d-none d-md-flex">
-              <i class="material-icons mdc-text-field__icon">search</i>
-              <input class="mdc-text-field__input" id="text-field-hero-input">
-              <div class="mdc-notched-outline">
-                <div class="mdc-notched-outline__leading"></div>
-                <div class="mdc-notched-outline__notch">
-                  <label for="text-field-hero-input" class="mdc-floating-label">Search..</label>
-                </div>
-                <div class="mdc-notched-outline__trailing"></div>
-              </div>
-            </div>
-          </div>
-          <div class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end mdc-top-app-bar__section-right">
-            <div class="menu-button-container menu-profile d-none d-md-block">
-              <button class="mdc-button mdc-menu-button">
-                <span class="d-flex align-items-center">
-                  <span class="figure">
-                    <img src="<%= assetUrl('assets/images/faces/face1.jpg') %>" alt="user" class="user">
-                  </span>
-                  <span class="user-name"><%= admin ? admin.username : user.username %></span>
-                </span>
-              </button>
-              <div class="mdc-menu mdc-menu-surface" tabindex="-1">
-                <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical">
-                  <li class="mdc-list-item" role="menuitem">
-                    <div class="item-thumbnail item-thumbnail-icon-only">
-                      <i class="mdi mdi-account-edit-outline text-primary"></i>
-                    </div>
-                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
-                      <h6 class="item-subject font-weight-normal">Edit profile</h6>
-                    </div>
-                  </li>
-                  <li class="mdc-list-item" role="menuitem">
-                    <div class="item-thumbnail item-thumbnail-icon-only">
-                      <i class="mdi mdi-settings-outline text-primary"></i>                      
-                    </div>
-                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
-                      <h6 class="item-subject font-weight-normal">Logout</h6>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="divider d-none d-md-block"></div>
-            <div class="menu-button-container d-none d-md-block">
-              <button class="mdc-button mdc-menu-button">
-                <i class="mdi mdi-settings"></i>
-              </button>
-              <div class="mdc-menu mdc-menu-surface" tabindex="-1">
-                <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical">
-                  <li class="mdc-list-item" role="menuitem">
-                    <div class="item-thumbnail item-thumbnail-icon-only">
-                      <i class="mdi mdi-alert-circle-outline text-primary"></i>
-                    </div>
-                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
-                      <h6 class="item-subject font-weight-normal">Settings</h6>
-                    </div>
-                  </li>
-                  <li class="mdc-list-item" role="menuitem">
-                    <div class="item-thumbnail item-thumbnail-icon-only">
-                      <i class="mdi mdi-progress-download text-primary"></i>                      
-                    </div>
-                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
-                      <h6 class="item-subject font-weight-normal">Update</h6>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="menu-button-container">
-              <button class="mdc-button mdc-menu-button">
-                <i class="mdi mdi-bell"></i>
-              </button>
-              <div class="mdc-menu mdc-menu-surface" tabindex="-1">
-                <h6 class="title"> <i class="mdi mdi-bell-outline mr-2 tx-16"></i> Notifications</h6>
-                <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical">
-                  <li class="mdc-list-item" role="menuitem">
-                    <div class="item-thumbnail item-thumbnail-icon">
-                      <i class="mdi mdi-email-outline"></i>
-                    </div>
-                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
-                      <h6 class="item-subject font-weight-normal">You received a new message</h6>
-                      <small class="text-muted"> 6 min ago </small>
-                    </div>
-                  </li>
-                  <li class="mdc-list-item" role="menuitem">
-                    <div class="item-thumbnail item-thumbnail-icon">
-                      <i class="mdi mdi-account-outline"></i>                      
-                    </div>
-                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
-                      <h6 class="item-subject font-weight-normal">New user registered</h6>
-                      <small class="text-muted"> 15 min ago </small>
-                    </div>
-                  </li>
-                  <li class="mdc-list-item" role="menuitem">
-                    <div class="item-thumbnail item-thumbnail-icon">
-                      <i class="mdi mdi-alert-circle-outline"></i>
-                    </div>
-                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
-                      <h6 class="item-subject font-weight-normal">System Alert</h6>
-                      <small class="text-muted"> 2 days ago </small>
-                    </div>
-                  </li> 
-                  <li class="mdc-list-item" role="menuitem">
-                    <div class="item-thumbnail item-thumbnail-icon">
-                      <i class="mdi mdi-update"></i>
-                    </div>
-                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
-                      <h6 class="item-subject font-weight-normal">You have a new update</h6>
-                      <small class="text-muted"> 3 days ago </small>
-                    </div>
-                  </li> 
-                </ul>
-              </div>
-            </div>
-            <div class="menu-button-container">
-              <button class="mdc-button mdc-menu-button">
-                <i class="mdi mdi-email"></i>
-                <span class="count-indicator">
-                  <span class="count">3</span>
-                </span>
-              </button>
-              <div class="mdc-menu mdc-menu-surface" tabindex="-1">
-                <h6 class="title"><i class="mdi mdi-email-outline mr-2 tx-16"></i> Messages</h6>
-                <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical">
-                  <li class="mdc-list-item" role="menuitem">
-                    <div class="item-thumbnail">
-                      <img src="<%= assetUrl('assets/images/faces/face4.jpg') %>" alt="user">
-                    </div>
-                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
-                      <h6 class="item-subject font-weight-normal">Mark send you a message</h6>
-                      <small class="text-muted"> 1 Minutes ago </small>
-                    </div>
-                  </li>
-                  <li class="mdc-list-item" role="menuitem">
-                    <div class="item-thumbnail">
-                      <img src="<%= assetUrl('assets/images/faces/face2.jpg') %>" alt="user">
-                    </div>
-                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
-                      <h6 class="item-subject font-weight-normal">Cregh send you a message</h6>
-                      <small class="text-muted"> 15 Minutes ago </small>
-                    </div>
-                  </li>
-                  <li class="mdc-list-item" role="menuitem">
-                    <div class="item-thumbnail">
-                      <img src="<%= assetUrl('assets/images/faces/face3.jpg') %>" alt="user">
-                    </div>
-                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
-                      <h6 class="item-subject font-weight-normal">Profile picture updated</h6>
-                      <small class="text-muted"> 18 Minutes ago </small>
-                    </div>
-                  </li>                
-                </ul>
-              </div>
-            </div>
-            <div class="menu-button-container d-none d-md-block">
-              <button class="mdc-button mdc-menu-button">
-                <i class="mdi mdi-arrow-down-bold-box"></i>
-              </button>
-              <div class="mdc-menu mdc-menu-surface" tabindex="-1">
-                <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical">
-                  <li class="mdc-list-item" role="menuitem">
-                    <div class="item-thumbnail item-thumbnail-icon-only">
-                      <i class="mdi mdi-lock-outline text-primary"></i>
-                    </div>
-                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
-                      <h6 class="item-subject font-weight-normal">Lock screen</h6>
-                    </div>
-                  </li>
-                  <li class="mdc-list-item" role="menuitem">
-                    <div class="item-thumbnail item-thumbnail-icon-only">
-                      <i class="mdi mdi-logout-variant text-primary"></i>                      
-                    </div>
-                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
-                      <h6 class="item-subject font-weight-normal">Logout</h6>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+<header class="sticky top-0 z-40 bg-bg-nav/80 backdrop-blur-md border-b border-border-color/80 px-6 h-20 flex items-center justify-between transition-colors duration-300">
+  
+  <!-- Left Section -->
+  <div class="flex items-center gap-4">
+    <!-- Hamburger menu toggle (mobile only) -->
+    <button id="mobile-toggle-btn" class="md:hidden h-10 w-10 rounded-xl flex items-center justify-center border border-border-color bg-bg-card hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer" aria-label="Toggle sidebar menu">
+      <i class="fa-solid fa-bars-staggered text-base"></i>
+    </button>
+
+    <!-- Header dynamic search or message greeting -->
+    <div class="hidden sm:block">
+      <h2 class="font-heading font-black text-sm text-text-primary tracking-tight">FMPG Administration Terminal</h2>
+      <p class="text-[10px] text-text-secondary font-bold uppercase tracking-wider mt-0.5">Control Center Suite</p>
+    </div>
+  </div>
+
+  <!-- Right Section -->
+  <div class="flex items-center gap-4">
+    
+    <!-- User Profile Dropdown -->
+    <div class="relative" id="profile-dropdown-wrapper">
+      <button id="profile-dropdown-trigger" class="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-border-color bg-bg-card/60 hover:bg-border-color transition-all duration-300 focus:outline-none cursor-pointer">
+        <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-black font-heading text-sm shadow-sm">
+          <%= (typeof admin !== 'undefined' && admin) ? admin.username.charAt(0).toUpperCase() : (typeof user !== 'undefined' && user ? user.username.charAt(0).toUpperCase() : 'A') %>
         </div>
-      </header>
+        <span class="hidden md:inline text-xs font-bold text-text-primary">
+          <%= (typeof admin !== 'undefined' && admin) ? admin.username : (typeof user !== 'undefined' && user ? user.username : 'Admin') %>
+        </span>
+        <i class="fa-solid fa-chevron-down text-[10px] text-text-secondary transition-transform duration-300" id="dropdown-chevron"></i>
+      </button>
+
+      <!-- Dropdown Items Menu -->
+      <div id="profile-dropdown-menu" class="hidden absolute right-0 mt-2 w-48 rounded-2xl bg-bg-card border border-border-color shadow-xl overflow-hidden z-50 animate-scale-up origin-top-right">
+        <div class="px-4 py-3 bg-bg-body/60 border-b border-border-color">
+          <span class="block text-[10px] text-text-secondary font-bold uppercase tracking-wider">Active Role</span>
+          <span class="block text-xs font-extrabold text-primary capitalize mt-0.5">
+            <%= (typeof admin !== 'undefined' && admin) ? admin.role : (typeof user !== 'undefined' && user ? user.role : 'Administrator') %>
+          </span>
+        </div>
+        <div class="py-1">
+          <a href="/settings" class="flex items-center gap-2.5 px-4 py-2.5 text-xs font-semibold text-text-secondary hover:text-primary hover:bg-primary/5 transition-colors">
+            <i class="fa-solid fa-user-gear text-sm w-4"></i> Edit Profile
+          </a>
+          <a href="/logout" class="flex items-center gap-2.5 px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-500/5 transition-colors border-t border-border-color/40">
+            <i class="fa-solid fa-right-from-bracket text-sm w-4"></i> Sign Out
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</header>
+
+<script>
+  (function() {
+    // 1. Mobile Sidebar Navigation Toggler
+    const mobileToggle = document.getElementById('mobile-toggle-btn');
+    const sidebar = document.getElementById('admin-sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+
+    if (mobileToggle && sidebar && overlay) {
+      mobileToggle.addEventListener('click', () => {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+      });
+    }
+
+    // 2. Profile Dropdown Menu Toggler
+    const trigger = document.getElementById('profile-dropdown-trigger');
+    const menu = document.getElementById('profile-dropdown-menu');
+    const chevron = document.getElementById('dropdown-chevron');
+    const wrapper = document.getElementById('profile-dropdown-wrapper');
+
+    if (trigger && menu) {
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menu.classList.toggle('hidden');
+        if (chevron) {
+          chevron.classList.toggle('rotate-180');
+        }
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (wrapper && !wrapper.contains(e.target)) {
+          menu.classList.add('hidden');
+          if (chevron) {
+            chevron.classList.remove('rotate-180');
+          }
+        }
+      });
+    }
+  })();
+</script>

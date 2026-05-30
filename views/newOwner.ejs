@@ -1,244 +1,394 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Property</title>
-    <link rel="stylesheet" href="../css/management.css">
+    <title>Register as PG Owner - FMPG</title>
+    <link rel="icon" href="/img/logo.png" type="image/icon type">
+    
+    <!-- Central Tailwind CSS & Theme Config -->
+    <%- include('tailwind-head') %>
+    
     <style>
-        #images {
-            height: 100px;
-            width: 300px;
-
+        /* Custom image heights for preview/inputs if needed */
+        .image-input-btn {
+            @apply border-2 border-dashed border-border-color hover:border-primary bg-bg-card/40 rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all duration-300;
         }
     </style>
 </head>
 
-<body>
-    <div class="form">
-        <h1>Add New PG Owner</h1>
+<body class="bg-bg-body text-text-primary min-h-screen flex flex-col transition-colors duration-300">
+    <!-- Header -->
+    <%- include('header') %>
 
-        <form class="add" action="newOwner" method="POST" enctype="multipart/form-data">
-            <label for="ownerName">Owner Name:</label><br>
-            <input class="input" type="text" id="ownerName" name="ownerName" required><br><br>
-
-            <label for="contactNumber">Contact Number:</label><br>
-            <input class="input" type="tel" id="contactNumber" name="contactNumber" required><br><br>
-
-            <label for="email">Email:</label><br>
-            <input class="input" type="email" id="email" name="email" required><br><br>
-
-            <label for="propertyName">Property Name:</label><br>
-            <input class="input" type="text" id="propertyName" name="propertyName" required><br><br>
-
-            <label for="type">Type:</label><br>
-            <select class="select" id="type" name="type">
-                <option value="PG">PG</option>
-                <option value="Hostel">Hostel</option>
-                <option value="PG with Mess">PG with Mess</option>
-            </select><br><br>
-
-            <label for="address">Address:</label><br>
-            <input class="input" type="text" id="address" name="address" placeholder="i.e 1234 Elm Street "
-                required><br><br>
-
-            <label for="pincode">Pincode:</label><br>
-            <input class="input" type="text" id="pincode" name="pincode" placeholder="" required><br><br>
-
-            <label for="state">State:</label><br>
-            <input class="input" type="text" id="state" name="state" placeholder="rajsthan" required><br><br>
-
-            <label for="city">City:</label><br>
-            <input class="input" type="text" id="city" name="city" placeholder="kota" required><br><br>
-
-            <label for="locality">Locality:</label><br>
-            <select class="select" id="locality" name="locality" required>
-                <option value="">Select Locality</option>
-            </select><br><br>
-
-            <label for="map">Google Map link</label><br>
-            <input class="input" type="text" id="map" name="map" required><br><br>
-
-            <label for="locations">Locations</label>
-            <div id="location-container">
-                <div class="input-group">
-                    <p>Eg:distance from nearest bus stand :- 1.3km</p>
-                    <input class="input" type="text" id="location" name="locations[]"
-                        placeholder="Eg:Delhi bus stand :- 15.6km" required>
-                    <input class="input" type="text" id="location" name="locations[]"
-                        placeholder="Eg:New Delhi Railway Station:- 12km" required>
-                    <input class="input" type="text" id="location" name="locations[]" placeholder="Eg:Landmark:-0.5km"
-                        required>
+    <!-- Form Section -->
+    <main class="flex-grow py-12 px-4 md:px-8 max-w-5xl mx-auto w-full">
+        <div class="glass-panel rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden animate-fade-in-up">
+            <!-- Decorative Accents -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-12 translate-x-12"></div>
+            
+            <div class="relative z-10">
+                <div class="mb-10 text-center">
+                    <h1 class="text-3xl md:text-4xl font-extrabold font-heading text-primary mb-2">Join as PG Owner</h1>
+                    <p class="text-text-secondary max-w-2xl mx-auto">List your property with Find My PG (FMPG) and reach thousands of prospective tenants daily. Form validation is automatic and secure.</p>
                 </div>
+
+                <form class="space-y-10" action="newOwner" method="POST" enctype="multipart/form-data">
+                    
+                    <!-- Section 1: Owner Info -->
+                    <div class="space-y-6">
+                        <h2 class="text-xl font-bold font-heading border-b border-border-color pb-2 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">1</span>
+                            Owner Information
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label for="ownerName" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Owner Full Name</label>
+                                <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" id="ownerName" name="ownerName" required>
+                            </div>
+                            
+                            <div>
+                                <label for="contactNumber" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Contact Number</label>
+                                <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="tel" id="contactNumber" name="contactNumber" required>
+                            </div>
+                            
+                            <div>
+                                <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Email Address</label>
+                                <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="email" id="email" name="email" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Property Basic Details -->
+                    <div class="space-y-6">
+                        <h2 class="text-xl font-bold font-heading border-b border-border-color pb-2 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">2</span>
+                            Property Details
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label for="propertyName" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Property Name</label>
+                                <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" id="propertyName" name="propertyName" placeholder="e.g. Sunshine Elite PG" required>
+                            </div>
+                            
+                            <div>
+                                <label for="type" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Accommodation Type</label>
+                                <select class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 appearance-none" id="type" name="type">
+                                    <option value="PG">PG</option>
+                                    <option value="Hostel">Hostel</option>
+                                    <option value="PG with Mess">PG with Mess</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="gender" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Allowed Gender</label>
+                                <select class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 appearance-none" id="gender" name="gender">
+                                    <option value="male">Boys Only</option>
+                                    <option value="female">Girls Only</option>
+                                    <option value="unisex">Co-Living / Unisex</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Address & Pincode Lookup -->
+                    <div class="space-y-6">
+                        <h2 class="text-xl font-bold font-heading border-b border-border-color pb-2 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">3</span>
+                            Location & Address
+                        </h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div class="md:col-span-2">
+                                <label for="address" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Full Address</label>
+                                <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" id="address" name="address" placeholder="Flat, Street name..." required>
+                            </div>
+                            
+                            <div>
+                                <label for="pincode" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Pincode</label>
+                                <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 font-mono" type="text" id="pincode" name="pincode" placeholder="6-digit Pincode" maxlength="6" required>
+                            </div>
+                            
+                            <div>
+                                <label for="landmark" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Landmark</label>
+                                <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" id="landmark" name="landmark" placeholder="Near metro, mall..." required>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label for="state" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">State</label>
+                                <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 bg-opacity-50" type="text" id="state" name="state" readonly required>
+                            </div>
+                            
+                            <div>
+                                <label for="city" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">City</label>
+                                <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 bg-opacity-50" type="text" id="city" name="city" readonly required>
+                            </div>
+                            
+                            <div>
+                                <label for="locality" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Locality</label>
+                                <select class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" id="locality" name="locality" required>
+                                    <option value="">Select Locality</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="md:col-span-2">
+                                <label for="map" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Google Map Embed/Share Link</label>
+                                <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 font-mono text-sm" type="text" id="map" name="map" placeholder="https://maps.google.com/..." required>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Near Locations List -->
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Nearby Landmarks / Transit (Distances)</label>
+                            <div id="location-container" class="space-y-3">
+                                <div class="flex items-center gap-3">
+                                    <input class="flex-1 bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" name="locations[]" placeholder="e.g. Nearest Bus Stand: 1.2km" required>
+                                    <input class="flex-1 bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" name="locations[]" placeholder="e.g. Metro Station: 0.5km" required>
+                                    <input class="flex-1 bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" name="locations[]" placeholder="e.g. Landmark Hospital: 0.8km" required>
+                                </div>
+                            </div>
+                            <button type="button" onclick="addLocationField()" class="mt-3 text-sm text-primary hover:text-primary-hover font-semibold flex items-center gap-1">
+                                <i class="fa-solid fa-plus-circle"></i> Add Custom Near Location
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Rooms Pricing -->
+                    <div class="space-y-6">
+                        <h2 class="text-xl font-bold font-heading border-b border-border-color pb-2 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">4</span>
+                            Room Inventory & Pricing
+                        </h2>
+                        
+                        <div id="room-container" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center bg-bg-card/40 border border-border-color rounded-2xl p-5 relative">
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">Room Sharing Type</label>
+                                    <select name="rooms[0][type]" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                                        <option value="">Select sharing</option>
+                                        <option value="single">Single</option>
+                                        <option value="double">Double Sharing</option>
+                                        <option value="triple">Triple Sharing</option>
+                                        <option value="morethanthree">More than Three</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">Price per Month (₹)</label>
+                                    <input type="number" name="rooms[0][price]" placeholder="₹ Price" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">Total Rooms</label>
+                                    <input type="number" name="rooms[0][capacity]" placeholder="Total qty" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">Available Rooms</label>
+                                    <input type="number" name="rooms[0][availableRooms]" placeholder="Available qty" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">Status</label>
+                                    <select name="rooms[0][available]" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                                        <option value="true">Available</option>
+                                        <option value="false">Fully Booked</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="addRoomField()" class="text-sm text-primary hover:text-primary-hover font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-plus-circle"></i> Add Room Category
+                        </button>
+                    </div>
+
+                    <!-- Section 5: Amenities & Rules -->
+                    <div class="space-y-6">
+                        <h2 class="text-xl font-bold font-heading border-b border-border-color pb-2 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">5</span>
+                            Amenities & Rules
+                        </h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Amenities Offered</label>
+                                <div id="amenity-container" class="space-y-2">
+                                    <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-2.5 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" name="amenities[]" placeholder="e.g. Free Wi-Fi, AC, Geyser" required>
+                                </div>
+                                <button type="button" onclick="addAmenityField()" class="mt-2 text-xs text-primary hover:text-primary-hover font-semibold flex items-center gap-1">
+                                    <i class="fa-solid fa-plus-circle"></i> Add Amenity
+                                </button>
+                            </div>
+
+                            <div>
+                                <label for="securityDeposit" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Security Deposit (₹)</label>
+                                <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="number" id="securityDeposit" name="securityDeposit" placeholder="₹ Refundable deposit amount" required>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label for="rules" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">House Rules</label>
+                                <textarea class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 min-h-[100px] text-text-primary focus:outline-none focus:border-primary transition-all duration-300 resize-none" id="rules" name="rules" placeholder="e.g. No smoking, Gate closes at 10 PM..." required></textarea>
+                            </div>
+
+                            <div>
+                                <label for="description" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Short Description</label>
+                                <textarea id="description" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 min-h-[100px] text-text-primary focus:outline-none focus:border-primary transition-all duration-300 resize-none" name="description" placeholder="Summarize your PG for prospective tenants..." required></textarea>
+                            </div>
+
+                            <div>
+                                <label for="additionalDetails" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Additional Details</label>
+                                <textarea id="additionalDetails" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 min-h-[100px] text-text-primary focus:outline-none focus:border-primary transition-all duration-300 resize-none" name="additionalDetails" placeholder="Any details not captured elsewhere..." required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 6: Document uploads -->
+                    <div class="space-y-6">
+                        <h2 class="text-xl font-bold font-heading border-b border-border-color pb-2 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-semibold">6</span>
+                            Media & Document Verification
+                        </h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Upload Property Images (Min 5)</label>
+                                <div class="bg-bg-card/40 border border-border-color rounded-2xl p-5 space-y-3">
+                                    <input type="file" name="images" accept=".jpg, .jpeg, .png, .pdf" class="block w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" multiple required>
+                                    <input type="file" name="images" accept=".jpg, .jpeg, .png, .pdf" class="block w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" multiple required>
+                                    <input type="file" name="images" accept=".jpg, .jpeg, .png, .pdf" class="block w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" multiple required>
+                                    <input type="file" name="images" accept=".jpg, .jpeg, .png, .pdf" class="block w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" multiple required>
+                                    <input type="file" name="images" accept=".jpg, .jpeg, .png, .pdf" class="block w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" multiple required>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="tenantContract" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Upload Sample Tenant Contract</label>
+                                <div class="bg-bg-card/40 border border-border-color rounded-2xl p-5 flex flex-col justify-center min-h-[196px]">
+                                    <input type="file" id="tenantContract" name="tenantContract" accept=".jpg, .jpeg, .png, .pdf" class="block w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terms & Submit -->
+                    <div class="pt-6 border-t border-border-color space-y-4">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" id="termsCheck" value="TermsofService" class="w-5 h-5 accent-primary rounded cursor-pointer" required>
+                            <label for="termsCheck" class="text-sm text-text-secondary select-none">
+                                I agree to the FMPG <a href="TermsofService" target="_blank" class="text-primary hover:underline font-semibold">Terms of Service</a> and confirm that all listing info is accurate.
+                            </label>
+                        </div>
+
+                        <button class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/45 transition-all duration-300 text-lg hover:-translate-y-0.5" type="submit">
+                            Submit Property Application
+                        </button>
+                    </div>
+                </form>
             </div>
-            <button type="button" onclick="addLocationField()">+</button>
-            <br><br>
+        </div>
+    </main>
 
+    <!-- Footer -->
+    <%- include('footer') %>
 
-            <label for="landmark">Landmark</label><br>
-            <input class="input" type="text" id="landmark" name="landmark" required><br><br>
-
-            <label for="image">Upload Images or PDFs (Minimum 5):</label><br>
-            <div id="image-container">
-                <div class="input-group">
-                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
-                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
-                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
-                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
-                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
-                    <button type="button" onclick="addImageField()">+</button>
-                </div>
-            </div>
-            <br>
-
-            <label for="gender">Allowed Gender:</label><br>
-            <select class="select" id="gender" name="gender">
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="unisex">Unisex</option>
-            </select><br><br>
-
-            <label>Rooms:</label>
-            <div id="room-container">
-                <div class="input-group">
-                    <!-- <input type="text" name="rooms[0][type]" placeholder="Room Type" required> -->
-                    <select name="rooms[0][type]">
-                        <option value="">Select your room type</option>
-                        <option value="single">Single</option>
-                        <option value="double">Double</option>
-                        <option value="triple">Triple</option>
-                        <option value="morethanthree">More than Three</option>
-                    </select>
-                    <input type="number" name="rooms[0][price]" placeholder="Price" required>
-                    <input type="number" name="rooms[0][capacity]" placeholder="Total no of Rooms" required>
-                    <input type="number" name="rooms[0][availableRooms]" placeholder="Number of available Rooms"
-                        required>
-
-                    <select name="rooms[0][available]" required>
-                        <option value="true">Available</option>
-                        <option value="false">Not Available</option>
-                    </select>
-                    <button type="button" onclick="addRoomField()">+</button>
-                </div>
-            </div>
-
-
-            <label>Amenities:</label>
-            <div id="amenity-container">
-                <div class="input-group">
-                    <input class="input" type="text" id="amenities" name="amenities" required>
-                    <button type="button" onclick="addAmenityField()">+</button>
-                </div>
-            </div>
-
-
-            <label for="rules">House Rules:</label><br>
-            <textarea class="input" id="rules" name="rules" required></textarea><br><br>
-
-            <label for="securityDeposit">Security Deposit:</label><br>
-            <input class="input" type="number" id="securityDeposit" name="securityDeposit" required><br><br>
-
-            <label for="description">Description: that you want to show on you main page</label><br>
-            <textarea id="description" class="input" name="description" required></textarea><br>
-
-            <label for="additionalDetails">Additional Details </label><br>
-            <textarea id="additionalDetails" class="input" name="additionalDetails" required></textarea><br>
-
-            <label for="tenantContract">Upload copy of Tenant Contract</label><br>
-            <div id="tenantContract-container">
-                <div class="input-group">
-                    <input type="file" id="tenantContract" name="tenantContract" accept=".jpg, .jpeg, .png, .pdf">
-                </div>
-            </div>
-
-            <input type="checkbox" value="TermsofService" required>Agree to <a href="TermsofService">Terms of
-                Service</a>
-
-            <input class="submit" type="submit" value="Submit">
-        </form>
-    </div>
-
+    <!-- Inline scripts for dynamic fields -->
     <script>
-        // Function to dynamically add image input fields
-        function addImageField() {
-            const container = document.getElementById('image-container');
-            const newImageInput = document.createElement('div');
-            newImageInput.className = 'input-group';
-            newImageInput.innerHTML = '<input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required><button type="button" onclick="removeField(this)">-</button>';
-            container.appendChild(newImageInput);
-        }
-
-        // Function to dynamically add location input fields
         function addLocationField() {
             const container = document.getElementById('location-container');
-            const newLocationInput = document.createElement('div');
-            newLocationInput.className = 'input-group';
-            newLocationInput.innerHTML = `
-        <input type="text" class="input" name="locations[]" required><button type="button" onclick="removeField(this)">-</button>`;
-            container.appendChild(newLocationInput);
+            const newDiv = document.createElement('div');
+            newDiv.className = 'flex items-center gap-3 mt-3 animate-scale-up';
+            newDiv.innerHTML = `
+                <input class="flex-1 bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary" type="text" name="locations[]" placeholder="e.g. Rail Station: 2.5km" required>
+                <button type="button" onclick="removeField(this)" class="bg-red-500/10 hover:bg-red-500/25 text-red-500 font-semibold px-4 py-3 rounded-xl transition-all duration-300">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(newDiv);
         }
-
-        // Function to dynamically add amenities input fields
 
         function addAmenityField() {
             const container = document.getElementById('amenity-container');
-            const newAmenityInput = document.createElement('div');
-            newAmenityInput.className = 'input-group';
-            newAmenityInput.innerHTML = '<input type="text" class="input" name="amenities[]" required><button type="button" onclick="removeField(this)">-</button>';
-            container.appendChild(newAmenityInput);
+            const newDiv = document.createElement('div');
+            newDiv.className = 'flex items-center gap-3 mt-2 animate-scale-up';
+            newDiv.innerHTML = `
+                <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-2.5 text-text-primary focus:outline-none focus:border-primary" type="text" name="amenities[]" required>
+                <button type="button" onclick="removeField(this)" class="bg-red-500/10 hover:bg-red-500/25 text-red-500 px-3.5 py-2 rounded-xl transition-all duration-300">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(newDiv);
         }
 
-        // Generic function to remove an input field
         function removeField(button) {
-            const container = button.parentNode.parentNode;
-            container.removeChild(button.parentNode);
+            button.parentNode.remove();
         }
-
 
         function addRoomField() {
             const container = document.getElementById('room-container');
-            const roomCount = container.getElementsByClassName('input-group').length;
-            const newRoomInput = document.createElement('div');
-            newRoomInput.className = 'input-group';
-            newRoomInput.innerHTML = `
-        <select name="rooms[${roomCount}][type]" required>
-            <option value="">Select your room type</option>
-            <option value="single">Single</option>
-            <option value="double">Double</option>
-            <option value="triple">Triple</option>
-            <option value="morethanthree">More than Three</option>
-        </select>
-        <input type="number" name="rooms[${roomCount}][price]" placeholder="Price" required>
-        <input type="number" name="rooms[${roomCount}][capacity]" placeholder="Total no of Rooms" required>
-        <input type="number" name="rooms[${roomCount}][availableRooms]" placeholder="Number of available Rooms" required>
-
-        <select name="rooms[${roomCount}][available]" required>
-            <option value="true">Available</option>
-            <option value="false">Not Available</option>
-        </select>
-        <button type="button" onclick="removeField(this)">-</button>
-    `;
-            container.appendChild(newRoomInput);
+            const roomCount = container.getElementsByClassName('grid').length;
+            const newDiv = document.createElement('div');
+            newDiv.className = 'grid grid-cols-1 md:grid-cols-5 gap-4 items-center bg-bg-card/40 border border-border-color rounded-2xl p-5 relative animate-scale-up';
+            newDiv.innerHTML = `
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">Room Sharing Type</label>
+                    <select name="rooms[\${roomCount}][type]" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                        <option value="">Select sharing</option>
+                        <option value="single">Single</option>
+                        <option value="double">Double Sharing</option>
+                        <option value="triple">Triple Sharing</option>
+                        <option value="morethanthree">More than Three</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">Price per Month (₹)</label>
+                    <input type="number" name="rooms[\${roomCount}][price]" placeholder="₹ Price" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">Total Rooms</label>
+                    <input type="number" name="rooms[\${roomCount}][capacity]" placeholder="Total qty" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">Available Rooms</label>
+                    <input type="number" name="rooms[\${roomCount}][availableRooms]" placeholder="Available qty" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-text-secondary mb-1">Status</label>
+                    <div class="flex items-center gap-2">
+                        <select name="rooms[\${roomCount}][available]" class="flex-grow bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                            <option value="true">Available</option>
+                            <option value="false">Fully Booked</option>
+                        </select>
+                        <button type="button" onclick="removeField(this)" class="bg-red-500/10 hover:bg-red-500/25 text-red-500 p-2 rounded-xl transition-all duration-300">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(newDiv);
         }
 
-    </script>
-
-    <script>
+        // Pincode dynamic fetch script
         document.getElementById('pincode').addEventListener('blur', async function () {
             const pincode = this.value.trim();
             if (pincode.length === 6) {
                 try {
-                    // Fetch data from the Indian Postal API
                     const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
                     const data = await response.json();
 
                     if (data[0].Status === "Success") {
-                        // Fill state and city fields
                         document.getElementById('state').value = data[0].PostOffice[0].State;
                         document.getElementById('city').value = data[0].PostOffice[0].District;
 
-                        // Populate the locality dropdown
                         const localityDropdown = document.getElementById('locality');
                         localityDropdown.innerHTML = '<option value="">Select Locality</option>';
                         data[0].PostOffice.forEach(postOffice => {
@@ -252,15 +402,10 @@
                     }
                 } catch (error) {
                     console.error('Error fetching pincode details:', error);
-                    alert('Failed to fetch details. Please try again later.');
                 }
-            } else {
-                alert('Please enter a valid 6-digit pincode.');
             }
         });
     </script>
-
-
 </body>
 
 </html>

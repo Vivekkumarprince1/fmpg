@@ -1,105 +1,110 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Material Dash</title>
-  <!-- plugins:css -->
-  <!-- <link rel="stylesheet" href="../assets/vendors/mdi/css/materialdesignicons.min.css"> -->
-  <link rel="stylesheet" href="../assets/vendors/mdi/css/materialdesignicons.min.css">
-  <link rel="stylesheet" href="../assets/vendors/css/vendor.bundle.base.css">
-  <!-- endinject -->
-  <!-- Plugin css for this page -->
-  <link rel="stylesheet" href="../assets/vendors/flag-icon-css/css/flag-icon.min.css">
-  <link rel="stylesheet" href="../assets/vendors/jvectormap/jquery-jvectormap.css">
-  <!-- End plugin css for this page -->
-  <!-- Layout styles -->
-  <link rel="stylesheet" href="../assets/css/demo/style.css">
-  <!-- End layout styles -->
-  <link rel="shortcut icon" href="../assets/images/favicon.png" />
-  <link rel="stylesheet" href="/css/management.css">
-</head>
-<body>
-<script src="../assets/js/preloader.js"></script>
-  <div class="body-wrapper">
-    <!-- partial:partials/_sidebar.html -->
-    <%- include('partials/_sidebar') %>
-    <!-- partial -->
-    <div class="main-wrapper mdc-drawer-app-content">
-      <!-- partial:partials/_navbar.html -->
-      <%-include('partials/_navbar') %>
-   
-    <script>
-        function confirmAction(action, event) {
-            event.preventDefault(); // Prevent the form from submitting immediately
-            const confirmation = confirm(`Are you sure you want to ${action} this User?`);
-            if (confirmation) {
-                event.target.submit(); // Submit the form if confirmed
-            }
-        }
-    </script>
+<%- include('partials/header') %>
 
-    
-    <h1>Manage Users</h1>
-    <a href="/admin/users/add">Add New User</a><br>
-    <a href="/profile"> back to profile</a>
-    <ol>
-        <table class="customers" border="1">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Mobile</th>
-                    <th>Role</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <% users.forEach(user=> { %>
+<div class="p-6 space-y-6">
+  <!-- Section Title & CTAs -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border-color pb-4">
+    <div>
+      <h1 class="text-3xl font-extrabold font-heading text-primary">Manage Users</h1>
+      <p class="text-text-secondary text-sm mt-1">Review accounts, roles, registration statuses, and access controls.</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <a href="/profile" class="inline-flex items-center gap-2 bg-bg-card hover:bg-border-color border border-border-color text-text-primary px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300">
+        <i class="fa-solid fa-arrow-left"></i>
+        Profile
+      </a>
+      <a href="/admin/users/add" class="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md shadow-primary/20 hover:shadow-primary/35 transition-all duration-300 hover:-translate-y-0.5">
+        <i class="fa-solid fa-user-plus"></i>
+        Add New User
+      </a>
+    </div>
+  </div>
 
-                <tbody>
-                    <tr>
-                        <td>
-                            <li>
-                                <%= user.username %>
-                            </li>
-                        </td>
-                        <td>
-                            <%= user.email %>
-                        </td>
-                        <td>
-                            <%= user.mobile %>
-                        </td>
-                        <td>
-                            <%= user.role %>
-                        </td>
-                        <td>
-                            <a href="/admin/users/edit/<%= user._id %>">Edit</a>
-                            <form action="/admin/users/delete/<%= user._id %>" method="POST" style="display:inline;"
-                                onsubmit="confirmAction('delete', event);">
-                                <button type="submit">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-                <% }) %>
-        </table>
-    </ol>
+  <!-- Users Table Card -->
+  <div class="glass-panel rounded-2xl overflow-hidden shadow-xl border border-border-color">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse bg-bg-card">
+        <thead>
+          <tr class="bg-primary text-white">
+            <th class="p-4 font-heading font-semibold text-sm">Username</th>
+            <th class="p-4 font-heading font-semibold text-sm">Email Address</th>
+            <th class="p-4 font-heading font-semibold text-sm">Mobile</th>
+            <th class="p-4 font-heading font-semibold text-sm">Role</th>
+            <th class="p-4 font-heading font-semibold text-sm text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border-color">
+          <% if (users && users.length > 0) { %>
+            <% users.forEach(user => { %>
+              <tr class="hover:bg-primary/5 transition-colors duration-200">
+                <td class="p-4 font-semibold text-text-primary">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">
+                      <%= user.username.charAt(0).toUpperCase() %>
+                    </div>
+                    <span><%= user.username %></span>
+                  </div>
+                </td>
+                <td class="p-4 text-sm font-medium text-text-secondary"><%= user.email %></td>
+                <td class="p-4 text-sm font-mono text-text-secondary"><%= user.mobile || 'N/A' %></td>
+                <td class="p-4 text-sm">
+                  <% 
+                    let roleBadge = "bg-primary/10 text-primary border border-primary/20";
+                    if (user.role.toLowerCase().includes('admin')) {
+                      roleBadge = "bg-red-500/10 text-red-500 border border-red-500/20";
+                    } else if (user.role.toLowerCase().includes('owner')) {
+                      roleBadge = "bg-amber-500/10 text-amber-500 border border-amber-500/20";
+                    }
+                  %>
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider <%= roleBadge %>">
+                    <%= user.role %>
+                  </span>
+                </td>
+                <td class="p-4">
+                  <div class="flex items-center justify-center gap-3">
+                    <a href="/admin/users/edit/<%= user._id %>" class="text-primary hover:text-primary-hover font-semibold text-sm flex items-center gap-1 transition-colors duration-200">
+                      <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </a>
+                    <form action="/admin/users/delete/<%= user._id %>" method="POST" style="display:inline;"
+                      onsubmit="confirmAction('delete', event);">
+                      <button type="submit" class="text-red-500 hover:text-red-600 font-semibold text-sm flex items-center gap-1 transition-colors duration-200 cursor-pointer">
+                        <i class="fa-solid fa-trash-can"></i> Delete
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="5" class="p-12 text-center text-text-secondary font-medium">
+                <i class="fa-solid fa-users-slash text-4xl text-border-color mb-3 block animate-pulse"></i>
+                No users found in database.
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
-<!-- plugins:js -->
-<script src="../assets/vendors/js/vendor.bundle.base.js"></script>
-<!-- endinject -->
-<!-- Plugin js for this page-->
-<script src="../assets/vendors/chartjs/Chart.min.js"></script>
-<script src="../assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
-<script src="../assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-<!-- End plugin js for this page-->
-<!-- inject:js -->
-<script src="../assets/js/material.js"></script>
-<script src="../assets/js/misc.js"></script>
-<!-- endinject -->
-<!-- Custom js for this page-->
-<script src="../assets/js/dashboard.js"></script>
-<!-- End custom js for this page-->
+
+<script>
+  function confirmAction(action, event) {
+    event.preventDefault();
+    const confirmation = confirm(`Are you sure you want to ${action} this user?`);
+    if (confirmation) {
+      event.target.submit();
+    }
+  }
+</script>
+
+<!-- Close Sidebar & Main wrappers opened in partials/header -->
+      </div>
+   </div>
+
+<!-- vendor scripts -->
+<script src="<%= assetUrl('assets/vendors/js/vendor.bundle.base.js') %>"></script>
+<script src="<%= assetUrl('assets/js/material.js') %>"></script>
+<script src="<%= assetUrl('assets/js/misc.js') %>"></script>
 </body>
-</html> 
+</html>

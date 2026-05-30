@@ -1,28 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Room</title>
+    <title>Add Room - FMPG Admin</title>
+    <link rel="icon" href="/img/logo.png" type="image/icon type">
+    
+    <!-- Central Tailwind CSS & Theme Config -->
+    <%- include('../tailwind-head') %>
 </head>
-<body>
-    <h1>Add Room</h1>
-    <form action="/admin/rooms/add" method="POST">
-        <label for="property">Property:</label>
-        <select id="property" name="property" required>
-            <% properties.forEach(property => { %>
-                <option value="<%= property._id %>"><%= property.name %></option>
-            <% }) %>
-        </select><br>
-        <label for="number">Room Number:</label>
-        <input type="text" id="number" name="number" required><br>
-        <label for="type">Room Type:</label>
-        <input type="text" id="type" name="type" required><br>
-        <label for="price">Price:</label>
-        <input type="number" id="price" name="price" required><br>
-        <label for="available">Available:</label>
-        <input type="checkbox" id="available" name="available"><br>
-        <button type="submit">Add Room</button>
-    </form>
+
+<body class="bg-bg-body text-text-primary min-h-screen flex items-center justify-center py-12 px-4 transition-colors duration-300">
+    <div class="glass-panel max-w-lg w-full rounded-2xl p-8 md:p-10 animate-fade-in-up relative overflow-hidden shadow-xl">
+        <!-- Decorative Glow -->
+        <div class="absolute -top-12 -left-12 w-32 h-32 bg-primary/10 rounded-full blur-2xl"></div>
+        
+        <div class="relative z-10">
+            <!-- Header bar -->
+            <div class="flex items-center justify-between border-b border-border-color pb-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                        <i class="fa-solid fa-plus text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold font-heading">Add Room</h1>
+                        <p class="text-xs text-text-secondary mt-0.5">Admin Management Console</p>
+                    </div>
+                </div>
+                <a href="/admin/rooms" class="text-xs text-text-secondary hover:text-primary font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> Rooms List
+                </a>
+            </div>
+
+            <!-- Form -->
+            <form action="/admin/rooms/add" method="POST" class="space-y-5">
+                <div>
+                    <label for="property" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Target Property</label>
+                    <select id="property" name="property" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" required>
+                        <% properties.forEach(property => { %>
+                            <option value="<%= property._id %>"><%= property.propertyName || property.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="number" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Room Number</label>
+                        <input type="text" id="number" name="number" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" placeholder="e.g. 101" required>
+                    </div>
+                    <div>
+                        <label for="type" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Room Sharing Type</label>
+                        <input type="text" id="type" name="type" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" placeholder="e.g. single, double" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center pt-2">
+                    <div>
+                        <label for="price" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Monthly Rent Price (₹)</label>
+                        <input type="number" id="price" name="price" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 font-mono" placeholder="₹ Rent Amount" required>
+                    </div>
+                    <div class="flex items-center gap-3 pt-6 pl-2 select-none">
+                        <input type="checkbox" id="available" name="available" class="w-5 h-5 accent-primary rounded cursor-pointer" checked>
+                        <label for="available" class="text-sm text-text-primary font-semibold cursor-pointer">Available for Booking</label>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button type="submit" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-3.5 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/35 transition-all duration-300 text-base cursor-pointer mt-2">
+                    Add Room Slot
+                </button>
+            </form>
+        </div>
+    </div>
 </body>
+
 </html>

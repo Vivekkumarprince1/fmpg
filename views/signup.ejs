@@ -1,183 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>fmpg Signup Form</title>
-    <link rel="stylesheet" type="text/css" href="../css/loginstyle.css">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a81368914c.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="img/logo.png" type="image/icon type">
-    <style>
-        input.largerCheckbox {
-            width: 80px;
-            height: 40px;
-        }
-    </style>
+    <meta charset="utf-8">
+    <title>Sign Up - FMPG</title>
+    <!-- Include central Tailwind Configuration -->
+    <%- include('tailwind-head') %>
 </head>
-<body>
-    <img class="wave" src="<%= assetUrl('images/wave.png') %>">
-    <div class="container">
-        <div class="img">
-            <img src="<%= assetUrl('images/bg.svg') %>">
+
+<body class="bg-bg-body text-text-primary transition-colors duration-300 min-h-screen flex items-center justify-center py-12 px-6 relative overflow-hidden">
+    
+    <!-- Background glowing dynamic blob ornaments -->
+    <div class="absolute top-[-10%] left-[-10%] h-96 w-96 rounded-full bg-primary/10 blur-3xl z-0"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] h-96 w-96 rounded-full bg-secondary/10 blur-3xl z-0"></div>
+
+    <div class="w-full max-w-md z-10 animate-fade-in-up">
+        <!-- Logo Header -->
+        <div class="flex flex-col items-center gap-3 mb-8">
+            <a href="/" class="flex items-center gap-3">
+                <img src="<%= assetUrl('img/logo.png') %>" alt="FMPG Logo" class="h-12 w-auto">
+                <span class="font-heading text-3xl font-extrabold text-text-primary tracking-tight">FM<span class="text-primary">PG</span></span>
+            </a>
+            <p class="text-sm font-semibold text-text-secondary text-center">Join our verified PG community today</p>
         </div>
-        <div class="login-content">
-            <form action="/signup?ref=<%= referrerId %>" method="POST" id="signup-form">
-                <img src="<%= assetUrl('images/avatar.svg') %>">
-                <h2 class="title">Please Signup</h2>
 
-                <!-- Display error message -->
-                <% if (error.length > 0) { %>
-                    <div class="alert alert-danger">
-                        <%= error %>
-                    </div>
-                <% } %>
+        <!-- Glassmorphic Signup Form Panel -->
+        <div class="glass-panel p-8 rounded-3xl bg-bg-card border-border-color shadow-2xl flex flex-col gap-6">
+            <h2 class="font-heading text-2xl font-black text-center text-text-primary">Create Account</h2>
+
+            <% if (error.length > 0) { %>
+                <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-sm font-bold flex items-center gap-2">
+                    <i class="fa fa-info-circle"></i> <%= error %>
+                </div>
+            <% } %>
+            
+            <% if (success.length > 0) { %>
+                <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-sm font-bold flex items-center gap-2">
+                    <i class="fa fa-circle-check"></i> <%= success %>
+                </div>
+            <% } %>
+
+            <!-- Signup Form action -->
+            <form action="/signup?ref=<%= referrerId %>" method="POST" id="signup-form" class="flex flex-col gap-4">
                 
-                <!-- Display success message -->
-                <% if (success.length > 0) { %>
-                    <div class="alert alert-success">
-                        <%= success %>
-                    </div>
-                <% } %>
-
-                <div class="input-div one">
-                    <div class="i">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="div">
-                        <h5>Username</h5>
-                        <input type="text" class="input" id="username" name="username" required>
+                <!-- Username Input -->
+                <div class="flex flex-col gap-1">
+                    <label for="username" class="text-xs font-bold text-text-secondary uppercase tracking-wider">Username</label>
+                    <div class="relative flex items-center">
+                        <i class="fas fa-user absolute left-4 text-text-secondary text-sm"></i>
+                        <input type="text" id="username" name="username" class="w-full bg-bg-body border border-border-color rounded-2xl py-3 pl-11 pr-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors" placeholder="Vikas" required>
                     </div>
                 </div>
 
-                <div class="input-div one">
-                    <div class="i">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <div class="div">
-                        <h5>Email</h5>
-                        <input type="email" class="input" id="email" name="email" required>
-                    </div>
-                </div>
-
-                <!-- Send OTP Button will be initially hidden -->
-                <button type="button" class="btn" id="send-otp" onclick="sendOTP()" style="display:none;">Send OTP</button>
-
-                <div class="input-div one" id="otp-container" style="display:none;">
-                    <div class="i">
-                        <i class="fas fa-key"></i>
-                    </div>
-                    <div class="div">
-                        <h5>Enter OTP</h5>
-                        <input type="text" class="input" id="otp" name="otp">
-                    </div>
-                    <button type="button" class="btn" id="verify-otp" onclick="verifyOTP()">Verify OTP</button>
-                </div>
-
-                <div class="input-div one">
-                    <div class="i">
-                        <i class="fas fa-phone"></i>
-                    </div>
-                    <div class="div">
-                        <h5>Mobile</h5>
-                        <input type="text" class="input" id="mobile" name="mobile" required>
+                <!-- Email Input & Verification Row -->
+                <div class="flex flex-col gap-1">
+                    <label for="email" class="text-xs font-bold text-text-secondary uppercase tracking-wider">Email Address</label>
+                    <div class="relative flex items-center gap-2">
+                        <div class="relative flex-1 flex items-center">
+                            <i class="fas fa-envelope absolute left-4 text-text-secondary text-sm"></i>
+                            <input type="email" id="email" name="email" class="w-full bg-bg-body border border-border-color rounded-2xl py-3 pl-11 pr-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors" placeholder="vikas@fmpg.com" required>
+                        </div>
+                        <button type="button" class="px-4 py-3 bg-primary hover:bg-primary-hover text-white text-xs font-bold rounded-2xl shadow-md shadow-primary/10 shrink-0 transition-colors cursor-pointer hidden" id="send-otp" onclick="sendOTP()">
+                            Send OTP
+                        </button>
                     </div>
                 </div>
 
-                <input type="hidden" class="referrerId" id="referrerId" name="referrerId" value="<%= referrerId %>">
-
-                <div class="input-div pass">
-                    <div class="i">
-                        <i class="fas fa-lock"></i>
-                    </div>
-                    <div class="div">
-                        <h5>Password</h5>
-                        <input type="password" class="input" id="password" name="password" required>
+                <!-- OTP Enter Container -->
+                <div class="flex flex-col gap-1.5 hidden p-4 rounded-2xl border border-dashed border-border-color bg-slate-500/5" id="otp-container">
+                    <label for="otp" class="text-xs font-bold text-text-secondary uppercase tracking-wider">Enter OTP Code</label>
+                    <div class="relative flex items-center gap-2">
+                        <div class="relative flex-1 flex items-center">
+                            <i class="fas fa-key absolute left-4 text-text-secondary text-sm"></i>
+                            <input type="text" id="otp" name="otp" class="w-full bg-bg-body border border-border-color rounded-2xl py-3 pl-11 pr-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors" placeholder="6-digit code">
+                        </div>
+                        <button type="button" class="px-4 py-3 bg-secondary hover:bg-secondary-hover text-white text-xs font-bold rounded-2xl shadow-md shrink-0 transition-colors cursor-pointer text-slate-900" id="verify-otp" onclick="verifyOTP()">
+                            Verify
+                        </button>
                     </div>
                 </div>
 
-                <div class="" style="font-size: small;">
-                    <input type="checkbox" value="" required> Agree to <a href="TermsAndConditions">Terms and Condition</a> and <a href="privacypolicy">Privacy Policy</a>
+                <!-- Mobile Input -->
+                <div class="flex flex-col gap-1">
+                    <label for="mobile" class="text-xs font-bold text-text-secondary uppercase tracking-wider">Mobile Number</label>
+                    <div class="relative flex items-center">
+                        <i class="fas fa-phone absolute left-4 text-text-secondary text-sm"></i>
+                        <input type="text" id="mobile" name="mobile" class="w-full bg-bg-body border border-border-color rounded-2xl py-3 pl-11 pr-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors" placeholder="+91 99999 99999" required>
+                    </div>
                 </div>
 
-                <input type="submit" class="btn" value="Signup" id="signup-btn">
-                <h4 class="title">Already having an account? <a href="login">Login</a></h4>
+                <!-- Referrer Id Hidden -->
+                <input type="hidden" id="referrerId" name="referrerId" value="<%= referrerId %>">
+
+                <!-- Password Input -->
+                <div class="flex flex-col gap-1">
+                    <label for="password" class="text-xs font-bold text-text-secondary uppercase tracking-wider">Password</label>
+                    <div class="relative flex items-center">
+                        <i class="fas fa-lock absolute left-4 text-text-secondary text-sm"></i>
+                        <input type="password" id="password" name="password" class="w-full bg-bg-body border border-border-color rounded-2xl py-3 pl-11 pr-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <!-- Terms and Condition Checkbox -->
+                <div class="flex items-start gap-2.5 text-xs text-text-secondary font-semibold py-2">
+                    <input type="checkbox" id="terms-agree" class="accent-primary h-4.5 w-4.5 rounded cursor-pointer mt-0.5" required>
+                    <label for="terms-agree" class="cursor-pointer select-none">
+                        I agree to the <a href="TermsAndConditions" target="_blank" class="text-primary hover:underline">Terms & Conditions</a> and <a href="privacypolicy" target="_blank" class="text-primary hover:underline">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <!-- Actions -->
+                <button type="submit" class="w-full py-4 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl shadow-lg shadow-primary/20 hover:scale-[1.01] transition-all cursor-pointer text-base" id="signup-btn">
+                    Signup
+                </button>
+                
+                <h4 class="text-xs text-text-secondary text-center font-bold mt-2">
+                    Already have an account? <a href="login" class="text-primary hover:underline">Login here</a>
+                </h4>
             </form>
         </div>
     </div>
 
-    <script type="text/javascript" src="/js/login.js"></script>
-    <script type="text/javascript">
+    <!-- OTP Actions callback bindings -->
+    <script>
         const emailInput = document.getElementById('email');
         const sendOtpButton = document.getElementById('send-otp');
+        const otpContainer = document.getElementById('otp-container');
+        const signupBtn = document.getElementById('signup-btn');
 
-        // Check if email is entered, show "Send OTP" button
-        emailInput.addEventListener('input', function() {
-            if (emailInput.value.trim() !== "") {
-                sendOtpButton.style.display = 'block'; // Show the button
-            } else {
-                sendOtpButton.style.display = 'none'; // Hide the button if empty
-            }
-        });
+        // Watch email input to display dynamic OTP actions button
+        if (emailInput && sendOtpButton) {
+            emailInput.addEventListener('input', function() {
+                if (emailInput.value.trim() !== "") {
+                    sendOtpButton.classList.remove('hidden');
+                } else {
+                    sendOtpButton.classList.add('hidden');
+                }
+            });
+        }
 
+        // Send OTP API fetch dispatch
         function sendOTP() {
-            const email = emailInput.value;
+            const email = emailInput.value.trim();
             if (email) {
-                // Send a POST request to the server to send OTP
+                sendOtpButton.disabled = true;
+                sendOtpButton.innerText = "Sending...";
+
                 fetch('/send-otp', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email })
+                    body: JSON.stringify({ email })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.message === 'OTP sent to email') {
-                        alert('OTP sent to ' + email);
-                        document.getElementById('otp-container').style.display = 'block';
-                        sendOtpButton.disabled = true;
+                        alert('Verification OTP sent successfully to ' + email);
+                        otpContainer.classList.remove('hidden');
+                        sendOtpButton.innerText = "Resend";
                     } else {
-                        alert(data.message);
+                        alert(data.message || 'Error occurred while sending OTP code.');
+                        sendOtpButton.innerText = "Send OTP";
                     }
+                    sendOtpButton.disabled = false;
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    alert('Failed to send OTP');
+                    console.error('OTP Signup Send Failure:', error);
+                    alert('Server connection error. Failed to send OTP code.');
+                    sendOtpButton.disabled = false;
+                    sendOtpButton.innerText = "Send OTP";
                 });
             } else {
-                alert('Please enter an email address');
+                alert('Please enter a valid email address first.');
             }
         }
 
+        // Verify OTP API fetch dispatch
         function verifyOTP() {
-            const otp = document.getElementById('otp').value;
-            if (otp) {
-                // Send a POST request to the server to verify OTP
+            const otpVal = document.getElementById('otp').value.trim();
+            const verifyBtn = document.getElementById('verify-otp');
+            if (otpVal) {
+                verifyBtn.disabled = true;
+                verifyBtn.innerText = "Verifying...";
+
                 fetch('/verify-otp', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ otp: otp })
+                    body: JSON.stringify({ otp: otpVal })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.message === 'OTP verified successfully') {
-                        alert('OTP verified');
-                        document.getElementById('email').readOnly = true;
-                        document.getElementById('otp-container').style.display = 'none';
-                        sendOtpButton.style.display = 'none';
-                        document.getElementById('signup-btn').disabled = false;
+                        alert('OTP verification complete!');
+                        emailInput.readOnly = true;
+                        otpContainer.classList.add('hidden');
+                        sendOtpButton.classList.add('hidden');
+                        signupBtn.disabled = false;
                     } else {
-                        alert(data.message);
+                        alert(data.message || 'Incorrect verification OTP code.');
+                        verifyBtn.innerText = "Verify";
+                        verifyBtn.disabled = false;
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    alert('Failed to verify OTP');
+                    console.error('OTP Verification Failure:', error);
+                    alert('Server connection error. Verification failed.');
+                    verifyBtn.innerText = "Verify";
+                    verifyBtn.disabled = false;
                 });
             } else {
-                alert('Please enter the OTP');
+                alert('Please enter the received OTP code.');
             }
         }
     </script>
 </body>
+
 </html>

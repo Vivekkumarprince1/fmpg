@@ -3,190 +3,155 @@
 
 <head>
     <meta charset="utf-8">
-    <title>FMPG</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-    <link rel="icon" href="img/logo.png" type="image/icon type">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/footer.css">
+    <title>About Us - FMPG</title>
+    <!-- Include central Tailwind Configuration -->
+    <%- include('tailwind-head') %>
 </head>
 
-<body>
-    <!-- header start -->
+<body class="bg-bg-body text-text-primary transition-colors duration-300">
+
+    <!-- Header Start -->
     <%- include('header') %>
-    <!-- header end -->
+    <!-- Header End -->
 
-
-    <!-- About Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="row g-5">
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s" style="min-height: 400px;">
-                    <div class="position-relative h-100">
-                        <img class="img-fluid position-absolute w-100 h-100" src="<%= assetUrl('img/about.jpg') %>" alt="" style="object-fit: cover;">
+    <!-- About Section Start -->
+    <section class="py-20 max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center animate-fade-in-up">
+            <!-- About Image with floating stats -->
+            <div class="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] group">
+                <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="<%= assetUrl('img/about.jpg') %>" alt="Comfortable Room Living">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent"></div>
+                <!-- Mini floating stat banner -->
+                <div class="absolute bottom-6 left-6 right-6 p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-between">
+                    <div>
+                        <span class="text-2xl font-extrabold text-primary">100%</span>
+                        <p class="text-xs text-slate-300 font-semibold">Verified PGs</p>
+                    </div>
+                    <div class="h-8 w-[1px] bg-white/20"></div>
+                    <div>
+                        <span class="text-2xl font-extrabold text-secondary">24/7</span>
+                        <p class="text-xs text-slate-300 font-semibold">Live Support</p>
                     </div>
                 </div>
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <h6 class="section-title bg-white text-start text-primary pe-3">About Us</h6>
-                    <h1 class="mb-4">Welcome to <span class="text-primary">FMPG</span></h1>
-                    <p class="mb-4">Your premier choice for hastle-free and comfortable hostel living! We pride ourselves on creating a home away from home, offering you a perfect blend of convenience, security, and community. Whether you're a student, a working professional, or a traveler. Join us and experience a new standard of living where comfort meets convenience and every stay feels like home.</p>
-                    <p class="mb-4">Our single rooms are thoughtfully designed to offer you maximum comfort and privacy. Each room is fully furnished with a cozy bed, a spacious wardrobe, a study desk, and ample lighting to create an ideal environment for both relaxation and productivity. With high-speed internet, air conditioning, and a dedicated bathroom, you can enjoy all the comforts of home. </p>
-                    <div class="row gy-2 gx-4 mb-4">
-                        <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Handpicked PGs</p>
+            </div>
+
+            <!-- About Text -->
+            <div class="flex flex-col gap-6 items-start">
+                <div class="flex flex-col gap-2">
+                    <span class="text-primary font-bold text-sm tracking-widest uppercase">About Us</span>
+                    <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-black text-text-primary tracking-tight">
+                        Welcome to <span class="text-primary">FMPG</span>
+                    </h2>
+                </div>
+                
+                <p class="text-text-secondary leading-relaxed text-base font-medium">
+                    FMPG is your premier choice for hassle-free and comfortable hostel/PG living! We pride ourselves on creating a home away from home, offering you a perfect blend of modern convenience, tight security, and inclusive community.
+                </p>
+                <p class="text-text-secondary leading-relaxed text-base">
+                    Our single and shared rooms are thoughtfully designed to offer you maximum comfort and privacy. Each property is handpicked and fully furnished with snug beds, wardrobes, study desks, high-speed WiFi, air conditioning, and hygiene-assured bathrooms.
+                </p>
+
+                <!-- Checkmarks Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mt-2">
+                    <div class="flex items-center gap-3">
+                        <div class="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs">
+                            <i class="fa fa-check"></i>
                         </div>
-                        <div class="col-sm-6">
-                           <!-- <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>First Class Flights</p> -->
+                        <span class="text-sm font-semibold text-text-primary">Handpicked Verified PGs</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs">
+                            <i class="fa fa-check"></i>
                         </div>
-                        <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>24/7 Service</p>
-                            
+                        <span class="text-sm font-semibold text-text-primary">Instant Online Payouts</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs">
+                            <i class="fa fa-check"></i>
                         </div>
-                        <div class="col-sm-6">
-                            <!-- <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Latest Model Vehicles</p> -->
+                        <span class="text-sm font-semibold text-text-primary">24/7 Direct Help Desk</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs">
+                            <i class="fa fa-check"></i>
                         </div>
-                        <div class="col-sm-6">
-                            <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Hassle free booking process</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <!-- <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>5 Star Accommodations</p> -->
-                        </div>
+                        <span class="text-sm font-semibold text-text-primary">Zero Hidden Fees</span>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- About End -->
+    </section>
+    <!-- About Section End -->
 
-
-    <!-- Team Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Team</h6>
-                <h1 class="mb-5">Meet Our team</h1>
+    <!-- Team Section Start -->
+    <section class="py-20 bg-slate-50 dark:bg-slate-900/40 border-y border-border-color transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col gap-12 text-center">
+            <div class="flex flex-col gap-2">
+                <span class="text-primary font-bold text-sm tracking-widest uppercase">Team</span>
+                <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-black text-text-primary tracking-tight">Meet Our Team</h2>
             </div>
-            <div class="row g-4">
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="team-item">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="<%= assetUrl('img/team-1.jpg') %>" alt="">
+
+            <!-- Team Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Member 1: Vivek -->
+                <div class="glass-panel rounded-3xl overflow-hidden shadow-xl hover:scale-[1.02] transition-premium flex flex-col group">
+                    <div class="relative overflow-hidden aspect-[4/3]">
+                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="<%= assetUrl('img/team-1.jpg') %>" alt="Vivek Kumar">
+                        <!-- Floating social triggers -->
+                        <div class="absolute inset-0 bg-slate-950/40 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <a class="h-10 w-10 rounded-full bg-white hover:bg-primary hover:text-white text-slate-800 flex items-center justify-center shadow-lg transition-all hover:scale-105" href="https://x.com/Vivekra90835697" target="_blank"><i class="fab fa-twitter"></i></a>
+                            <a class="h-10 w-10 rounded-full bg-white hover:bg-primary hover:text-white text-slate-800 flex items-center justify-center shadow-lg transition-all hover:scale-105" href="https://www.instagram.com/ideal_vivek_/" target="_blank"><i class="fab fa-instagram"></i></a>
                         </div>
-                        <div class="position-relative d-flex justify-content-center" style="margin-top: -19px;">
-                            <a class="btn btn-square mx-1" href=""><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-square mx-1" href="https://x.com/Vivekra90835697" target="_blank"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-square mx-1" href="https://www.instagram.com/ideal_vivek_/" target="_blank"><i class="fab fa-instagram"></i></a>
-                        </div>
-                        <div class="text-center p-4">
-                            <h5 class="mb-0">Vivek Kumar</h5>
-                            <small>Founder and CEO</small>
-                        </div>
+                    </div>
+                    <div class="p-6 text-center">
+                        <h5 class="font-heading text-xl font-bold text-text-primary">Vivek Kumar</h5>
+                        <p class="text-sm font-semibold text-primary uppercase tracking-wider mt-1">Founder & CEO</p>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="team-item">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="<%= assetUrl('img/team-2.jpg') %>" alt="">
+
+                <!-- Member 2: Vikas -->
+                <div class="glass-panel rounded-3xl overflow-hidden shadow-xl hover:scale-[1.02] transition-premium flex flex-col group">
+                    <div class="relative overflow-hidden aspect-[4/3]">
+                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="<%= assetUrl('img/team-2.jpg') %>" alt="Vikas Adhikari">
+                        <!-- Floating social triggers -->
+                        <div class="absolute inset-0 bg-slate-950/40 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <a class="h-10 w-10 rounded-full bg-white hover:bg-primary hover:text-white text-slate-800 flex items-center justify-center shadow-lg transition-all hover:scale-105" href="https://www.linkedin.com/in/vikas-adhikari-646a0128b/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                            <a class="h-10 w-10 rounded-full bg-white hover:bg-primary hover:text-white text-slate-800 flex items-center justify-center shadow-lg transition-all hover:scale-105" href="https://x.com/vikas11652166" target="_blank"><i class="fab fa-twitter"></i></a>
+                            <a class="h-10 w-10 rounded-full bg-white hover:bg-primary hover:text-white text-slate-800 flex items-center justify-center shadow-lg transition-all hover:scale-105" href="https://www.instagram.com/vikasadhikari9310/" target="_blank"><i class="fab fa-instagram"></i></a>
                         </div>
-                        <div class="position-relative d-flex justify-content-center" style="margin-top: -19px;">
-                            <a class="btn btn-outline-light btn-social" target="_blank"
-                                href="https://www.linkedin.com/in/vikas-adhikari-646a0128b/"><i
-                                    class="fab fa-linkedin-in"></i></a>
-                            <a class="btn btn-square mx-1" target="_blank" href="https://x.com/vikas11652166"><i
-                                    class="fab fa-twitter"></i></a>
-                            <a class="btn btn-square mx-1" target="_blank"
-                                href="https://www.instagram.com/vikasadhikari9310/"><i class="fab fa-instagram"></i></a>
-                        </div>
-                        <div class="text-center p-4">
-                            <h5 class="mb-0">Vikas adhikari</h5>
-                            <small>Co-founder</small>
-                        </div>
+                    </div>
+                    <div class="p-6 text-center">
+                        <h5 class="font-heading text-xl font-bold text-text-primary">Vikas Adhikari</h5>
+                        <p class="text-sm font-semibold text-primary uppercase tracking-wider mt-1">Co-Founder</p>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="team-item">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="<%= assetUrl('img/team-3.jpg') %>" alt="">
+
+                <!-- Member 3: Adarsh -->
+                <div class="glass-panel rounded-3xl overflow-hidden shadow-xl hover:scale-[1.02] transition-premium flex flex-col group">
+                    <div class="relative overflow-hidden aspect-[4/3]">
+                        <img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="<%= assetUrl('img/team-3.jpg') %>" alt="Adarsh Kumar Panday">
+                        <!-- Floating social triggers -->
+                        <div class="absolute inset-0 bg-slate-950/40 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <a class="h-10 w-10 rounded-full bg-white hover:bg-primary hover:text-white text-slate-800 flex items-center justify-center shadow-lg transition-all hover:scale-105" href="https://tr.ee/w-AV6iY65c" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                            <a class="h-10 w-10 rounded-full bg-white hover:bg-primary hover:text-white text-slate-800 flex items-center justify-center shadow-lg transition-all hover:scale-105" href="https://tr.ee/Z5812sVo3z" target="_blank"><i class="fab fa-twitter"></i></a>
+                            <a class="h-10 w-10 rounded-full bg-white hover:bg-primary hover:text-white text-slate-800 flex items-center justify-center shadow-lg transition-all hover:scale-105" href="https://tr.ee/_z_ePJyZDI" target="_blank"><i class="fab fa-instagram"></i></a>
                         </div>
-                        <div class="position-relative d-flex justify-content-center" style="margin-top: -19px;">
-                            <a class="btn btn-outline-light btn-social" href="https://tr.ee/w-AV6iY65c" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-                            <a class="btn btn-square mx-1" href="https://tr.ee/Z5812sVo3z" target="_blank"><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-square mx-1" href="https://tr.ee/_z_ePJyZDI" target="_blank"><i class="fab fa-instagram"></i></a>
-                        </div>
-                        <div class="text-center p-4">
-                            <h5 class="mb-0">Adarsh Kumar Panday</h5>
-                            <small>Co - Founder & CMO</small>
-                        </div>
+                    </div>
+                    <div class="p-6 text-center">
+                        <h5 class="font-heading text-xl font-bold text-text-primary">Adarsh Kumar Panday</h5>
+                        <p class="text-sm font-semibold text-primary uppercase tracking-wider mt-1">Co-Founder & CMO</p>
                     </div>
                 </div>
-                <!-- <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="team-item">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="img/team-3.jpg" alt="">
-                        </div>
-                        <div class="position-relative d-flex justify-content-center" style="margin-top: -19px;">
-                            <a class="btn btn-square mx-1" href=""><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-square mx-1" href=""><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-square mx-1" href=""><i class="fab fa-instagram"></i></a>
-                        </div>
-                        <div class="text-center p-4">
-                            <h5 class="mb-0">Full Name</h5>
-                            <small>Designation</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
-                    <div class="team-item">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="img/team-4.jpg" alt="">
-                        </div>
-                        <div class="position-relative d-flex justify-content-center" style="margin-top: -19px;">
-                            <a class="btn btn-square mx-1" href=""><i class="fab fa-facebook-f"></i></a>
-                            <a class="btn btn-square mx-1" href=""><i class="fab fa-twitter"></i></a>
-                            <a class="btn btn-square mx-1" href=""><i class="fab fa-instagram"></i></a>
-                        </div>
-                        <div class="text-center p-4">
-                            <h5 class="mb-0">Full Name</h5>
-                            <small>Designation</small>
-                        </div>
-                    </div>
-                </div> -->
             </div>
         </div>
-    </div>
-    <!-- Team End -->
-        
+    </section>
+    <!-- Team Section End -->
 
-    <!--footer start-->
+    <!-- Footer Start -->
     <%- include('footer') %>
-    <!--footer end-->
+    <!-- Footer End -->
 
-    <!-- Template Javascript -->
+    <!-- Main JavaScript -->
     <script src="js/main.js"></script>
 </body>
 

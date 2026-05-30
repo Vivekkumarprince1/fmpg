@@ -4,192 +4,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FMPG</title>
-    <link rel="stylesheet" href="/css/profile.css">
-    <link rel="icon" href="img/logo.png" type="image/icon type">
+    <title>My Profile - FMPG</title>
+    <!-- Include central Tailwind Configuration -->
+    <%- include('tailwind-head') %>
+</head>
+
+<body class="bg-bg-body text-text-primary transition-colors duration-300">
+
+    <!-- Header Start -->
+    <%- include('header') %>
+    <!-- Header End -->
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        <div class="flex flex-col gap-10">
+            
+            <!-- Dashboard Top: Welcome User Grid -->
+            <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch animate-fade-in-up">
+                
+                <!-- Left: User Meta Card (5 Cols) -->
+                <div class="lg:col-span-5 glass-panel p-8 rounded-3xl bg-bg-card border-border-color shadow-xl flex flex-col items-center text-center gap-6 justify-between">
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="relative">
+                            <img src="https://img.icons8.com/bubbles/100/000000/user.png" alt="User Profile" class="h-24 w-24 object-contain rounded-full border-4 border-primary/20 bg-primary/5">
+                            <span class="absolute bottom-0 right-0 h-4 w-4 rounded-full bg-emerald-500 border-2 border-bg-body"></span>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <h2 class="font-heading text-2xl font-black text-text-primary">Welcome, <%= user.username %>!</h2>
+                            <span class="text-xs text-text-secondary font-bold font-mono">ID: <%= user._id %></span>
+                        </div>
+                    </div>
+
+                    <div class="w-full flex flex-col gap-3 py-4 border-y border-border-color text-sm text-left">
+                        <div class="flex justify-between font-semibold">
+                            <span class="text-text-secondary"><i class="fa fa-envelope text-primary mr-1"></i> Email:</span>
+                            <span class="text-text-primary"><%= user.email %></span>
+                        </div>
+                        <div class="flex justify-between font-semibold">
+                            <span class="text-text-secondary"><i class="fa fa-phone text-primary mr-1"></i> Phone:</span>
+                            <span class="text-text-primary"><%= user.mobile %></span>
+                        </div>
+                        <div class="flex justify-between font-semibold">
+                            <span class="text-text-secondary"><i class="fa fa-circle-user text-primary mr-1"></i> Role:</span>
+                            <span class="text-text-primary uppercase tracking-wider text-xs px-2 py-0.5 rounded-md bg-primary/10 text-primary self-center"><%= user.role || 'Member' %></span>
+                        </div>
+                    </div>
+
+                    <!-- Manage Drops Options -->
+                    <div class="w-full flex items-center justify-center gap-3">
+                        <% if (user.role === 'owner') { %>
+                            <a href="/owner/pendingProperty" class="px-5 py-2.5 bg-secondary text-slate-900 font-bold rounded-xl text-xs shadow-md transition-colors hover:bg-secondary/90">
+                                <i class="fa fa-cogs mr-1"></i> Owner Portal
+                            </a>
+                        <% } %>
+                        <a href="settings" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs shadow-md transition-colors">
+                            <i class="fa fa-sliders mr-1"></i> Settings
+                        </a>
+                        <a href="/logout" class="px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-xs shadow-md transition-colors" onclick="return confirm('Are you sure you want to logout?');">
+                            <i class="fa fa-sign-out-alt mr-1"></i> Logout
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right: Referral Credits Dashboard (7 Cols) -->
+                <div class="lg:col-span-7 glass-panel p-8 rounded-3xl bg-bg-card border-border-color shadow-xl flex flex-col gap-6 justify-between">
+                    <div>
+                        <span class="text-primary font-bold text-xs tracking-wider uppercase">Referral Program</span>
+                        <h3 class="font-heading text-2xl font-black text-text-primary mt-1">Earn While Sharing</h3>
+                        <p class="text-text-secondary text-sm font-medium mt-2">Invite your friends to Find My PG. Once they book a verified PG, you both earn premium rewards!</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 py-4 border-y border-border-color">
+                        <!-- Total credits -->
+                        <div class="p-6 rounded-2xl bg-bg-body border border-border-color text-center flex flex-col gap-1">
+                            <span class="text-xs font-bold text-text-secondary uppercase">Your Credits</span>
+                            <span class="text-4xl font-black text-primary"><%= user.referralCredits %></span>
+                            <span class="text-xs text-text-secondary font-semibold">rewards credits</span>
+                        </div>
+                        
+                        <!-- Actions Share box -->
+                        <div class="flex flex-col gap-3 justify-center">
+                            <label for="referralLink" class="text-xs font-bold text-text-secondary"><i class="fa fa-link text-primary mr-1"></i> Your Referral Link</label>
+                            <div class="relative flex items-center">
+                                <input type="text" readonly value="<%= user.referralLink %>" id="referralLink" class="w-full bg-bg-body border border-border-color rounded-xl py-3 pl-3 pr-16 text-xs font-mono font-bold text-text-primary focus:outline-none">
+                                <button onclick="copyReferralLink()" class="absolute right-2 px-3 py-1.5 bg-primary text-white font-bold rounded-lg text-xxs transition-colors hover:bg-primary-hover cursor-pointer">
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Share Social Grid icons -->
+                    <div class="flex flex-col gap-3">
+                        <h4 class="text-xs font-bold text-text-secondary"><i class="fa fa-share-alt text-primary mr-1"></i> Share via Social Media:</h4>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs font-bold">
+                            <!-- WhatsApp -->
+                            <a href="https://api.whatsapp.com/send?text=Join%20our%20platform%20with%20this%20link:%20<%= user.referralLink %>" target="_blank" class="px-4 py-3 bg-[#25d366]/10 text-[#25d366] hover:bg-[#25d366] hover:text-white rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+                                <i class="fab fa-whatsapp text-base"></i> WhatsApp
+                            </a>
+                            <!-- Email -->
+                            <a href="mailto:?subject=Join%20our%20platform&body=Join%20our%20platform%20using%20this%20referral%20link:%20<%= user.referralLink %>" class="px-4 py-3 bg-[#ea4335]/10 text-[#ea4335] hover:bg-[#ea4335] hover:text-white rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+                                <i class="fa fa-envelope text-sm"></i> Email
+                            </a>
+                            <!-- Facebook -->
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=<%= user.referralLink %>" target="_blank" class="px-4 py-3 bg-[#1877f2]/10 text-[#1877f2] hover:bg-[#1877f2] hover:text-white rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+                                <i class="fab fa-facebook-f text-sm"></i> Facebook
+                            </a>
+                            <!-- Twitter -->
+                            <a href="https://twitter.com/intent/tweet?text=Join%20our%20platform%20with%20this%20link:%20<%= user.referralLink %>" target="_blank" class="px-4 py-3 bg-[#1da1f2]/10 text-[#1da1f2] hover:bg-[#1da1f2] hover:text-white rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+                                <i class="fab fa-twitter text-sm"></i> Twitter
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Active Bookings History -->
+            <section class="flex flex-col gap-6 animate-fade-in-up delay-100">
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-lg">
+                        <i class="fa fa-calendar-check"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-black text-text-primary">Your Accommodation Bookings</h3>
+                </div>
+
+                <% if (bookings && bookings.length) { %>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <% bookings.forEach(function(booking) { %>
+                            <div class="glass-panel p-8 rounded-3xl bg-bg-card border-border-color shadow-lg flex flex-col justify-between gap-5 group">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex flex-col gap-1">
+                                        <h4 class="font-heading text-xl font-bold text-text-primary group-hover:text-primary transition-colors">
+                                            <%= booking.propertyID && booking.propertyID.propertyName ? booking.propertyID.propertyName : 'Verified Accommodation' %>
+                                        </h4>
+                                        <span class="text-xs font-mono text-text-secondary font-bold">Booking ID: <%= booking._id %></span>
+                                    </div>
+                                    <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider <%= booking.status === 'Cancelled' ? 'bg-rose-500/10 text-rose-500' : 'bg-emerald-500/10 text-emerald-500' %>">
+                                        <%= booking.status %>
+                                    </span>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4 py-4 border-y border-border-color text-xs font-semibold text-text-secondary">
+                                    <div>
+                                        <span class="block text-xxs uppercase tracking-wider text-slate-500">Room Type</span>
+                                        <span class="text-text-primary font-bold text-sm"><%= booking.room ? booking.room.type : 'Standard Shared' %></span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-xxs uppercase tracking-wider text-slate-500">Special Request</span>
+                                        <span class="text-text-primary font-bold"><%= booking.specialRequest || 'None' %></span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-xxs uppercase tracking-wider text-slate-500">Start Date</span>
+                                        <span class="text-text-primary font-bold"><%= booking.startDate.toDateString() %></span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-xxs uppercase tracking-wider text-slate-500">End Date</span>
+                                        <span class="text-text-primary font-bold"><%= booking.endDate.toDateString() %></span>
+                                    </div>
+                                </div>
+
+                                <% if (booking.status !== 'Cancelled') { %>
+                                    <div class="flex items-center gap-3 self-end">
+                                        <button class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs shadow-md transition-colors cursor-pointer" type="button" onclick="editBooking('<%= booking._id %>')">
+                                            <i class="fa fa-edit mr-1"></i> Edit Booking
+                                        </button>
+                                        <button class="px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl text-xs shadow-md transition-colors cursor-pointer" type="button" onclick="cancellBooking('<%= booking._id %>')">
+                                            <i class="fa fa-trash-alt mr-1"></i> Cancel Booking
+                                        </button>
+                                    </div>
+                                <% } %>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } else { %>
+                    <div class="glass-panel p-12 rounded-3xl bg-bg-card border-border-color text-center flex flex-col items-center gap-3">
+                        <i class="fa-regular fa-calendar-xmark text-4xl text-slate-400"></i>
+                        <h4 class="font-heading text-lg font-bold text-text-primary">No bookings found</h4>
+                        <p class="text-sm text-text-secondary max-w-sm">You don't have any bookings at the moment. Browse top accommodations to secure a deal today!</p>
+                        <a href="search-page" class="mt-2 px-6 py-2.5 bg-primary text-white font-bold rounded-xl text-xs transition-colors hover:bg-primary-hover shadow-md">
+                            Browse Rooms
+                        </a>
+                    </div>
+                <% } %>
+            </section>
+        </div>
+    </main>
+
+    <!-- Dynamic Overlay Box -->
+    <div id="dynamic-content" class="max-w-7xl mx-auto px-6"></div>
+
+    <!-- Footer Start -->
+    <%- include('footer') %>
+    <!-- Footer End -->
+
+    <!-- Clipboard & Redirection Scripts -->
     <script>
-        function confirmAction(action, event) {
-            event.preventDefault(); // Prevent the form from submitting immediately
+        function copyReferralLink() {
+            const link = document.getElementById("referralLink");
+            if (link) {
+                link.select();
+                link.setSelectionRange(0, 99999); /* For mobile devices */
+                navigator.clipboard.writeText(link.value)
+                    .then(() => alert("Referral link copied to clipboard!"))
+                    .catch(() => alert("Failed to copy link."));
+            }
+        }
 
-            const confirmation = confirm(`Are you sure you want to ${action} this booking?`);
+        function editBooking(bookingId) {
+            window.location.href = `api/bookings/edit/${bookingId}`;
+        }
 
+        function cancellBooking(bookingId) {
+            const confirmation = confirm("Are you sure you want to cancel this reservation booking?");
             if (confirmation) {
-                event.target.submit(); // Submit the form if confirmed
+                window.location.href = `api/bookings/cancel/${bookingId}`;
             }
         }
     </script>
-</head>
-
-<body>
-    <div class="container">
-        <!-- Navbar -->
-        <div class="navbar">
-            <a href="/"><i class="fas fa-home"></i> Home</a>
-            <div class="dropdown">
-                <button class="dropbtn manage"><i class="fas fa-cogs"></i> Manage</button>
-                <div class="dropdown-content">
-                        <div class="logout">
-                            <% if (user.role === 'owner') { %>
-                                <!-- Show this option only if the user's role is 'owner' -->
-                                <!-- <a href="#" onclick="loadContent('/owner/pendingProperty', 'owner'); return false;">Pending bookings</a> -->
-                                <a href="/owner/pendingProperty" return false>owner</a>
-                                
-                            <% } %>
-    
-                            <a href="settings" return false;>Settings</a>
-                            <a href="referandearn" return false;>Refer And Earn</a>
-                            <a href="/logout" class="btn" style="background-color: red;" onsubmit="confirmAction('Logout', event);">Logout</a>
-                        </div>
-                
-                </div>
-            </div>
-        </div>
-    
-        <!-- User Card -->
-        <div class="card">
-            <div class="card-header">
-                <img src="https://img.icons8.com/bubbles/100/000000/user.png" alt="User Profile Image" class="profile-img">
-                <h2>Welcome,<%=  user.username %>!</h2>
-                <p>ID: <%= user._id %></p>
-            </div>
-            <div class="card-body">
-                <!-- <h3>Information</h3> -->
-                <p>Email: <%= user.email %></p>
-                <p>Phone: <%= user.mobile %></p>
-            </div>
-        </div>
-    
-        <div class="profile-section">
-            <h3>Referral Program</h3>
-            <div class="referral-credits">
-                <h4>Your Total Referral Credits:</h4>
-                <p><strong>
-                        <%= user.referralCredits %>
-                    </strong> credits</p>
-            </div>
-        </div>
-        <p>Share this link with your friends and earn rewards:</p>
-        <input type="text" readonly value="<%= user.referralLink %>" id="referralLink">
-        <button onclick="copyReferralLink()">Copy Link</button>
-
-
-        <div class="share-referral">
-            <h4>Share your referral link:</h4>
-
-            <!-- Share via WhatsApp -->
-            <a href="https://api.whatsapp.com/send?text=Join%20our%20platform%20with%20this%20link:%20<%= user.referralLink %>"
-                target="_blank">
-                <button class="btn btn-whatsapp">Share on WhatsApp</button>
-            </a>
-
-            <!-- Share via Email -->
-            <a
-                href="mailto:?subject=Join%20our%20platform&body=Join%20our%20platform%20using%20this%20referral%20link:%20<%= user.referralLink %>">
-                <button class="btn btn-email">Share via Email</button>
-            </a>
-
-            <!-- Share on Facebook -->
-            <a href="https://www.facebook.com/sharer/sharer.php?u=<%= user.referralLink %>" target="_blank">
-                <button class="btn btn-facebook">Share on Facebook</button>
-            </a>
-
-            <!-- Share on Twitter -->
-            <a href="https://twitter.com/intent/tweet?text=Join%20our%20platform%20with%20this%20link:%20<%= user.referralLink %>"
-                target="_blank">
-                <button class="btn btn-twitter">Share on Twitter</button>
-            </a>
-        </div>
-        </div>
-
-        <script>
-            function copyReferralLink() {
-                const link = document.getElementById("referralLink");
-                link.select();
-                document.execCommand("copy");
-                alert("Referral link copied to clipboard");
-            }
-        </script>
-
-        <h6 class="m-b-20 m-t-40 p-b-5 b-b-default f-w-600">Booking</h6>
-        <div class="row">
-            <% if (bookings && bookings.length) { %>
-                <ol>
-                    <% bookings.forEach(function(booking) { %>
-                        <li class="booking-details">
-                            <p><strong>Booking ID:</strong>
-                                <%= booking._id %>
-                            </p>
-                    <% if (booking.room) { %>
-                    <% if (booking.room.property) { %>
-                        <p><strong>Property Name:</strong>
-                            <%= booking.propertyID && booking.propertyID.propertyName ? booking.propertyID.propertyName : 'N/A' %>
-                        </p>
-                    <% } %>
-                    <!-- <p><strong>property owner</strong><%= booking.propertyID.owner%></p> -->
-                    <p><strong>Room Type:</strong>
-                        <%= booking.room.type %>
-                    </p>
-                    <% } else { %>
-                        <p><strong>Room Type:</strong> Not specified</p>
-                    <% } %>
-                            <p><strong>Start Date:</strong>
-                                <%= booking.startDate.toDateString() %>
-                            </p>
-                            <p><strong>End Date:</strong>
-                                <%= booking.endDate.toDateString() %>
-                            </p>
-                            <p><strong>Special Request:</strong>
-                                <%= booking.specialRequest || 'None' %>
-                            </p>
-                            <p><strong>Status</strong>
-                                <%= booking.status %>
-                            </p>
-                            <% if (booking.status !== 'Cancelled') { %>
-                                <button class="btn submit" type="button" onclick="editBooking('<%= booking._id %>')">Edit Booking</button>
-                          
-                            <button class="btn submit" type="button" onclick="cancellBooking('<%= booking._id %>')" >cancel booking</button>
-                            <% } %>
-                            <script>
-                                console.log("object");
-                                function editBooking(bookingId) {
-                                  // Redirect to the edit booking page with booking ID in the URL or as a query parameter
-                                  window.location.href = `api/bookings/edit/${bookingId}`;
-                                }
-                              function cancellBooking(bookingId) {
-                                    // Redirect to the cancel booking page with booking ID in the URL or as a query parameter
-                                    const confirmation=confirm("Are you sure you want to cancel");
-                                    if(confirmation){
-                                    
-                                    window.location.href = `api/bookings/cancel/${bookingId}`;
-                                    }
-                                }
-                                        
-                            </script>                     
-                        </li>
-                    <% }) %>
-                </ol>
-            <% } else { %>
-                <div>No Bookings Available</div>
-            <% } %>
-        </div>
-        
-        <div id="dynamic-content">
-        <!-- Dynamic content will be loaded here -->
-        </div>
-
-        </div>
-        <script>
-            function loadContent(url, contentId) {
-                fetch(url)
-                    .then(response => response.text())
-                    .then(data => {
-                        document.getElementById("dynamic-content").innerHTML = data;
-                    })
-                    .catch(error => console.error('Error loading content:', error));
-            }
-
-            // Optionally load the default content when the page loads
-        </script>
 </body>
 
 </html>

@@ -1,66 +1,122 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Booking</title>
-    <link rel="stylesheet" href="../..//css/management.css">
+    <title>Add Booking - FMPG Admin</title>
+    <link rel="icon" href="/img/logo.png" type="image/icon type">
+    
+    <!-- Central Tailwind CSS & Theme Config -->
+    <%- include('../tailwind-head') %>
 </head>
 
-<body>
-    <div class="form">
-        <h1>Add Booking</h1>
-        <form class="add" action="/admin/bookings/add" method="POST">
-            <label for="user">User:</label>
-            <select id="user" class="select" name="user" required>
-                <option value="" disabled selected>Select a user</option>
-                <% users.forEach(user=> { %>
-                    <option value="<%= user._id %>" data-username="<%= user.username %>">
-                        <%= user.username %>
-                    </option>
-                    <% }) %>
-            </select><br>
-
-            <label for="username">Username:</label>
-            <input type="text" class="input" id="username" name="username" required><br>
-
-            <label for="property">Property:</label>
-            <select id="property" class="select" name="propertyID" required>
-                <option value="" disabled selected>Select a property</option>
-                <% properties.forEach(property=> { %>
-                    <option value="<%= property._id %>">
-                        <%= property.propertyName %>
-                    </option>
-                    <% }) %>
-            </select><br>
-
-            <label for="room">Room:</label>
-            <select id="room" class="select" name="room" required>
-                <option value="" disabled selected>Select a room</option>
-                <% rooms.forEach(room=> { %>
-                    <option value="<%= room._id %>">
-                        <%= room.type %>
-                    </option>
-                    <% }) %>
-            </select><br>
-
-            <label for="mobile">Mobile:</label>
-            <input type="text" class="select" id="mobile" name="mobile" required><br>
-<div class="dates">
-            <label for="startDate">Start Date:</label>
-            <input class="input" type="date" id="startDate" name="startDate" required><br>
- 
-            <div class="enddate">
-                <label for="endDate">End Date:</label>
-                <input class="input" type="date" id="endDate" name="endDate" required><br></div>
+<body class="bg-bg-body text-text-primary min-h-screen flex items-center justify-center py-12 px-4 transition-colors duration-300">
+    <div class="glass-panel max-w-2xl w-full rounded-2xl p-8 md:p-10 animate-fade-in-up relative overflow-hidden">
+        <!-- Decorative Glow -->
+        <div class="absolute -top-12 -left-12 w-32 h-32 bg-primary/10 rounded-full blur-2xl"></div>
+        
+        <div class="relative z-10">
+            <!-- Header bar -->
+            <div class="flex items-center justify-between border-b border-border-color pb-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                        <i class="fa-solid fa-calendar-plus text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold font-heading">Add Booking</h1>
+                        <p class="text-xs text-text-secondary mt-0.5">Admin Management Console</p>
+                    </div>
+                </div>
+                <a href="/admin/bookings" class="text-xs text-text-secondary hover:text-primary font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> Bookings List
+                </a>
             </div>
 
-            <label for="specialRequest">Special Request:</label>
-            <input type="text" class="input" id="specialRequest" name="specialRequest"><br>
+            <!-- Form -->
+            <form action="/admin/bookings/add" method="POST" class="space-y-6">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- User Account -->
+                    <div>
+                        <label for="user" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">User Account</label>
+                        <select id="user" name="user" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" required>
+                            <option value="" disabled selected>Select a user</option>
+                            <% users.forEach(user => { %>
+                                <option value="<%= user._id %>" data-username="<%= user.username %>">
+                                    <%= user.username %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
 
-            <button class="submit" type="submit">Add Booking</button>
-        </form>
+                    <!-- Input Username -->
+                    <div>
+                        <label for="username" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Display Username</label>
+                        <input type="text" id="username" name="username" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" placeholder="Username will auto-fill" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Property Select -->
+                    <div>
+                        <label for="property" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Property Name</label>
+                        <select id="property" name="propertyID" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" required>
+                            <option value="" disabled selected>Select a property</option>
+                            <% properties.forEach(property => { %>
+                                <option value="<%= property._id %>">
+                                    <%= property.propertyName %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <!-- Room Select -->
+                    <div>
+                        <label for="room" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Room Type</label>
+                        <select id="room" name="room" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" required>
+                            <option value="" disabled selected>Select a room</option>
+                            <% rooms.forEach(room => { %>
+                                <option value="<%= room._id %>">
+                                    <%= room.type %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <!-- Mobile -->
+                    <div>
+                        <label for="mobile" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Mobile</label>
+                        <input type="text" id="mobile" name="mobile" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 font-mono" placeholder="Phone Number" required>
+                    </div>
+
+                    <!-- Start Date -->
+                    <div>
+                        <label for="startDate" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Start Date</label>
+                        <input type="date" id="startDate" name="startDate" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" required>
+                    </div>
+
+                    <!-- End Date -->
+                    <div>
+                        <label for="endDate" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">End Date</label>
+                        <input type="date" id="endDate" name="endDate" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" required>
+                    </div>
+                </div>
+
+                <!-- Special Requests -->
+                <div>
+                    <label for="specialRequest" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Special Request</label>
+                    <input type="text" id="specialRequest" name="specialRequest" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" placeholder="e.g. quiet room, ground floor notes...">
+                </div>
+
+                <!-- Action Button -->
+                <button type="submit" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-3.5 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/35 transition-all duration-300 text-base cursor-pointer">
+                    Create Booking Reservation
+                </button>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -101,4 +157,5 @@
         });
     </script>
 </body>
+
 </html>

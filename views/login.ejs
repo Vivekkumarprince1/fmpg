@@ -1,141 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>FMPG Login</title>
-    <link rel="stylesheet" type="text/css" href="../css/loginstyle.css">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:600&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a81368914c.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="img/logo.png" type="image/icon type">
-    <style>
-        .show-password {
-            cursor: pointer;
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .fa-lock {
-            display: inline-block;
-        }
-
-        .sent-otp {
-            position: absolute;
-            right: 0px;
-            width: 120px;
-            height: 50px;
-            border-radius: 25px;
-            outline: none;
-            border: none;
-            background-image: linear-gradient(to right, #32be8f, #38d39f, #32be8f);
-            background-size: 200%;
-            font-size: 1.2rem;
-            color: #fff;
-            font-family: 'Poppins', sans-serif;
-            text-transform: uppercase;
-            /* margin: 1rem 0; */
-            cursor: pointer;
-            transition: .5s;
-        }
-
-        .sent-otp:hover {
-            background-position: right;
-        }
-
-
-        .input-div {
-            position: relative;
-        }
-
-        #otpLogin {
-            display: none;
-        }
-    </style>
+    <meta charset="utf-8">
+    <title>Login - FMPG</title>
+    <!-- Include central Tailwind Configuration -->
+    <%- include('tailwind-head') %>
 </head>
 
-<body>
-    <img class="wave" src="<%= assetUrl('images/wave.png') %>">
-    <div class="container">
-        <div class="img">
-            <img src="<%= assetUrl('images/bg.svg') %>">
+<body class="bg-bg-body text-text-primary transition-colors duration-300 min-h-screen flex items-center justify-center py-12 px-6 relative overflow-hidden">
+    
+    <!-- Background glowing dynamic blob ornaments -->
+    <div class="absolute top-[-10%] left-[-10%] h-96 w-96 rounded-full bg-primary/10 blur-3xl z-0"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] h-96 w-96 rounded-full bg-secondary/10 blur-3xl z-0"></div>
+
+    <div class="w-full max-w-md z-10 animate-fade-in-up">
+        <!-- Logo Header -->
+        <div class="flex flex-col items-center gap-3 mb-8">
+            <a href="/" class="flex items-center gap-3">
+                <img src="<%= assetUrl('img/logo.png') %>" alt="FMPG Logo" class="h-12 w-auto">
+                <span class="font-heading text-3xl font-extrabold text-text-primary tracking-tight">FM<span class="text-primary">PG</span></span>
+            </a>
+            <p class="text-sm font-semibold text-text-secondary text-center">Your hassle-free home is waiting for you</p>
         </div>
-        <div class="login-content">
-            <form action="/login" method="POST">
-                <img src="<%= assetUrl('images/avatar.svg') %>">
-                <h2 class="title">Welcome</h2>
 
-                <% if (error && error.length> 0) { %>
-                    <div class="alert alert-danger">
-                        <%= error %>
+        <!-- Glassmorphic Login card -->
+        <div class="glass-panel p-8 md:p-10 rounded-3xl bg-bg-card border-border-color shadow-2xl flex flex-col gap-6">
+            <h2 class="font-heading text-2xl font-black text-center text-text-primary">Welcome Back</h2>
+
+            <% if (error && error.length > 0) { %>
+                <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-sm font-bold flex items-center gap-2">
+                    <i class="fa fa-info-circle"></i> <%= error %>
+                </div>
+            <% } %>
+
+            <!-- Main Form -->
+            <form action="/login" method="POST" class="flex flex-col gap-5">
+                
+                <!-- Email or Mobile Input -->
+                <div class="flex flex-col gap-1.5">
+                    <label for="identifier" class="text-xs font-bold text-text-secondary uppercase tracking-wider">Email or Mobile</label>
+                    <div class="relative flex items-center">
+                        <i class="fas fa-user absolute left-4 text-text-secondary text-sm"></i>
+                        <input type="text" id="identifier" name="identifier" class="w-full bg-bg-body border border-border-color rounded-2xl py-3.5 pl-11 pr-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors" placeholder="vikas@fmpg.com or +91 99..." required>
                     </div>
-                    <% } %>
+                </div>
 
-                        <!-- Email or Mobile Input -->
-                        <div class="input-div one">
-                            <div class="i">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="div">
-                                <h5>Email or Mobile:</h5>
-                                <input type="text" class="input" name="identifier" id="identifier" required>
-                            </div>
+                <!-- Password Input -->
+                <div class="flex flex-col gap-1.5" id="passwordLogin">
+                    <label for="password" class="text-xs font-bold text-text-secondary uppercase tracking-wider">Password</label>
+                    <div class="relative flex items-center">
+                        <i class="fas fa-lock absolute left-4 text-text-secondary text-sm"></i>
+                        <input type="password" id="password" name="password" class="w-full bg-bg-body border border-border-color rounded-2xl py-3.5 pl-11 pr-12 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors" placeholder="••••••••" required>
+                        <i class="fas fa-eye absolute right-4 text-text-secondary text-sm hover:text-primary transition-colors cursor-pointer" id="togglePassword"></i>
+                    </div>
+                </div>
+
+                <!-- OTP Input Panel -->
+                <div class="flex flex-col gap-1.5 hidden" id="otpLogin">
+                    <label for="otp" class="text-xs font-bold text-text-secondary uppercase tracking-wider">Verification OTP</label>
+                    <div class="relative flex items-center gap-2">
+                        <div class="relative flex-1 flex items-center">
+                            <i class="fas fa-key absolute left-4 text-text-secondary text-sm"></i>
+                            <input type="text" id="otp" name="otp" class="w-full bg-bg-body border border-border-color rounded-2xl py-3.5 pl-11 pr-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors" placeholder="6-digit code">
                         </div>
+                        <button type="button" id="sendOtp" class="px-5 py-3.5 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl shadow-md shadow-primary/10 text-xs shrink-0 transition-colors cursor-pointer">
+                            Send OTP
+                        </button>
+                    </div>
+                </div>
 
-                        <!-- Password Input -->
-                        <div class="input-div pass" id="passwordLogin">
-                            <div class="i">
-                                <i class="fas fa-lock"></i>
-                            </div>
-                            <div class="div">
-                                <h5>Password</h5>
-                                <input type="password" class="input" id="password" name="password" required>
-                                <i class="fas fa-eye show-password" id="togglePassword"></i>
-                            </div>
-                        </div>
+                <!-- Auth Mode Selector Radio Switches -->
+                <div class="flex items-center justify-around py-2 border-y border-border-color text-xs font-bold text-text-secondary">
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors">
+                        <input type="radio" name="authMethod" value="password" checked class="accent-primary h-4 w-4"> 
+                        Password Login
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors">
+                        <input type="radio" name="authMethod" value="otp" class="accent-primary h-4 w-4"> 
+                        OTP Login
+                    </label>
+                </div>
 
-                        <div class="input-div pass" id="otpLogin">
-                            <div class="i">
-                                <i class="fas fa-lock"></i>
-                            </div>
-                            <div class="div">
-                                <h5>OTP</h5>
-                                <input type="" class="input" id="otp" name="otp" required>
-                                <!-- <i class="fas fa-eye show-password" id="togglePassword"></i> -->
-                                <button type="button" id="sendOtp" class="small-btn sent-otp">Send OTP</button>
+                <!-- Links and CTA -->
+                <div class="flex justify-between items-center text-xs font-bold">
+                    <a href="/forgot" class="text-primary hover:underline">Forgot Password?</a>
+                    <a href="/signup" class="text-secondary hover:underline">Create Account</a>
+                </div>
 
-                            </div>
-
-                        </div>
-
-                        <!-- OTP Input -->
-
-                        <!-- <div class="input-div pass" id="otpLogin">
-                        
-                                <h5>Enter OTP:</h5>
-                                <input type="text" class="input" id="otp" name="otp">
-                                <button type="btn" id="sendOtp" class="">Send OTP</button>
-                            
-                        </div> -->
-
-                        <!-- Auth Method Selector -->
-                        <div>
-                            <label><input type="radio" name="authMethod" value="password" checked> Login with
-                                Password</label>
-                            <label><input type="radio" name="authMethod" value="otp"> Login with OTP</label>
-                        </div>
-
-                        <a href="/forgot" class="forgot">Forgot Password?</a>
-                        <input type="submit" class="btn" value="Login">
-                        <h4>Don't have an account?</h4><a href="/signup">Sign Up here</a>
+                <button type="submit" class="w-full py-4 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl shadow-lg shadow-primary/20 hover:scale-[1.01] transition-all cursor-pointer mt-2 text-base">
+                    Login
+                </button>
             </form>
         </div>
     </div>
 
+    <!-- Toggle & API logic script -->
     <script>
-        // Toggle password visibility
         const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('password');
         const passwordLoginDiv = document.getElementById('passwordLogin');
@@ -143,89 +104,87 @@
         const authMethodRadios = document.querySelectorAll('[name="authMethod"]');
         const sendOtpButton = document.getElementById('sendOtp');
         const identifierInput = document.getElementById('identifier');
+        const otpInput = document.getElementById('otp');
 
-        togglePassword.addEventListener('click', () => {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            togglePassword.classList.toggle('fa-eye');
-            togglePassword.classList.toggle('fa-eye-slash');
-        });
+        // Show/Hide password toggle
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                togglePassword.classList.toggle('fa-eye');
+                togglePassword.classList.toggle('fa-eye-slash');
+            });
+        }
 
-        // Set default state based on radio button selection
-        // Handle authentication method toggle
+        // Switch styles between password and OTP logons
+        function updateAuthMethod(method) {
+            if (method === 'otp') {
+                otpLoginDiv.classList.remove('hidden');
+                passwordLoginDiv.classList.add('hidden');
+                passwordInput.removeAttribute('required');
+                passwordInput.disabled = true;
+                otpInput.disabled = false;
+                otpInput.setAttribute('required', 'true');
+            } else {
+                otpLoginDiv.classList.add('hidden');
+                passwordLoginDiv.classList.remove('hidden');
+                passwordInput.setAttribute('required', 'true');
+                passwordInput.disabled = false;
+                otpInput.removeAttribute('required');
+                otpInput.disabled = true;
+            }
+        }
+
         authMethodRadios.forEach(radio => {
-            radio.addEventListener('change', function () {
-                if (this.value === 'otp') {
-                    otpLoginDiv.style.display = 'block';
-                    passwordLoginDiv.style.display = 'none';
-                    passwordInput.removeAttribute('required');
-                    passwordInput.disabled = true;
-                    document.getElementById('otp').disabled = false;
-                    document.getElementById('otp').setAttribute('required', 'true');
-                } else {
-                    otpLoginDiv.style.display = 'none';
-                    passwordLoginDiv.style.display = 'block';
-                    passwordInput.setAttribute('required', 'true');
-                    passwordInput.disabled = false;
-                    document.getElementById('otp').removeAttribute('required');
-                    document.getElementById('otp').disabled = true;
-                }
+            radio.addEventListener('change', function() {
+                updateAuthMethod(this.value);
             });
         });
 
-        // Initialize with default method
-        document.addEventListener('DOMContentLoaded', function () {
-            const defaultRadio = document.querySelector('[name="authMethod"]:checked');
-            if (defaultRadio) {
-                if (defaultRadio.value === 'otp') {
-                    otpLoginDiv.style.display = 'block';
-                    passwordLoginDiv.style.display = 'none';
-                    passwordInput.removeAttribute('required');
-                    passwordInput.disabled = true;
-                    document.getElementById('otp').disabled = false;
-                    document.getElementById('otp').setAttribute('required', 'true');
-                } else {
-                    otpLoginDiv.style.display = 'none';
-                    passwordLoginDiv.style.display = 'block';
-                    passwordInput.setAttribute('required', 'true');
-                    passwordInput.disabled = false;
-                    document.getElementById('otp').removeAttribute('required');
-                    document.getElementById('otp').disabled = true;
-                }
+        // Initialize state
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkedRadio = document.querySelector('[name="authMethod"]:checked');
+            if (checkedRadio) {
+                updateAuthMethod(checkedRadio.value);
             }
         });
 
+        // OTP Fetch request
+        if (sendOtpButton) {
+            sendOtpButton.addEventListener('click', () => {
+                const identifier = identifierInput.value.trim();
+                if (!identifier) {
+                    alert('Please enter your email or mobile number first.');
+                    return;
+                }
 
+                sendOtpButton.disabled = true;
+                sendOtpButton.innerText = "Sending...";
 
-        // Send OTP functionality
-        sendOtpButton.addEventListener('click', () => {
-            const identifier = identifierInput.value;
-            if (!identifier) {
-                alert('Please enter your email or mobile number to receive the OTP.');
-                return;
-            }
-
-            // Send OTP request to the server
-            fetch('/send-otp', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ identifier }),
-            })
+                fetch('/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier }),
+                })
                 .then(response => response.json())
                 .then(data => {
                     if (data.message) {
                         alert(data.message);
+                        sendOtpButton.innerText = "Resend";
                     } else {
-                        alert('Error sending OTP. Please try again.');
+                        alert('Failed to send OTP code. Please try again.');
+                        sendOtpButton.innerText = "Send OTP";
                     }
+                    sendOtpButton.disabled = false;
                 })
-                .catch(error => console.error('Error:', error));
-        });
-
+                .catch(error => {
+                    console.error('OTP Send Error:', error);
+                    sendOtpButton.disabled = false;
+                    sendOtpButton.innerText = "Send OTP";
+                });
+            });
+        }
     </script>
-    <script src="../js/login.js"></script>
 </body>
 
 </html>

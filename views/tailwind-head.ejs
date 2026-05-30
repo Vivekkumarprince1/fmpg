@@ -1,0 +1,214 @@
+<!-- Tailwind CSS v4.0 CDN & Fonts Infrastructure -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- Google Web Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+<!-- Forced Light Theme Script -->
+<script>
+  document.documentElement.setAttribute('data-theme', 'light');
+  localStorage.setItem('theme', 'light');
+</script>
+
+<!-- Tailwind CSS v4.0 Browser Compiler -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+<!-- Custom Tailwind CSS Configuration & Variables -->
+<style type="text/tailwindcss">
+  @theme {
+    /* Color Mappings to CSS Variables */
+    --color-primary: var(--primary);
+    --color-primary-hover: var(--primary-hover);
+    --color-secondary: var(--secondary);
+    --color-bg-body: var(--bg-body);
+    --color-bg-body-alt: var(--bg-body-alt);
+    --color-bg-card: var(--bg-card);
+    --color-bg-nav: var(--bg-nav);
+    --color-text-primary: var(--text-primary);
+    --color-text-secondary: var(--text-secondary);
+    --color-border-color: var(--border-color);
+    --color-border-color-light: var(--border-color-light);
+    --color-shadow-primary: var(--shadow-primary);
+    
+    /* Box Shadows */
+    --shadow-gold: var(--shadow-gold);
+    --shadow-premium: var(--shadow-premium);
+    
+    /* Typography */
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+  }
+  
+  /* Curated Premium Luxury Real Estate Color System (Emerald Green Accent) */
+  :root {
+    --primary: #059669; /* Elegant Premium Real Estate Emerald Green */
+    --primary-hover: #047857; /* Dark Emerald */
+    --secondary: #f59e0b; /* Warm Accent Amber */
+    --bg-body: #ffffff; /* Crisp Pure White */
+    --bg-body-alt: #fafbfc; /* Sleek Minimalist Off-White */
+    --bg-card: rgba(255, 255, 255, 0.96); /* Layered Glass white */
+    --bg-nav: rgba(255, 255, 255, 0.88); /* Nav background */
+    --text-primary: #0f172a; /* Sophisticated Slate Charcoal */
+    --text-secondary: #5e6b7e; /* Architectural Soft Slate */
+    --border-color: rgba(5, 150, 105, 0.1); /* Minimal Emerald Border */
+    --border-color-light: rgba(15, 23, 42, 0.05); /* Soft Gray Border */
+    --shadow-primary: rgba(5, 150, 105, 0.02);
+    
+    /* Box Shadows */
+    --shadow-premium: 0 10px 30px -10px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.01);
+    --shadow-emerald: 0 15px 40px -12px rgba(5, 150, 105, 0.12);
+    --shadow-gold: 0 15px 40px -12px rgba(5, 150, 105, 0.12); /* Map to emerald green to fulfill user request */
+    --shadow-hover: 0 25px 50px -15px rgba(15, 23, 42, 0.06), 0 2px 8px -1px rgba(5, 150, 105, 0.03);
+  }
+  
+  /* Global Base Layer Overrides */
+  body {
+    @apply font-body bg-bg-body text-text-primary transition-all duration-300 antialiased selection:bg-primary/20 selection:text-primary-hover;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading text-text-primary font-bold transition-colors duration-300 tracking-tight;
+  }
+
+  /* Glassmorphism Luxury Panels */
+  .glass-panel {
+    @apply bg-bg-card border border-border-color-light shadow-sm transition-all duration-500 rounded-3xl backdrop-blur-md;
+    box-shadow: var(--shadow-premium);
+  }
+
+  .glass-panel:hover {
+    @apply border-primary/20;
+    box-shadow: var(--shadow-hover);
+  }
+
+  /* Custom Transitions */
+  .transition-premium {
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* 3D Depth Utilities */
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+  
+  /* Background Grid Pattern */
+  .bg-grid-pattern {
+    background-size: 40px 40px;
+    background-image: linear-gradient(to right, rgba(5, 150, 105, 0.02) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(5, 150, 105, 0.02) 1px, transparent 1px);
+  }
+
+  /* Soft fade-in animation for initial load */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<!-- Global Interactive Scripts (Subtle 3D Tilt & Static Counter Setup) -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Initialize Subtly Tuned 3D Card Tilt Mechanics
+    const initTilt = () => {
+      const cards = document.querySelectorAll('.card-3d');
+      cards.forEach(card => {
+        card.style.transformStyle = 'preserve-3d';
+        card.style.perspective = '1000px';
+
+        // Add visual glare layer if not present
+        if (!card.querySelector('.glare-3d')) {
+          const glare = document.createElement('div');
+          glare.className = 'glare-3d absolute inset-0 pointer-events-none rounded-[inherit] transition-opacity duration-300 opacity-0 z-10';
+          glare.style.background = 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08) 0%, transparent 65%)';
+          card.appendChild(glare);
+        }
+
+        const glareLayer = card.querySelector('.glare-3d');
+
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          
+          // Max rotation degrees (Highly minimized and subtle to match "minimal animation" request)
+          const maxRotate = 3; 
+          const rotateX = ((centerY - y) / centerY) * maxRotate; 
+          const rotateY = ((x - centerX) / centerX) * maxRotate;
+          
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
+          
+          if (glareLayer) {
+            glareLayer.style.opacity = '1';
+            const percentX = (x / rect.width) * 100;
+            const percentY = (y / rect.height) * 100;
+            glareLayer.style.background = `radial-gradient(circle at ${percentX}% ${percentY}%, rgba(255, 255, 255, 0.12) 0%, transparent 60%)`;
+          }
+
+          // Subtle Pop-Out
+          const pops = card.querySelectorAll('.pop-3d');
+          pops.forEach(pop => {
+            pop.style.transform = 'translateZ(15px)';
+            pop.style.transition = 'transform 0.15s ease';
+          });
+        });
+
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+          card.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+          
+          if (glareLayer) {
+            glareLayer.style.opacity = '0';
+          }
+
+          const pops = card.querySelectorAll('.pop-3d');
+          pops.forEach(pop => {
+            pop.style.transform = 'translateZ(0px)';
+            pop.style.transition = 'transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+          });
+        });
+
+        card.addEventListener('mouseenter', () => {
+          card.style.transition = 'transform 0.15s ease, box-shadow 0.3s ease';
+        });
+      });
+    };
+
+    // 2. Minimal Counter initialization without scroll triggers
+    const initCounters = () => {
+      const counters = document.querySelectorAll('.gsap-counter');
+      counters.forEach(counter => {
+        const target = parseInt(counter.dataset.target || '0', 10);
+        counter.textContent = target; // Set statically to avoid excessive animation
+      });
+    };
+
+    // Run setup
+    initTilt();
+    initCounters();
+    
+    // Support dynamic EJS additions or updates
+    window.refresh3DTilt = initTilt;
+  });
+</script>

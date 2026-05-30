@@ -1,29 +1,98 @@
-<!-- editBooking.ejs -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
+
 <head>
   <meta charset="UTF-8">
-  <title>Edit Booking</title>
-</head>
-<body>
-  <h1>Edit Booking</h1>
+  <title>Edit Booking - FMPG</title>
+  <link rel="icon" href="/img/logo.png" type="image/icon type">
   
-  <form action="/api/bookings/edit/<%= booking._id %>?_method=PUT" method="POST">
+  <!-- Central Tailwind CSS & Theme Config -->
+  <%- include('tailwind-head') %>
+</head>
 
-    <label for="startDate">Start Date:</label>
-    <input type="date" id="startDate" name="startDate" value="<%= booking.startDate.toISOString().split('T')[0] %>">
-    
-    <label for="endDate">End Date:</label>
-    <input type="date" id="endDate" name="endDate" value="<%= booking.endDate.toISOString().split('T')[0] %>">
+<body class="bg-bg-body text-text-primary min-h-screen flex flex-col transition-colors duration-300">
+  <!-- Header -->
+  <%- include('header') %>
 
-    <label for="status">Status:</label>
-    
-      <%= booking.status %>
+  <!-- Main Container -->
+  <main class="flex-grow flex items-center justify-center py-12 px-4">
+    <div class="glass-panel max-w-lg w-full rounded-2xl p-8 md:p-10 animate-fade-in-up relative overflow-hidden">
+      <!-- Decorative Glow -->
+      <div class="absolute -top-10 -left-10 w-24 h-24 bg-primary/10 rounded-full blur-xl"></div>
+      
+      <div class="relative z-10">
+        <!-- Title -->
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+            <i class="fa-solid fa-pen-to-square text-lg"></i>
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold font-heading">Edit Booking</h1>
+            <p class="text-xs text-text-secondary mt-0.5">Booking ID: <span class="font-mono text-primary font-semibold"><%= booking._id %></span></p>
+          </div>
+        </div>
 
-    <label for="specialRequest">Special Request:</label>
-    <textarea id="specialRequest" name="specialRequest"><%= booking.specialRequest %></textarea>
+        <form action="/api/bookings/edit/<%= booking._id %>?_method=PUT" method="POST" class="space-y-6">
+          <!-- Dates Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="startDate" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Start Date</label>
+              <div class="relative">
+                <i class="fa-solid fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-sm"></i>
+                <input type="date" id="startDate" name="startDate" 
+                  value="<%= booking.startDate.toISOString().split('T')[0] %>" 
+                  class="w-full bg-bg-body border border-border-color rounded-xl pl-10 pr-4 py-2.5 text-text-primary font-body focus:outline-none focus:border-primary transition-all duration-300"
+                  required />
+              </div>
+            </div>
 
-    <button type="submit">Save Changes</button>
-  </form>
+            <div>
+              <label for="endDate" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">End Date</label>
+              <div class="relative">
+                <i class="fa-solid fa-calendar absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-sm"></i>
+                <input type="date" id="endDate" name="endDate" 
+                  value="<%= booking.endDate.toISOString().split('T')[0] %>" 
+                  class="w-full bg-bg-body border border-border-color rounded-xl pl-10 pr-4 py-2.5 text-text-primary font-body focus:outline-none focus:border-primary transition-all duration-300"
+                  required />
+              </div>
+            </div>
+          </div>
+
+          <!-- Status Indicator -->
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Booking Status</label>
+            <div class="flex items-center gap-2 bg-primary/5 border border-primary/10 rounded-xl px-4 py-3 text-sm text-text-primary font-medium">
+              <span class="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
+              <span class="capitalize"><%= booking.status %></span>
+            </div>
+          </div>
+
+          <!-- Special Request Textarea -->
+          <div>
+            <label for="specialRequest" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Special Request</label>
+            <div class="relative">
+              <i class="fa-solid fa-comment-dots absolute left-3 top-3.5 text-text-secondary text-sm"></i>
+              <textarea id="specialRequest" name="specialRequest" placeholder="Any requests (e.g. quiet room, low floor)..."
+                class="w-full bg-bg-body border border-border-color rounded-xl pl-10 pr-4 py-3 min-h-[100px] text-text-primary font-body focus:outline-none focus:border-primary transition-all duration-300 resize-none"><%= booking.specialRequest %></textarea>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex gap-3 pt-2">
+            <a href="/profile" class="flex-1 text-center bg-bg-body hover:bg-border-color border border-border-color text-text-primary font-semibold py-3 rounded-xl transition-all duration-300">
+              Cancel
+            </a>
+            <button type="submit" class="flex-1 bg-primary hover:bg-primary-hover text-white font-semibold py-3 rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300">
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <%- include('footer') %>
 </body>
+
 </html>

@@ -1,51 +1,353 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Bookings</title>
-    <link rel="icon" href="img/logo.png" type="image/icon type">
-    <link rel="stylesheet" href="/css/management.css">
-</head>
-<body>
-    <h1>Manage Bookings</h1>
-    <a href="/admin/bookings/add">Add New Booking</a><br>
-    <a href="/profile"> back to profile</a>
-    <ol>
-        <table border="1" style="width: 100%; text-align: center;" class="customers">
-            <thead>
-                <tr>
-                    <tr>
-                        <th>User</th>
-                        <th>Booking ID</th>
-                        <th>Username</th>
-                        <th>mobile</th>
-                        <th>Property</th>
-                        <th>Room Type</th>
-                        <th>Start-Date</th>
-                        <th>End-Date</th>
-                        <th>Request</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </tr>
-            </thead>
-            <tbody>   
-                <tr>
-                    <td><li><%= booking.user ? booking.user.username : 'No user' %></li></td>
-                    <td><%= booking._id %></td>
-                    <td><%= booking.username || 'N/A' %></td>
-                    <td><%= booking.mobile || 'N/A' %></td>
-                    <td><%= booking.propertyID|| 'N/A' %></td>
-                    <td><%= booking.room ? booking.room.type : 'No room type' %></td>
-                    <td><%= booking.startDate ? booking.startDate.toDateString() : 'N/A' %></td>
-                    <td><%= booking.endDate ? booking.endDate.toDateString() : 'N/A' %></td>
-                    <td><%= booking.specialRequest || 'No request' %></td>
-                    <td><%= booking.status || 'No status' %></td>
-                    
-                </tr>
-            </tbody>
-        </table>
-    </ol>
+<%- include('partials/header') %>
+
+<div class="p-6 space-y-8 animate-fade-in-up">
+  <!-- Section Title & CTAs -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-border-color pb-6">
+    <div>
+      <div class="flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-wider mb-1">
+        <i class="fa-solid fa-circle-info"></i> Admin Control Suite
+      </div>
+      <h1 class="text-3xl font-extrabold font-heading text-primary">Booking Receipt Details</h1>
+      <p class="text-text-secondary text-sm mt-1">Review specific booking parameters, user metadata, and accommodation timelines.</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <a href="/admin/bookings" class="inline-flex items-center gap-2 bg-bg-card hover:bg-border-color border border-border-color text-text-primary px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 shadow-sm">
+        <i class="fa-solid fa-arrow-left text-primary"></i>
+        Back to Bookings
+      </a>
+      <a href="/admin/bookings/edit/<%= booking._id %>" class="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-primary/20 hover:shadow-primary/35 transition-all duration-300 hover:-translate-y-0.5">
+        <i class="fa-solid fa-pen-to-square"></i>
+        Edit Booking Parameters
+      </a>
+    </div>
+  </div>
+
+  <%
+    // Dynamic Rental Calculation
+    const oneDay = 24 * 60 * 60 * 1000;
+    const start = booking.startDate ? new Date(booking.startDate) : new Date();
+    const end = booking.endDate ? new Date(booking.endDate) : new Date();
+    const diffDays = Math.max(1, Math.round(Math.abs((end - start) / oneDay))) || 1;
+    const rentPerMonth = booking.room ? booking.room.price : 0;
+    const securityDeposit = booking.propertyID ? (booking.propertyID.securityDeposit || 0) : 0;
+    const totalRent = Math.round((rentPerMonth / 30) * diffDays);
+    const totalAmount = totalRent + securityDeposit;
+  %>
+
+  <!-- Dashboard Overview Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    
+    <!-- LEFT & CENTER COLUMNS (Span 2): Invoice and Detailed Information -->
+    <div class="lg:col-span-2 space-y-8">
+      
+      <!-- Premium Booking Stamp & Core Details Card -->
+      <div class="glass-panel rounded-3xl border border-border-color shadow-xl overflow-hidden relative">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-8 -left-8 w-40 h-40 bg-secondary/5 rounded-full blur-3xl"></div>
+        
+        <!-- Header Banner -->
+        <div class="bg-primary/5 border-b border-border-color px-6 py-4 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+              <i class="fa-solid fa-receipt text-lg"></i>
+            </div>
+            <div>
+              <span class="block text-xs font-bold text-text-secondary uppercase">Receipt Reference</span>
+              <span class="font-mono text-sm font-extrabold text-text-primary uppercase tracking-wide"><%= booking._id %></span>
+            </div>
+          </div>
+          
+          <!-- Badge status -->
+          <% 
+            let statusClass = "bg-amber-500/10 text-amber-500 border border-amber-500/20";
+            if (booking.status && (booking.status.toLowerCase().includes('confirm') || booking.status.toLowerCase().includes('accept'))) {
+              statusClass = "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20";
+            } else if (booking.status && (booking.status.toLowerCase().includes('decline') || booking.status.toLowerCase().includes('cancel'))) {
+              statusClass = "bg-red-500/10 text-red-500 border border-red-500/20";
+            }
+          %>
+          <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border <%= statusClass %> shadow-sm">
+            <%= booking.status || 'Pending' %>
+          </span>
+        </div>
+
+        <div class="p-6 md:p-8 space-y-8">
+          
+          <!-- Basic Summary Specs -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="bg-bg-body/50 border border-border-color/60 rounded-2xl p-4 transition-all duration-300 hover:border-primary/20">
+              <span class="block text-xs font-bold text-text-secondary uppercase mb-1">Check-In Date</span>
+              <span class="text-sm font-extrabold text-text-primary flex items-center gap-2">
+                <i class="fa-regular fa-calendar-check text-primary"></i>
+                <%= booking.startDate ? new Date(booking.startDate).toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric'}) : 'N/A' %>
+              </span>
+            </div>
+            <div class="bg-bg-body/50 border border-border-color/60 rounded-2xl p-4 transition-all duration-300 hover:border-primary/20">
+              <span class="block text-xs font-bold text-text-secondary uppercase mb-1">Check-Out Date</span>
+              <span class="text-sm font-extrabold text-text-primary flex items-center gap-2">
+                <i class="fa-regular fa-calendar-xmark text-red-500"></i>
+                <%= booking.endDate ? new Date(booking.endDate).toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric'}) : 'N/A' %>
+              </span>
+            </div>
+            <div class="bg-bg-body/50 border border-border-color/60 rounded-2xl p-4 transition-all duration-300 hover:border-primary/20">
+              <span class="block text-xs font-bold text-text-secondary uppercase mb-1">Total Duration</span>
+              <span class="text-sm font-extrabold text-text-primary flex items-center gap-2">
+                <i class="fa-solid fa-clock text-amber-500"></i>
+                <%= diffDays %> <%= diffDays === 1 ? 'Day' : 'Days' %>
+              </span>
+            </div>
+            <div class="bg-bg-body/50 border border-border-color/60 rounded-2xl p-4 transition-all duration-300 hover:border-primary/20">
+              <span class="block text-xs font-bold text-text-secondary uppercase mb-1">Rent Frequency</span>
+              <span class="text-sm font-extrabold text-text-primary flex items-center gap-2">
+                <i class="fa-solid fa-rotate text-emerald-500"></i>
+                Monthly Cycle
+              </span>
+            </div>
+          </div>
+
+          <!-- Dynamic Cost Estimation Invoice Breakdown -->
+          <div class="space-y-4">
+            <h3 class="font-heading font-extrabold text-base text-text-primary flex items-center gap-2 pb-2 border-b border-border-color">
+              <i class="fa-solid fa-file-invoice-dollar text-primary"></i>
+              Financial Breakdown & Costing Estimate
+            </h3>
+            
+            <div class="overflow-hidden border border-border-color rounded-2xl">
+              <table class="w-full text-sm border-collapse text-left bg-bg-card">
+                <thead>
+                  <tr class="bg-bg-body/80 border-b border-border-color text-xs font-bold uppercase tracking-wider text-text-secondary">
+                    <th class="p-4">Item & Description</th>
+                    <th class="p-4 text-center">Unit Parameter</th>
+                    <th class="p-4 text-right">Amount</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-border-color text-text-primary">
+                  <tr class="hover:bg-primary/5 transition-colors duration-200">
+                    <td class="p-4">
+                      <span class="font-semibold block">Monthly Accommodation Rent</span>
+                      <span class="text-xs text-text-secondary block">Dynamic rate per shared/private PG room standard layout.</span>
+                    </td>
+                    <td class="p-4 text-center font-mono">₹<%= rentPerMonth %>/mo</td>
+                    <td class="p-4 text-right font-bold text-text-primary">₹<%= rentPerMonth %></td>
+                  </tr>
+                  <tr class="hover:bg-primary/5 transition-colors duration-200">
+                    <td class="p-4">
+                      <span class="font-semibold block">Pro-Rata Room Accommodation Rent</span>
+                      <span class="text-xs text-text-secondary block">Calculated for exact timeline booking duration (<%= diffDays %> Days).</span>
+                    </td>
+                    <td class="p-4 text-center font-mono"><%= diffDays %> Days</td>
+                    <td class="p-4 text-right font-bold text-text-primary">₹<%= totalRent %></td>
+                  </tr>
+                  <tr class="hover:bg-primary/5 transition-colors duration-200">
+                    <td class="p-4">
+                      <span class="font-semibold block">Refundable Security Deposit</span>
+                      <span class="text-xs text-text-secondary block">Paid directly to the accommodation owner; subject to terms.</span>
+                    </td>
+                    <td class="p-4 text-center font-mono">One-Time</td>
+                    <td class="p-4 text-right font-bold text-text-primary">₹<%= securityDeposit %></td>
+                  </tr>
+                  <!-- Total row -->
+                  <tr class="bg-primary/5 font-bold border-t border-border-color">
+                    <td class="p-4 text-primary font-extrabold flex items-center gap-1.5">
+                      <i class="fa-solid fa-vault"></i> Total Estimated Settlement
+                    </td>
+                    <td class="p-4"></td>
+                    <td class="p-4 text-right text-base text-primary font-black font-mono">₹<%= totalAmount %></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <p class="text-[11px] text-text-secondary italic flex items-start gap-1.5 mt-2">
+              <i class="fa-solid fa-circle-exclamation mt-0.5 text-amber-500"></i>
+              Please note: The above costing is an administrative estimate. The physical hand-over agreement and specific PG utility rates are configured directly between user and owner profiles.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Special Requests Quote Banner -->
+      <% if (booking.specialRequest) { %>
+        <div class="glass-panel rounded-3xl p-6 border border-border-color shadow-lg bg-gradient-to-r from-primary/5 to-transparent relative overflow-hidden">
+          <div class="absolute right-4 top-2 text-7xl font-serif text-primary/10 select-none">“</div>
+          <h3 class="font-heading font-extrabold text-sm uppercase tracking-wider text-primary flex items-center gap-2 mb-2">
+            <i class="fa-solid fa-bell-concierge"></i>
+            User Special Requests & Accommodations Notes
+          </h3>
+          <p class="text-sm text-text-primary bg-bg-body/75 border border-border-color rounded-2xl p-5 italic shadow-inner">
+            "<%= booking.specialRequest %>"
+          </p>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- RIGHT COLUMN (Span 1): Property Detail, User Card & Progress Tracker -->
+    <div class="space-y-8">
+      
+      <!-- Step Timeline Status Tracker -->
+      <div class="glass-panel rounded-3xl p-6 border border-border-color shadow-lg space-y-6">
+        <h3 class="font-heading font-extrabold text-base text-text-primary flex items-center gap-2 pb-2 border-b border-border-color">
+          <i class="fa-solid fa-route text-primary"></i>
+          Timeline Tracker
+        </h3>
+        
+        <div class="relative pl-6 border-l-2 border-border-color space-y-6 text-sm ml-2">
+          <!-- Step 1: Placed -->
+          <div class="relative">
+            <div class="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center text-white ring-4 ring-bg-body">
+              <i class="fa-solid fa-check text-[8px]"></i>
+            </div>
+            <h4 class="font-bold text-text-primary">Booking Initiated</h4>
+            <p class="text-xs text-text-secondary mt-0.5">Booking request cataloged into database.</p>
+          </div>
+
+          <!-- Step 2: Confirmation -->
+          <% 
+            let step2Color = "bg-amber-500";
+            let step2Text = "Under Owner Evaluation";
+            let step2Icon = "fa-solid fa-spinner text-[8px] animate-spin";
+            if (booking.status && (booking.status.toLowerCase().includes('confirm') || booking.status.toLowerCase().includes('accept'))) {
+              step2Color = "bg-emerald-500";
+              step2Text = "Confirmed & Approved";
+              step2Icon = "fa-solid fa-check text-[8px]";
+            } else if (booking.status && (booking.status.toLowerCase().includes('decline') || booking.status.toLowerCase().includes('cancel'))) {
+              step2Color = "bg-red-500";
+              step2Text = "Cancelled/Declined";
+              step2Icon = "fa-solid fa-xmark text-[8px]";
+            }
+          %>
+          <div class="relative">
+            <div class="absolute -left-[31px] top-0 w-4 h-4 rounded-full <%= step2Color %> flex items-center justify-center text-white ring-4 ring-bg-body">
+              <i class="<%= step2Icon %>"></i>
+            </div>
+            <h4 class="font-bold text-text-primary"><%= step2Text %></h4>
+            <p class="text-xs text-text-secondary mt-0.5">Approval process checklist by property owner.</p>
+          </div>
+
+          <!-- Step 3: Check-In -->
+          <%
+            let checkInActive = booking.startDate && new Date(booking.startDate) <= new Date();
+            let step3Color = checkInActive ? "bg-emerald-500" : "bg-bg-body border border-border-color";
+            let step3Text = checkInActive ? "Checked In" : "Upcoming Check-In";
+            let step3Icon = checkInActive ? "fa-solid fa-check text-[8px] text-white" : "w-1 h-1 rounded-full bg-text-secondary";
+          %>
+          <div class="relative font-sans">
+            <div class="absolute -left-[31px] top-0 w-4 h-4 rounded-full <%= step3Color %> flex items-center justify-center ring-4 ring-bg-body">
+              <% if (checkInActive) { %>
+                <i class="fa-solid fa-check text-[8px] text-white"></i>
+              <% } else { %>
+                <span class="w-1.5 h-1.5 rounded-full bg-border-color"></span>
+              <% } %>
+            </div>
+            <h4 class="font-bold text-text-primary"><%= step3Text %></h4>
+            <p class="text-xs text-text-secondary mt-0.5">Timeline check-in key hand-over.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property Details Showcase Card -->
+      <div class="glass-panel rounded-3xl border border-border-color shadow-lg overflow-hidden flex flex-col">
+        <% if (booking.propertyID && booking.propertyID.images && booking.propertyID.images.length > 0) { %>
+          <div class="relative h-44 overflow-hidden">
+            <img src="<%= booking.propertyID.images[0] %>" alt="<%= booking.propertyID.propertyName %>" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+            <span class="absolute top-4 right-4 bg-primary text-white text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wider shadow">
+              <%= booking.propertyID.type || 'PG' %>
+            </span>
+          </div>
+        <% } else { %>
+          <div class="bg-gradient-to-br from-primary/10 to-secondary/15 h-36 flex items-center justify-center relative">
+            <i class="fa-solid fa-building-user text-primary/30 text-5xl"></i>
+            <span class="absolute top-4 right-4 bg-primary text-white text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wider shadow">
+              <%= booking.propertyID ? booking.propertyID.type : 'PG' %>
+            </span>
+          </div>
+        <% } %>
+
+        <div class="p-6 space-y-4">
+          <div>
+            <h3 class="font-heading font-extrabold text-base text-text-primary">
+              <%= booking.propertyID ? booking.propertyID.propertyName : 'Unknown Property' %>
+            </h3>
+            <p class="text-xs text-text-secondary flex items-start gap-1 mt-1">
+              <i class="fa-solid fa-location-dot text-primary mt-0.5"></i>
+              <%= booking.propertyID ? booking.propertyID.address : 'Address not specified' %>
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 text-xs bg-bg-body/60 border border-border-color/60 rounded-2xl p-4">
+            <div>
+              <span class="block text-text-secondary font-bold uppercase mb-0.5">Gender Rules</span>
+              <span class="font-semibold text-text-primary capitalize flex items-center gap-1">
+                <% if (booking.propertyID && booking.propertyID.gender === 'male') { %>
+                  <i class="fa-solid fa-mars text-blue-500"></i> Male Only
+                <% } else if (booking.propertyID && booking.propertyID.gender === 'female') { %>
+                  <i class="fa-solid fa-venus text-pink-500"></i> Female Only
+                <% } else { %>
+                  <i class="fa-solid fa-mars-venus text-purple-500"></i> Unisex / Co-living
+                <% } %>
+              </span>
+            </div>
+            <div>
+              <span class="block text-text-secondary font-bold uppercase mb-0.5">Room Category</span>
+              <span class="font-semibold text-text-primary capitalize flex items-center gap-1">
+                <i class="fa-solid fa-bed text-primary"></i>
+                <%= booking.room ? booking.room.type : 'N/A' %> Sharing
+              </span>
+            </div>
+          </div>
+          
+          <a href="/admin/properties" class="inline-flex items-center justify-center gap-2 bg-bg-body hover:bg-border-color border border-border-color text-text-primary w-full py-2.5 rounded-xl font-bold text-xs transition-all duration-300">
+            <i class="fa-solid fa-up-right-from-square text-primary text-[10px]"></i>
+            View Property Profile
+          </a>
+        </div>
+      </div>
+
+      <!-- Linked User Account Card -->
+      <div class="glass-panel rounded-3xl p-6 border border-border-color shadow-lg space-y-5">
+        <h3 class="font-heading font-extrabold text-base text-text-primary flex items-center gap-2 pb-2 border-b border-border-color">
+          <i class="fa-solid fa-user-gear text-primary"></i>
+          Linked User Profile
+        </h3>
+        
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/15 border border-border-color text-primary flex items-center justify-center font-black font-heading text-lg">
+            <%= booking.user ? booking.user.username.charAt(0).toUpperCase() : (booking.username ? booking.username.charAt(0).toUpperCase() : 'G') %>
+          </div>
+          <div>
+            <h4 class="font-extrabold text-sm text-text-primary"><%= booking.username || 'Guest' %></h4>
+            <span class="text-[10px] text-text-secondary block">Assigned Tenant Account</span>
+          </div>
+        </div>
+
+        <div class="space-y-2.5 text-xs text-text-primary font-sans">
+          <p class="flex justify-between py-1.5 border-b border-border-color/40">
+            <span class="text-text-secondary font-semibold">User Email:</span> 
+            <span class="font-bold text-right"><%= booking.user ? booking.user.email : 'N/A' %></span>
+          </p>
+          <p class="flex justify-between py-1.5 border-b border-border-color/40">
+            <span class="text-text-secondary font-semibold">Phone:</span> 
+            <span class="font-mono font-bold text-right"><%= booking.mobile || 'N/A' %></span>
+          </p>
+          <p class="flex justify-between py-1.5">
+            <span class="text-text-secondary font-semibold">Account Role:</span> 
+            <span class="px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] uppercase font-extrabold tracking-wider border border-primary/20"><%= booking.user ? booking.user.role : 'Guest' %></span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Close Sidebar & Main wrappers opened in partials/header -->
+      </div>
+   </div>
+
+<!-- vendor scripts -->
+<script src="<%= assetUrl('assets/vendors/js/vendor.bundle.base.js') %>"></script>
+<script src="<%= assetUrl('assets/js/material.js') %>"></script>
+<script src="<%= assetUrl('assets/js/misc.js') %>"></script>
 </body>
 </html>
+

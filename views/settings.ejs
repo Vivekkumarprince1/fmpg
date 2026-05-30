@@ -4,79 +4,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile Settings</title>
-    <link rel="stylesheet" href="/css/settings.css">
-
-    <style>
-        .container {
-  margin: 0 auto;
-  padding: 20px;
-  max-width: 600px;
-  background-color: #f4f4f4;
-  border-radius: 8px;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  font-weight: bold;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.btn-primary {
-  padding: 10px 20px;
-  background-color: #28a745;
-  border: none;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-
-    </style>
+    <title>Edit Profile Settings - FMPG</title>
+    <!-- Include central Tailwind Configuration -->
+    <%- include('tailwind-head') %>
 </head>
 
-<body>
+<body class="bg-bg-body text-text-primary transition-colors duration-300">
 
-    <div class="container">
-        <h2>Edit Profile Settings</h2>
-        <!-- Flash Messages for Success/Error -->
-        <% if (successMessage) { %>
-            <div class="alert alert-success"><%= successMessage %></div>
-        <% } %>
-        <% if (errorMessage) { %>
-            <div class="alert alert-danger"><%= errorMessage %></div>
-        <% } %>
+    <!-- Header Start -->
+    <%- include('header') %>
+    <!-- Header End -->
 
-        <!-- Profile Edit Form -->
-        <form action="/settings/update" method="POST">
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" value="<%= user.username %>" required>
-            </div>
-            <div class="form-group">
-                <label for="mobile">Mobile Number:</label>
-                <input type="text" id="mobile" name="mobile" value="<%= user.mobile %>" required>
-            </div>
+    <main class="max-w-xl mx-auto px-6 py-12">
+        <div class="glass-panel p-8 rounded-3xl bg-bg-card border-border-color shadow-2xl flex flex-col gap-6 animate-fade-in-up">
+            <h2 class="font-heading text-2xl font-black text-center text-text-primary"><i class="fa fa-sliders text-primary mr-1"></i> Edit Profile Settings</h2>
 
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-        </form>
-    </div>
+            <!-- Flash Messages for Success/Error -->
+            <% if (typeof successMessage !== 'undefined' && successMessage) { %>
+                <div class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-sm font-bold flex items-center gap-2">
+                    <i class="fa fa-circle-check"></i> <%= successMessage %>
+                </div>
+            <% } %>
+            <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+                <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-sm font-bold flex items-center gap-2">
+                    <i class="fa fa-info-circle"></i> <%= errorMessage %>
+                </div>
+            <% } %>
 
+            <!-- Profile Edit Form -->
+            <form action="/settings/update" method="POST" class="flex flex-col gap-5">
+                <div class="flex flex-col gap-1.5">
+                    <label for="username" class="text-xs font-bold text-text-secondary uppercase tracking-wider">Username</label>
+                    <div class="relative flex items-center">
+                        <i class="fas fa-user absolute left-4 text-text-secondary text-sm"></i>
+                        <input type="text" id="username" name="username" value="<%= user.username %>" class="w-full bg-bg-body border border-border-color rounded-2xl py-3.5 pl-11 pr-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors" placeholder="Vikas" required>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                    <label for="mobile" class="text-xs font-bold text-text-secondary uppercase tracking-wider">Mobile Number</label>
+                    <div class="relative flex items-center">
+                        <i class="fas fa-phone absolute left-4 text-text-secondary text-sm"></i>
+                        <input type="text" id="mobile" name="mobile" value="<%= user.mobile %>" class="w-full bg-bg-body border border-border-color rounded-2xl py-3.5 pl-11 pr-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors" placeholder="+91 99999 99999" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-4 bg-primary hover:bg-primary-hover text-white font-bold rounded-2xl shadow-lg shadow-primary/20 hover:scale-[1.01] transition-all cursor-pointer mt-2 text-base">
+                    Save Changes
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer Start -->
+    <%- include('footer') %>
+    <!-- Footer End -->
+
+    <!-- Form Validation Script -->
     <script>
         document.querySelector('form').addEventListener('submit', function(event) {
           const username = document.getElementById('username').value.trim();
@@ -86,11 +70,8 @@ form {
             alert('All fields are required.');
             event.preventDefault();
           }
-          // Add more validation as needed
         });
-      </script>
-      
-
+    </script>
 </body>
 
 </html>

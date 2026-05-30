@@ -1,55 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Booking</title>
-    <link rel="stylesheet" href="/css/management.css">
+    <title>Edit Booking - FMPG Admin</title>
+    <link rel="icon" href="/img/logo.png" type="image/icon type">
+    
+    <!-- Central Tailwind CSS & Theme Config -->
+    <%- include('../tailwind-head') %>
 </head>
-<body>
-    <div class="form">
-    <h1>Edit Booking</h1>
-    <form class="add" action="/admin/bookings/edit/<%= booking._id %>" method="POST">
-        <label for="user">User:</label>
-        <select class="select" id="user" name="user" required>
-            <% users.forEach(user => { %>
-                <option value="<%= user._id %>" <%= booking.user._id.equals(user._id) ? 'selected' : '' %>><%= user.username %></option>
-            <% }) %>
-        </select><br>
 
-        <label for="property">Property:</label>
-        <select class="select" id="property" name="property" required>
-            <% properties.forEach(property => { %>
-                <option value="<%= property._id %>" 
-                    <%= (booking.room && booking.room.property && booking.room.property._id && booking.room.property._id.equals(property._id)) ? 'selected' : '' %>>
-                    <%= property.propertyName %>
-                </option>
-            <% }) %>
-        </select><br>
+<body class="bg-bg-body text-text-primary min-h-screen flex items-center justify-center py-12 px-4 transition-colors duration-300">
+    <div class="glass-panel max-w-2xl w-full rounded-2xl p-8 md:p-10 animate-fade-in-up relative overflow-hidden shadow-xl">
+        <!-- Decorative Glow -->
+        <div class="absolute -top-12 -left-12 w-32 h-32 bg-primary/10 rounded-full blur-2xl"></div>
         
+        <div class="relative z-10">
+            <!-- Header bar -->
+            <div class="flex items-center justify-between border-b border-border-color pb-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                        <i class="fa-solid fa-pen-to-square text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold font-heading">Edit Booking</h1>
+                        <p class="text-xs text-text-secondary mt-0.5">Booking ID: <span class="font-mono text-primary font-bold"><%= booking._id %></span></p>
+                    </div>
+                </div>
+                <a href="/admin/bookings" class="text-xs text-text-secondary hover:text-primary font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> Bookings List
+                </a>
+            </div>
 
-        <label for="room">Room:</label>
-        <select class="select" id="room" name="room" required>
-            <% rooms.forEach(room => { %>
-                <option value="<%= room._id %>" <%= booking.room._id.equals(room._id) ? 'selected' : '' %>><%= room.type %></option>
-            <% }) %>
-        </select><br>
+            <!-- Form -->
+            <form action="/admin/bookings/edit/<%= booking._id %>" method="POST" class="space-y-6">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- User Account -->
+                    <div>
+                        <label for="user" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">User Account</label>
+                        <select id="user" name="user" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" required>
+                            <% users.forEach(user => { %>
+                                <option value="<%= user._id %>" <%= booking.user._id.equals(user._id) ? 'selected' : '' %>><%= user.username %></option>
+                            <% }) %>
+                        </select>
+                    </div>
 
-        <label for="mobile">Mobile:</label>
-        <input class="input" type="text" id="mobile" name="mobile" value="<%= booking.mobile %>" required><br>
+                    <!-- Property Name -->
+                    <div>
+                        <label for="property" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Property Name</label>
+                        <select id="property" name="property" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" required>
+                            <% properties.forEach(property => { %>
+                                <option value="<%= property._id %>" 
+                                    <%= (booking.room && booking.room.property && booking.room.property._id && booking.room.property._id.equals(property._id)) ? 'selected' : '' %>>
+                                    <%= property.propertyName %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+                </div>
 
-        <label for="startDate">Start Date:</label>
-        <input class="input" type="date" id="startDate" name="startDate" value="<%= booking.startDate.toISOString().slice(0, 10) %>" required><br>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Room -->
+                    <div>
+                        <label for="room" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Room Type</label>
+                        <select id="room" name="room" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" required>
+                            <% rooms.forEach(room => { %>
+                                <option value="<%= room._id %>" <%= booking.room._id.equals(room._id) ? 'selected' : '' %>><%= room.type %></option>
+                            <% }) %>
+                        </select>
+                    </div>
 
-        <label for="endDate">End Date:</label>
-        <input class="input" type="date" id="endDate" name="endDate" value="<%= booking.endDate.toISOString().slice(0, 10) %>" required><br>
+                    <!-- Mobile -->
+                    <div>
+                        <label for="mobile" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Mobile</label>
+                        <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 font-mono" type="text" id="mobile" name="mobile" value="<%= booking.mobile %>" required>
+                    </div>
+                </div>
 
-        <label for="specialRequest">Special Request:</label>
-        <input class="input" type="text" id="specialRequest" name="specialRequest" value="<%= booking.specialRequest %>"><br>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Start Date -->
+                    <div>
+                        <label for="startDate" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Start Date</label>
+                        <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="date" id="startDate" name="startDate" value="<%= booking.startDate.toISOString().slice(0, 10) %>" required>
+                    </div>
 
-        <button class="submit" type="submit">Save Changes</button>
-    </form>
-</div>
+                    <!-- End Date -->
+                    <div>
+                        <label for="endDate" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">End Date</label>
+                        <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="date" id="endDate" name="endDate" value="<%= booking.endDate.toISOString().slice(0, 10) %>" required>
+                    </div>
+                </div>
+
+                <!-- Special Request -->
+                <div>
+                    <label for="specialRequest" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Special Request</label>
+                    <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" id="specialRequest" name="specialRequest" value="<%= booking.specialRequest %>">
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3 pt-2">
+                    <a href="/admin/bookings" class="flex-1 text-center bg-bg-body hover:bg-border-color border border-border-color text-text-primary font-semibold py-3 rounded-xl transition-all duration-300">
+                        Cancel
+                    </a>
+                    <button type="submit" class="flex-1 bg-primary hover:bg-primary-hover text-white font-bold py-3.5 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/35 transition-all duration-300 cursor-pointer">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Update rooms based on selected property (for editing)
         document.getElementById('property').addEventListener('change', async function() {
@@ -72,7 +134,6 @@
                             roomSelect.appendChild(option);
                         });
 
-                        // If the room matches the one in the booking, select it
                         const bookingRoomId = "<%= booking.room._id %>";
                         roomSelect.value = bookingRoomId;
                     } else {
@@ -84,8 +145,9 @@
             }
         });
 
-        // Trigger the change event on page load to pre-select the room based on the current property
+        // Trigger on load
         document.getElementById('property').dispatchEvent(new Event('change'));
     </script>
 </body>
+
 </html>

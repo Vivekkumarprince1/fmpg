@@ -1,222 +1,141 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="utf-8">
-    <title>FMPG</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-    <link rel="icon" href="img/logo.png" type="image/icon type">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="../css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/footer.css">
-    <link rel="stylesheet" href="..//css/management.css">
-    <style>
-      .share-referral .btn {
-          background-color: #4CAF50;
-          color: white;
-          padding: 10px 20px;
-          border-radius: 8px;
-          text-decoration: none;
-          font-weight: 600;
-          transition: background-color 0.3s ease, transform 0.2s ease;
-          display: inline-block;
-          text-align: center;
-      }
-
-      .btn:hover {
-          background-color: red;
-          transform: scale(1.05);
-      }
-
-      .f11{
-        margin-left: 3%;
-       
-      }
-  </style>
+    <title>Refer & Earn Rewards - FMPG</title>
+    <link rel="icon" href="/img/logo.png" type="image/icon type">
+    
+    <!-- Central Tailwind CSS & Theme Config -->
+    <%- include('tailwind-head') %>
 </head>
 
-<body>
-    <!-- header start -->
+<body class="bg-bg-body text-text-primary min-h-screen flex flex-col transition-colors duration-300">
+    <!-- Header -->
     <%- include('header') %>
-    <!-- header end -->
-     
 
-    <!-- Hero Section Start -->
-        <div class="f101">
+    <!-- Referral Hero Block -->
+    <section class="py-12 md:py-16 bg-gradient-to-b from-primary/5 to-transparent text-center px-4">
+        <div class="max-w-3xl mx-auto space-y-4 animate-fade-in-up">
+            <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary uppercase tracking-widest border border-primary/20">Referral Program</span>
+            <h1 class="text-3xl md:text-5xl font-extrabold font-heading text-text-primary">Refer Friends & Earn Credits</h1>
+            <p class="text-text-secondary text-sm md:text-base max-w-xl mx-auto">Invite your friends to Find My PG. You will receive 100 account credits, and your friend gets 50 credits instantly upon signup!</p>
+        </div>
+    </section>
 
-          <h3>Referral Program</h3>
-        <div class="referral">
-            <h4>Your Total Referral Credits:</h4>
-            <p><strong><%= user.referralCredits %></strong> credits</p>
-          </div>
+    <!-- Main Workspace -->
+    <main class="flex-grow max-w-5xl mx-auto w-full px-6 pb-16 space-y-12">
         
-        <p>Share this link with your friends and earn rewards:</p>
-        <input type="text" readonly value="<%= user.referralLink %>" id="referralLink">
-        <button onclick="copyReferralLink()">Copy Link</button>
+        <!-- Referral Metrics Card -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch animate-fade-in-up">
+            <!-- Credits Left Card -->
+            <div class="glass-panel rounded-2xl p-6 border border-border-color shadow-lg flex flex-col justify-between items-center text-center">
+                <div class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-coins text-xl"></i>
+                </div>
+                <div class="space-y-1.5">
+                    <span class="block text-[10px] uppercase font-bold text-text-secondary tracking-widest">Total Referral Credits</span>
+                    <h2 class="text-4xl font-black text-primary font-heading"><%= user.referralCredits %></h2>
+                </div>
+                <span class="text-[10px] text-text-secondary font-semibold mt-3">1 credit = ₹1 (deductible on rent)</span>
+            </div>
 
+            <!-- Link copy Card -->
+            <div class="glass-panel rounded-2xl p-6 border border-border-color shadow-lg md:col-span-2 flex flex-col justify-between space-y-4">
+                <div>
+                    <h3 class="font-heading font-extrabold text-base text-text-primary">Your Unique Invite Link</h3>
+                    <p class="text-xs text-text-secondary mt-1">Copy and share this referral url via social platforms or direct messages.</p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" readonly value="<%= user.referralLink %>" id="referralLink" 
+                      class="flex-grow bg-bg-body border border-border-color rounded-xl px-4 py-3 text-sm text-text-primary font-mono focus:outline-none focus:border-primary select-all">
+                    
+                    <button onclick="copyReferralLink()" class="bg-primary hover:bg-primary-hover text-white font-bold px-6 py-3 rounded-xl shadow-md shadow-primary/20 transition-all cursor-pointer">
+                        Copy Link
+                    </button>
+                </div>
 
-        <div class="share-referral">
-            <h4>Share your referral link:</h4>
-          
-            <!-- Share via WhatsApp -->
-            <a href="https://api.whatsapp.com/send?text=Join%20our%20platform%20with%20this%20link:%20<%= user.referralLink %>" target="_blank">
-              <button class="btn btn-whatsapp">Share on WhatsApp</button>
-            </a>
-          
-            <!-- Share via Email -->
-            <a href="mailto:?subject=Join%20our%20platform&body=Join%20our%20platform%20using%20this%20referral%20link:%20<%= user.referralLink %>">
-              <button class="btn btn-email">Share via Email</button>
-            </a>
-          
-            <!-- Share on Facebook -->
-            <a href="https://www.facebook.com/sharer/sharer.php?u=<%= user.referralLink %>" target="_blank">
-              <button class="btn btn-facebook">Share on Facebook</button>
-            </a>
-          
-            <!-- Share on Twitter -->
-            <a href="https://twitter.com/intent/tweet?text=Join%20our%20platform%20with%20this%20link:%20<%= user.referralLink %>" target="_blank">
-              <button class="btn btn-twitter">Share on Twitter</button>
-            </a>
-          </div>
-      
-      <script>
-        function copyReferralLink() {
-          const link = document.getElementById("referralLink");
-          link.select();
-          document.execCommand("copy");
-          alert("Referral link copied to clipboard");
-        }
-      </script><br><br>
+                <!-- Brand Shares -->
+                <div class="space-y-2">
+                    <span class="block text-[10px] uppercase font-bold text-text-secondary tracking-widest">Quick Share</span>
+                    <div class="flex flex-wrap gap-2.5">
+                        <!-- WhatsApp -->
+                        <a href="https://api.whatsapp.com/send?text=Join%20our%20platform%20with%20this%20link:%20<%= user.referralLink %>" target="_blank"
+                          class="inline-flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-all">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                        
+                        <!-- Email -->
+                        <a href="mailto:?subject=Join%20FMPG%20Room%20Booking&body=Join%20our%20platform%20using%20this%20referral%20link:%20<%= user.referralLink %>"
+                          class="inline-flex items-center gap-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-all">
+                            <i class="fa-solid fa-envelope"></i> Email
+                        </a>
 
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=<%= user.referralLink %>" target="_blank"
+                          class="inline-flex items-center gap-1.5 bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-all">
+                            <i class="fab fa-facebook-f"></i> Facebook
+                        </a>
 
-            <h1 style="margin: 0px;">Refer and Earn</h1>
-            <br>Welcome to our PG finding platform! We value your support and trust, and we’ve introduced a "Refer & Earn" program to reward you for sharing our platform with your friends and colleagues . By referring others, you can earn rewards while helping them find their perfect PG accommodation.
-            <br>
-            <br>
-            <b>Eligibility:</b>
-             To participate, you must be a registered user of our PG finding platform.
+                        <!-- Twitter -->
+                        <a href="https://twitter.com/intent/tweet?text=Join%20our%20platform%20with%20this%20link:%20<%= user.referralLink %>" target="_blank"
+                          class="inline-flex items-center gap-1.5 bg-sky-500 hover:bg-sky-600 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-all">
+                            <i class="fab fa-twitter"></i> Twitter
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-           <br> 
-           
-           <b>Referral Criteria: </b>
-            
-            <br> The person you refer must be a new user and should book and stay at a PG for at least 3 month.
-            <br>
-            
-       
-            <b>Rewards:</b>
-            
-            <br>You will receive credits to your account (as applicable) after the referee’s successful PG booking and payment.
+        <!-- Referral Information & Terms -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start animate-fade-in-up">
+            <!-- Guidelines -->
+            <div class="glass-panel rounded-2xl p-6 md:p-8 border border-border-color shadow-lg space-y-4 text-xs md:text-sm text-text-secondary leading-relaxed">
+                <h3 class="font-heading font-extrabold text-base text-primary border-b border-border-color pb-1.5">Referral Guidelines</h3>
+                <p>Welcome to our PG finding platform! We value your support and trust, and we’ve introduced a "Refer & Earn" program to reward you for sharing our platform with your friends.</p>
+                
+                <ul class="space-y-2">
+                    <li class="flex gap-2"><i class="fa-solid fa-circle-check text-primary mt-0.5"></i><span><strong>User Eligibility:</strong> Available to all registered FMPG accounts.</span></li>
+                    <li class="flex gap-2"><i class="fa-solid fa-circle-check text-primary mt-0.5"></i><span><strong>Referral Criteria:</strong> The referee must stay at the PG for a minimum of 3 months to validate credits.</span></li>
+                    <li class="flex gap-2"><i class="fa-solid fa-circle-check text-primary mt-0.5"></i><span><strong>Account Rewards:</strong> Earned credits are loaded directly into your profile wallet after verification.</span></li>
+                    <li class="flex gap-2"><i class="fa-solid fa-circle-check text-primary mt-0.5"></i><span><strong>Wallet Expiration:</strong> Account credits must be used within 12 months.</span></li>
+                </ul>
+            </div>
 
-            <br>
-       
-            <b>Referral Limit:</b>
-            
-            <br>You can refer as many people as you like. 
+            <!-- FAQs -->
+            <div class="glass-panel rounded-2xl p-6 md:p-8 border border-border-color shadow-lg space-y-4 text-xs md:text-sm text-text-secondary leading-relaxed">
+                <h3 class="font-heading font-extrabold text-base text-primary border-b border-border-color pb-1.5">Program FAQ Overview</h3>
+                
+                <div class="space-y-3">
+                    <div>
+                        <strong class="block text-text-primary font-heading font-bold mb-0.5">How do I invite someone?</strong>
+                        <span>Copy your custom URL bar above or tap any quick-share WhatsApp/Facebook button.</span>
+                    </div>
+                    <div>
+                        <strong class="block text-text-primary font-heading font-bold mb-0.5">When do I receive rewards?</strong>
+                        <span>After the referee has successfully booked and completed payment for at least 3 months.</span>
+                    </div>
+                    <div>
+                        <strong class="block text-text-primary font-heading font-bold mb-0.5">Can I refer myself?</strong>
+                        <span>No, self-referrals are strictly prohibited and will void all credits.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-            <br>  
-            <b>Reward Value:</b>
-            
-            <br> For each successful referral, you will receive a reward of 100 credits and your referee will get 50 credits upon signup.
-            <br>
-            <br>
-            
-            <h1 style="margin: 0px;"> Terms and Conditions for Refer and Earn Program</h1>
-            
-            <br>1.The referee must stay at the PG for a minimum of 3 months to be considered a valid referral.
-            <br>2.In case of any fraudulent activity or abuse, we reserve the right to terminate your account and void all rewards.
-            
-           <br>3.We reserve the right to modify, suspend, or terminate the referral program at any time without notice.
-            <br>For any queries or issues related to the referral program, please contact our customer support team at <a href="contact">contact us</a>.
-        
-            <br>
-            <br>
-           <br>
-       <h1 style="margin: 0px;">FAQs for Refer & Earn Program</h1>
-        
-        <br>1. How do I refer someone to the PG finding platform? 
-        <br>To refer someone, simply share your unique referral code or link with them. You can find this code in your profile section on the platform.
-
-        <br> <pre></pre>
-        
-        <br>2. Who can participate in the Refer & Earn program?
-        <br> Any registered user of our PG finding platform can participate in the program.
-
-        <br><pre></pre>
-        
-        <br>
-        3. What do I get when I refer someone?
-        <br> For each successful referral, you will receive 100 account credits. Your friend will also receive a reward when they signup using your referral code.
-        <br><pre></pre>
-      
-        <br>4. How many people can I refer? 
-        <br>There is no limit on how many people you can refer. 
-        <br><pre></pre>
-     
-        
-        <br>5. When do I receive my reward?
-        <br> You will receive your reward after the person you referred has successfully booked and paid for staying in a PG for at least 3 months. 
-        <br><pre></pre>
-        
-        <br>    6. Can I refer myself? 
-        <br> No, self-referrals are not allowed. 
-
-        <br><pre></pre>
-    
-        
-        <br>7. What happens if the person I referred cancels their booking?
-        <br> If the referred person cancels their booking or does not stay at the PG for the minimum required period, you will not be eligible for the referral reward.
-        <br><pre></pre>
-        
-        <br>8. Can I transfer my referral reward to someone else? 
-        <br> No, rewards are non-transferable. You can use them only for your account, and they cannot be transferred.
-        
-     
-        <br><pre></pre>
-        
-        <br>9. What should I do if I didn’t receive my reward? 
-        <br>If you haven't received your reward , please contact our support team at  with your referral details.
-        
-        <br><pre></pre>
-        
-        <br>
-        10. Is there an expiry date for rewards?
-        <br> Yes, rewards must be used within 12 months from the date they are credited to your account.
-        
-        </div> 
-        
-
-    <!--footer start-->
+    <!-- Footer -->
     <%- include('footer') %>
-    <!--footer end-->
 
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script>
+        function copyReferralLink() {
+            const link = document.getElementById("referralLink");
+            link.select();
+            document.execCommand("copy");
+            alert("Referral link copied to clipboard");
+        }
+    </script>
 </body>
 
 </html>

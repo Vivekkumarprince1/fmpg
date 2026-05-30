@@ -1,200 +1,289 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Property</title>
-    <link rel="stylesheet" href="../..//css/management.css">
-    <style>
-        .input-group {
-            margin-bottom: 10px;
-        }
-    </style>
+    <title>Add Property - FMPG Admin</title>
+    <link rel="icon" href="/img/logo.png" type="image/icon type">
+    
+    <!-- Central Tailwind CSS & Theme Config -->
+    <%- include('../tailwind-head') %>
 </head>
 
-<body>
-    <div class="form">
-        <h1>Add Property</h1>
-        <form class="add" action="/admin/properties/add" method="POST" enctype="multipart/form-data">
-            <label for="ownerName">Owner Name:</label><br>
-            <input class="input" type="text" id="ownerName" name="ownerName" required><br><br>
-
-            <label for="contactNumber">Contact Number:</label><br>
-            <input class="input" type="tel" id="contactNumber" name="contactNumber" required><br><br>
-
-            <label for="email">Email:</label><br>
-            <input class="input" type="email" id="email" name="email" required><br><br>
-
-            <label for="propertyName">Property Name:</label><br>
-            <input class="input" type="text" id="propertyName" name="propertyName" required><br><br>
-
-            <label for="type">Type:</label><br>
-            <select class="select" id="type" name="type">
-                <option value="PG">PG</option>
-                <option value="Hostel">Hostel</option>
-                <option value="PG with Mess">PG with Mess</option>
-            </select><br><br>
-
-            <label for="address">Address:</label><br>
-            <input class="input" type="text" id="address" name="address" required><br><br>
-
-            <label for="map">Google Map link</label><br>
-            <input class="input" type="text" id="map" name="map" required><br><br>
-
-            <label for="locations">Locations</label>
-            <div id="location-container">
-                <div class="input-group">
-                    <p>Eg:distance from nearest bus stand :- 1.3km</p>
-                    <input class="input" type="text" id="location" name="locations[]"
-                        placeholder="Eg:Delhi bus stand :- 15.6km" required>
-                    <input class="input" type="text" id="location" name="locations[]"
-                        placeholder="Eg:New Delhi Railway Station:- 12km" required>
-                    <input class="input" type="text" id="location" name="locations[]" placeholder="Eg:Landmark:-0.5km"
-                        required>
+<body class="bg-bg-body text-text-primary min-h-screen flex items-center justify-center py-12 px-4 transition-colors duration-300">
+    <div class="glass-panel max-w-4xl w-full rounded-2xl p-8 md:p-10 animate-fade-in-up relative overflow-hidden shadow-2xl">
+        <!-- Decorative Glow -->
+        <div class="absolute -top-12 -right-12 w-48 h-48 bg-primary/10 rounded-full blur-3xl"></div>
+        
+        <div class="relative z-10">
+            <!-- Header bar -->
+            <div class="flex items-center justify-between border-b border-border-color pb-4 mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                        <i class="fa-solid fa-plus-circle text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold font-heading">Add Property</h1>
+                        <p class="text-xs text-text-secondary mt-0.5">Admin Management Console</p>
+                    </div>
                 </div>
+                <a href="/admin/properties" class="text-xs text-text-secondary hover:text-primary font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> Properties List
+                </a>
             </div>
-            <button type="button" onclick="addLocationField()">+</button>
-            <br><br>
 
-
-            <label for="landmark">Landmark</label><br>
-            <input class="input" type="text" id="landmark" name="landmark" required><br><br>
-
-            <label for="image">Upload Images or PDFs (Minimum 5):</label><br>
-            <div id="image-container">
-                <div class="input-group">
-                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
-                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
-                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
-                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
-                    <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" multiple required>
-                    <button type="button" onclick="addImageField()">+</button>
+            <!-- Form -->
+            <form action="/admin/properties/add" method="POST" enctype="multipart/form-data" class="space-y-8">
+                
+                <!-- Section 1: Owner Information -->
+                <div class="space-y-4">
+                    <h3 class="text-base font-extrabold font-heading text-primary border-b border-border-color pb-1.5 flex items-center gap-2">
+                        <i class="fa-solid fa-user-tie"></i> Owner Information
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div>
+                            <label for="ownerName" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Owner Full Name</label>
+                            <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" id="ownerName" name="ownerName" required>
+                        </div>
+                        <div>
+                            <label for="contactNumber" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Contact Number</label>
+                            <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 font-mono" type="tel" id="contactNumber" name="contactNumber" required>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Email Address</label>
+                            <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="email" id="email" name="email" required>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <br>
 
-            <label for="gender">Allowed Gender:</label><br>
-            <select class="select" id="gender" name="gender">
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="unisex">Unisex</option>
-            </select><br><br>
+                <!-- Section 2: Property Basic Parameters -->
+                <div class="space-y-4">
+                    <h3 class="text-base font-extrabold font-heading text-primary border-b border-border-color pb-1.5 flex items-center gap-2">
+                        <i class="fa-solid fa-building"></i> Accommodation Parameters
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div>
+                            <label for="propertyName" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Property Name</label>
+                            <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" id="propertyName" name="propertyName" required>
+                        </div>
+                        <div>
+                            <label for="type" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Accommodation Type</label>
+                            <select class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 appearance-none" id="type" name="type">
+                                <option value="PG">PG</option>
+                                <option value="Hostel">Hostel</option>
+                                <option value="PG with Mess">PG with Mess</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="gender" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Allowed Gender</label>
+                            <select class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 appearance-none" id="gender" name="gender">
+                                <option value="male">Boys Only</option>
+                                <option value="female">Girls Only</option>
+                                <option value="unisex">Co-Living / Unisex</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
-            <label>Rooms:</label>
-            <div id="room-container">
-                <div class="input-group">
-                    <!-- <input type="text" name="rooms[0][type]" placeholder="Room Type" required> -->
-                    <select name="rooms[0][type]">
-                        <option value="">Select your room type</option>
+                <!-- Section 3: Geographics & Maps -->
+                <div class="space-y-4">
+                    <h3 class="text-base font-extrabold font-heading text-primary border-b border-border-color pb-1.5 flex items-center gap-2">
+                        <i class="fa-solid fa-map-location-dot"></i> Geographical Details
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div class="md:col-span-2">
+                            <label for="address" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Full Address</label>
+                            <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" id="address" name="address" required>
+                        </div>
+                        <div>
+                            <label for="map" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Google Map Share Link</label>
+                            <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 font-mono text-xs" type="text" id="map" name="map" required>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic locations transit list -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Transit & Distance Metrics</label>
+                        <div id="location-container" class="space-y-2">
+                            <div class="flex items-center gap-3">
+                                <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-2.5 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 text-sm" type="text" name="locations[]" placeholder="e.g. Nearest Bus Stand: 1.3km" required>
+                                <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-2.5 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 text-sm" type="text" name="locations[]" placeholder="e.g. Metro Station: 0.5km" required>
+                            </div>
+                        </div>
+                        <button type="button" onclick="addLocationField()" class="mt-2 text-xs text-primary hover:text-primary-hover font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-plus-circle"></i> Add Landmark field
+                        </button>
+                    </div>
+
+                    <div>
+                        <label for="landmark" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Major Landmark</label>
+                        <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" id="landmark" name="landmark" required>
+                    </div>
+                </div>
+
+                <!-- Section 4: Room Slots Allocation -->
+                <div class="space-y-4">
+                    <h3 class="text-base font-extrabold font-heading text-primary border-b border-border-color pb-1.5 flex items-center gap-2">
+                        <i class="fa-solid fa-door-open"></i> Room Slots Inventory
+                    </h3>
+                    <div id="room-container" class="space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-3 items-center bg-bg-card/40 border border-border-color rounded-2xl p-4">
+                            <div>
+                                <select name="rooms[0][type]" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                                    <option value="">Select sharing</option>
+                                    <option value="single">Single</option>
+                                    <option value="double">Double</option>
+                                    <option value="triple">Triple</option>
+                                    <option value="morethanthree">More than Three</option>
+                                </select>
+                            </div>
+                            <div>
+                                <input type="number" name="rooms[0][price]" placeholder="Rent Price" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                            </div>
+                            <div>
+                                <input type="number" name="rooms[0][capacity]" placeholder="Total quantity" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                            </div>
+                            <div>
+                                <input type="number" name="rooms[0][availableRooms]" placeholder="Available quantity" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                            </div>
+                            <div>
+                                <select name="rooms[0][available]" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                                    <option value="true">Available</option>
+                                    <option value="false">Not Available</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="addRoomField()" class="text-xs text-primary hover:text-primary-hover font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-plus-circle"></i> Add Room Type
+                    </button>
+                </div>
+
+                <!-- Section 5: Amenities & Documents -->
+                <div class="space-y-4">
+                    <h3 class="text-base font-extrabold font-heading text-primary border-b border-border-color pb-1.5 flex items-center gap-2">
+                        <i class="fa-solid fa-bell-concierge"></i> Amenities & Files
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <!-- Amenities -->
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Amenities</label>
+                            <div id="amenity-container" class="space-y-2">
+                                <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-2.5 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 text-sm" type="text" name="amenities[]" required>
+                            </div>
+                            <button type="button" onclick="addAmenityField()" class="mt-2 text-xs text-primary hover:text-primary-hover font-bold flex items-center gap-1">
+                                <i class="fa-solid fa-plus-circle"></i> Add Amenity
+                            </button>
+                        </div>
+
+                        <div>
+                            <label for="securityDeposit" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Security Deposit (₹)</label>
+                            <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="number" id="securityDeposit" name="securityDeposit" required>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div>
+                            <label for="rules" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">House Rules</label>
+                            <textarea class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 min-h-[96px] text-text-primary focus:outline-none focus:border-primary transition-all duration-300 resize-none text-sm" id="rules" name="rules" required></textarea>
+                        </div>
+                        <div>
+                            <label for="description" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Short Description</label>
+                            <textarea id="description" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 min-h-[96px] text-text-primary focus:outline-none focus:border-primary transition-all duration-300 resize-none text-sm" name="description" required></textarea>
+                        </div>
+                        <div>
+                            <label for="additionalDetails" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Additional Details</label>
+                            <textarea id="additionalDetails" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 min-h-[96px] text-text-primary focus:outline-none focus:border-primary transition-all duration-300 resize-none text-sm" name="additionalDetails" required></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Uploads -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-3">
+                        <div>
+                            <label for="image" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Property Images (Min 5 files)</label>
+                            <input type="file" id="images" name="images" accept=".jpg, .jpeg, .png, .pdf" class="block w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" multiple required>
+                        </div>
+                        <div>
+                            <label for="tenantContract" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Sample Tenant Contract</label>
+                            <input type="file" id="tenantContract" name="tenantContract" accept=".jpg, .jpeg, .png, .pdf" class="block w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Terms Checkbox -->
+                <div class="pt-4 border-t border-border-color space-y-4">
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="terms" value="TermsofService" class="w-5 h-5 accent-primary rounded cursor-pointer" required>
+                        <label for="terms" class="text-sm text-text-secondary select-none">
+                            Agree to FMPG Listing <a href="TermsofService" target="_blank" class="text-primary hover:underline font-semibold">Terms of Service</a>
+                        </label>
+                    </div>
+
+                    <!-- Submit -->
+                    <button class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/35 transition-all duration-300 text-lg cursor-pointer" type="submit">
+                        Submit Listing
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dynamic Fields Handlers -->
+    <script>
+        function addLocationField() {
+            const container = document.getElementById('location-container');
+            const newDiv = document.createElement('div');
+            newDiv.className = 'flex items-center gap-3 mt-2 animate-scale-up';
+            newDiv.innerHTML = '<input type="text" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-2.5 text-sm text-text-primary focus:outline-none focus:border-primary" name="locations[]" placeholder="e.g. Metro Station: 1.1km" required><button type="button" onclick="removeField(this)" class="bg-red-500/10 hover:bg-red-500/25 text-red-500 font-bold px-3 py-2 rounded-xl transition-all duration-300"><i class="fa-solid fa-trash"></i></button>';
+            container.appendChild(newDiv);
+        }
+
+        function addAmenityField() {
+            const container = document.getElementById('amenity-container');
+            const newDiv = document.createElement('div');
+            newDiv.className = 'flex items-center gap-3 mt-2 animate-scale-up';
+            newDiv.innerHTML = '<input type="text" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-2.5 text-sm text-text-primary focus:outline-none focus:border-primary" name="amenities[]" required><button type="button" onclick="removeField(this)" class="bg-red-500/10 hover:bg-red-500/25 text-red-500 font-bold px-3 py-2 rounded-xl transition-all duration-300"><i class="fa-solid fa-trash"></i></button>';
+            container.appendChild(newDiv);
+        }
+
+        function addRoomField() {
+            const container = document.getElementById('room-container');
+            const roomCount = container.getElementsByClassName('grid').length;
+            const newDiv = document.createElement('div');
+            newDiv.className = 'grid grid-cols-1 md:grid-cols-5 gap-3 items-center bg-bg-card/40 border border-border-color rounded-2xl p-4 relative animate-scale-up';
+            newDiv.innerHTML = `
+                <div>
+                    <select name="rooms[\${roomCount}][type]" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                        <option value="">Select sharing</option>
                         <option value="single">Single</option>
                         <option value="double">Double</option>
                         <option value="triple">Triple</option>
                         <option value="morethanthree">More than Three</option>
                     </select>
-                    <input type="number" name="rooms[0][price]" placeholder="Price" required>
-                    <input type="number" name="rooms[0][capacity]" placeholder="Total no of Rooms" required>
-                    <input type="number" name="rooms[0][availableRooms]" placeholder="Number of available Rooms" required>
-
-                    <select name="rooms[0][available]" required>
+                </div>
+                <div>
+                    <input type="number" name="rooms[\${roomCount}][price]" placeholder="Rent Price" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                </div>
+                <div>
+                    <input type="number" name="rooms[\${roomCount}][capacity]" placeholder="Total quantity" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                </div>
+                <div>
+                    <input type="number" name="rooms[\${roomCount}][availableRooms]" placeholder="Available quantity" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                </div>
+                <div class="flex items-center gap-2">
+                    <select name="rooms[\${roomCount}][available]" class="flex-grow bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
                         <option value="true">Available</option>
                         <option value="false">Not Available</option>
                     </select>
-                    <button type="button" onclick="addRoomField()">+</button>
+                    <button type="button" onclick="removeField(this)" class="bg-red-500/10 hover:bg-red-500/25 text-red-500 p-2 rounded-xl transition-all duration-300"><i class="fa-solid fa-trash"></i></button>
                 </div>
-            </div>
-
-
-            <label>Amenities:</label>
-            <div id="amenity-container">
-                <div class="input-group">
-                    <input class="input" type="text" id="amenities" name="amenities" required>
-                    <button type="button" onclick="addAmenityField()">+</button>
-                </div>
-            </div>
-
-
-            <label for="rules">House Rules:</label><br>
-            <textarea class="input" id="rules" name="rules" required></textarea><br><br>
-
-            <label for="securityDeposit">Security Deposit:</label><br>
-            <input class="input" type="number" id="securityDeposit" name="securityDeposit" required><br><br>
-
-            <label for="description">Description: that you want to show on you main page</label><br>
-            <textarea id="description" class="input" name="description" required></textarea><br>
-
-            <label for="additionalDetails">Additional Details </label><br>
-            <textarea id="additionalDetails" class="input" name="additionalDetails" required></textarea><br>
-
-            <label for="tenantContract">Upload copy of Tenant Contract</label><br>
-            <div id="tenantContract-container">
-                <div class="input-group">
-                    <input type="file" id="tenantContract" name="tenantContract" accept=".jpg, .jpeg, .png, .pdf">
-                </div>
-            </div>
-
-            <input type="checkbox" value="TermsofService" required>Agree to <a href="TermsofService">Terms of
-                Service</a>
-
-            <input class="submit" type="submit" value="Submit">
-        </form>
-    </div>
-
-    <script>
-        // Function to dynamically add image input fields
-        function addLocationField() {
-            const container = document.getElementById('location-container');
-            const newLocationInput = document.createElement('div');
-            newLocationInput.className = 'input-group';
-            newLocationInput.innerHTML = '<input type="text" class="input" name="Location[]" required><button type="button" onclick="removeField(this)">-</button>';
-            container.appendChild(newLocationInput);
-        }
-
-
-
-        // Function to dynamically add image input fields
-        function addImageField() {
-            const container = document.getElementById('image-container');
-            const newImageInput = document.createElement('div');
-            newImageInput.className = 'input-group';
-            newImageInput.innerHTML = '<input type="text" class="input" name="images[]" required><button type="button" onclick="removeField(this)">-</button>';
-            container.appendChild(newImageInput);
-        }
-
-        // Function to dynamically add amenity input fields
-        function addAmenityField() {
-            const container = document.getElementById('amenity-container');
-            const newAmenityInput = document.createElement('div');
-            newAmenityInput.className = 'input-group';
-            newAmenityInput.innerHTML = '<input type="text" class="input" name="amenities[]" required><button type="button" onclick="removeField(this)">-</button>';
-            container.appendChild(newAmenityInput);
-        }
-
-        // Function to dynamically add room input fields
-        function addRoomField() {
-            const container = document.getElementById('room-container');
-            const roomCount = container.getElementsByClassName('input-group').length;
-            const newRoomInput = document.createElement('div');
-            newRoomInput.className = 'input-group';
-            newRoomInput.innerHTML = `
-                <input type="text" name="rooms[${roomCount}][number]" placeholder="Room Number" required>
-                <input type="text" name="rooms[${roomCount}][type]" placeholder="Room Type" required>
-                <input type="number" name="rooms[${roomCount}][price]" placeholder="Price" required>
-                <input type="number" name="rooms[${roomCount}][capacity]" placeholder="nober of room available" required>
-                <select name="rooms[${roomCount}][available]" required>
-                    <option value="true">Available</option>
-                    <option value="false">Not Available</option>
-                </select>
-                <button type="button" onclick="removeField(this)">-</button>
             `;
-            container.appendChild(newRoomInput);
+            container.appendChild(newDiv);
         }
 
-
-        // Generic function to remove an input field
         function removeField(button) {
-            const container = button.parentNode.parentNode;
-            container.removeChild(button.parentNode);
+            button.parentNode.parentNode.remove();
         }
     </script>
 </body>

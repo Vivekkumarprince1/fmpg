@@ -1,94 +1,230 @@
-    <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
+<%
+  if (typeof page === 'undefined') {
+    page = 'unknown';
+  }
+%>
+<!-- Spinner Loader Start -->
+<div id="spinner" class="fixed inset-0 z-[99999] flex items-center justify-center bg-bg-body transition-all duration-500 opacity-100 visible">
+    <div class="relative flex items-center justify-center">
+        <!-- Inner glowing ring -->
+        <div class="h-16 w-16 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent"></div>
+        <!-- Center core pulse -->
+        <div class="absolute h-6 w-6 animate-pulse rounded-full bg-secondary animate-ping"></div>
     </div>
-    <script>
-        (function () {
-            function hideSpinner() {
-                var spinner = document.getElementById('spinner');
-                if (!spinner) return;
-                spinner.classList.remove('show');
+</div>
+<script>
+    (document.ready || function () {
+        function hideSpinner() {
+            var spinner = document.getElementById('spinner');
+            if (!spinner) return;
+            spinner.classList.add('opacity-0', 'invisible');
+            setTimeout(() => {
                 spinner.style.display = 'none';
-            }
+            }, 500);
+        }
+        window.addEventListener('load', hideSpinner);
+        setTimeout(hideSpinner, 1500); // reduced timeout for snappier experience
+    })();
+</script>
+<!-- Spinner Loader End -->
 
-            window.addEventListener('load', hideSpinner);
-            setTimeout(hideSpinner, 3000);
-        })();
-    </script>
-    <!-- Spinner End -->
-
-    <!-- Topbar Start -->
-    <div class="container-fluid bg-dark px-5 d-none d-lg-block">
-        <div class="row gx-0">
-            <div class="col-lg-8 text-center text-lg-start mb-2 mb-lg-0">
-                <div class="d-inline-flex align-items-center" style="height: 45px;">
-                    <small class="me-3 text-light"><a href="https://maps.app.goo.gl/KJCAo6hSidjYhC5D8" style="color: white;" class="mb-2" ><i class="fa fa-map-marker-alt me-3"></i>UIET Hoshiarpur , india</a><br>
-                    </small>
-                    <small class="me-3 text-light"><a href=" tel: +9198xxxxxxxx" style="color: white;" class="mb-2"><i class="fa fa-phone-alt me-3"></i>+917321835093</a><br>
-                    </small>
-                    <small class="text-light"><a href="mailto: fmpg974@gmail.com?" style="color: white;" class="mb-2"><i class="fa fa-envelope me-3"></i>fmpg974@gmail.com</a>
-                    </small>
-                </div>
-            </div>
-            <div class="col-lg-4 text-center text-lg-end">
-                <div class="d-inline-flex align-items-center" style="height: 45px;">
-                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" href=" https://x.com/Find_My_PG " target="_blank"><i class="fab fa-twitter fw-normal"></i></a>
-                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" target="_blank" href=" https://www.facebook.com/profile.php?id=61564104987167 "><i class="fab fa-facebook-f fw-normal"></i></a>
-                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" target="_blank" href=" https://www.linkedin.com/company/findmypg/" ><i class="fab fa-linkedin-in fw-normal"></i></a>
-                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" target="_blank" href="  https://www.instagram.com/f_m_pg?utm_source=qr&igsh=MTl4bm82anA5dmt4aA=="><i class="fab fa-instagram fw-normal"></i></a>
-                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle" target="_blank" href="http://www.youtube.com/@FMPG"><i class="fab fa-youtube fw-normal"></i></a> </div>
-            </div>
-        </div>
-    </div>
-    <!-- Topbar End -->
-
-
-    <!-- Navbar Start -->
-    <div class="container-fluid position-relative p-0">
-        <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
-            <a href="/" class="navbar-brand p-0">
-                <h1 class="text-primary m-0"><i class="fa"><img src="<%= assetUrl('img/logo.png') %>" alt=""></i>FMPG</h1>
+<!-- Topbar Start -->
+<div class="hidden lg:block w-full bg-slate-950 border-b border-border-color px-8 text-slate-300 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto flex justify-between items-center h-11 text-xs font-semibold tracking-wider uppercase">
+        <div class="flex items-center gap-6">
+            <a href="https://maps.app.goo.gl/KJCAo6hSidjYhC5D8" target="_blank" class="flex items-center gap-2 hover:text-primary transition-colors duration-300">
+                <i class="fa fa-map-marker-alt text-primary"></i>
+                <span>UIET Hoshiarpur, India</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                <span class="fa fa-bars"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav ms-auto py-0">
-                    <a href="/" class="nav-item nav-link <%= page === 'home' ? 'active' : '' %>">Home</a>
-                    <a href="about" class="nav-item nav-link <%= page === 'about' ? 'active' : '' %>">About</a>
-                    <a href="service" class="nav-item nav-link <%= page === 'service' ? 'active' : '' %>">Services</a>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle <%= page === 'pages' ? 'active' : '' %>" data-bs-toggle="dropdown">Pages</a>
-                        <div class="dropdown-menu m-0">
-                            <a href="destination" class="dropdown-item <%= page === 'destination' ? 'active' : '' %>">Destination</a>
-                            <a href="fooding" class="dropdown-item <%= page === 'team' ? 'active' : '' %>">Fooding</a>
-                        </div>
-                    </div>
-                    <a href="contact" class="nav-item nav-link <%= page === 'contact' ? 'active' : '' %>">Contact</a>
-                </div>
-                <a href="/profile" class="btn btn-primary rounded-pill py-2 px-4"><i class="fa-regular fa-user"></i></a>
-            </div>
-        </nav>
-    </div>
-    <!-- Navbar End -->
-
-    <!-- Hero Start -->
-    <div class="container-fluid bg-primary py-5 mb-5 hero-header">
-        <div class="container py-5">
-            <div class="row justify-content-center py-5">
-                <div class="col-lg-10 pt-lg-5 mt-lg-5 text-center">
-                    <h1 class="display-3 text-white animated slideInDown"><%= title %></h1>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb justify-content-center">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                            <li class="breadcrumb-item text-white active" aria-current="page"><%= title %></li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
+            <a href="tel:+917321835093" class="flex items-center gap-2 hover:text-primary transition-colors duration-300">
+                <i class="fa fa-phone-alt text-primary"></i>
+                <span>+91 7321835093</span>
+            </a>
+            <a href="mailto:fmpg974@gmail.com" class="flex items-center gap-2 hover:text-primary transition-colors duration-300">
+                <i class="fa fa-envelope text-primary"></i>
+                <span>fmpg974@gmail.com</span>
+            </a>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="https://x.com/Find_My_PG" target="_blank" class="h-6 w-6 rounded-full border border-slate-800 hover:border-primary flex items-center justify-center hover:text-primary transition-all duration-300 hover:scale-110">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61564104987167" target="_blank" class="h-6 w-6 rounded-full border border-slate-800 hover:border-primary flex items-center justify-center hover:text-primary transition-all duration-300 hover:scale-110">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://www.linkedin.com/company/findmypg/" target="_blank" class="h-6 w-6 rounded-full border border-slate-800 hover:border-primary flex items-center justify-center hover:text-primary transition-all duration-300 hover:scale-110">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="https://www.instagram.com/f_m_pg?utm_source=qr&igsh=MTl4bm82anA5dmt4aA==" target="_blank" class="h-6 w-6 rounded-full border border-slate-800 hover:border-primary flex items-center justify-center hover:text-primary transition-all duration-300 hover:scale-110">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="http://www.youtube.com/@FMPG" target="_blank" class="h-6 w-6 rounded-full border border-slate-800 hover:border-primary flex items-center justify-center hover:text-primary transition-all duration-300 hover:scale-110">
+                <i class="fab fa-youtube"></i>
+            </a>
         </div>
     </div>
-    <!-- Hero End -->
+</div>
+<!-- Topbar End -->
+
+<!-- Navbar & Hero Start -->
+<div class="w-full relative z-[1000]">
+    <!-- Navbar Container -->
+    <header id="sticky-header" class="w-full py-5 px-6 md:px-12 transition-all duration-500 border-b border-transparent bg-transparent z-[1000]">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="/" class="flex items-center gap-3 group">
+                <img src="<%= assetUrl('img/logo.png') %>" alt="FMPG Logo" class="h-10 w-auto transition-transform duration-500 group-hover:scale-105">
+                <span class="font-heading text-2xl font-black tracking-widest text-text-primary uppercase">
+                    FM<span class="text-primary">PG</span>
+                </span>
+            </a>
+
+            <!-- Desktop Menu -->
+            <nav class="hidden lg:flex items-center gap-8 font-heading text-sm font-semibold tracking-wider uppercase">
+                <a href="/" class="relative py-2 hover:text-primary transition-colors duration-300 <%= page === 'home' ? 'text-primary' : 'text-text-primary' %> after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 <%= page === 'home' ? 'after:w-full' : 'after:w-0 hover:after:w-full' %>">Home</a>
+                <a href="about" class="relative py-2 hover:text-primary transition-colors duration-300 <%= page === 'about' ? 'text-primary' : 'text-text-primary' %> after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 <%= page === 'about' ? 'after:w-full' : 'after:w-0 hover:after:w-full' %>">About</a>
+                <a href="service" class="relative py-2 hover:text-primary transition-colors duration-300 <%= page === 'service' ? 'text-primary' : 'text-text-primary' %> after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 <%= page === 'service' ? 'after:w-full' : 'after:w-0 hover:after:w-full' %>">Services</a>
+                
+                <!-- Dynamic Pages Dropdown -->
+                <div class="relative group" id="pages-dropdown-wrapper">
+                    <button id="pages-dropdown-trigger" class="flex items-center gap-1.5 py-2 hover:text-primary transition-colors duration-300 <%= page === 'pages' || page === 'destination' || page === 'team' ? 'text-primary' : 'text-text-primary' %> cursor-pointer uppercase">
+                        Pages <i class="fa fa-chevron-down text-[10px] transition-transform duration-300 group-hover:rotate-180" id="pages-chevron"></i>
+                    </button>
+                    <div id="pages-dropdown-menu" class="absolute top-full left-0 mt-2 w-48 rounded-2xl border border-border-color bg-bg-card backdrop-blur-md p-2 shadow-xl opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-premium z-50">
+                        <a href="destination" class="block w-full px-4 py-2.5 text-xs font-semibold rounded-xl hover:bg-primary/10 hover:text-primary transition-colors uppercase tracking-wider">Destination</a>
+                        <a href="fooding" class="block w-full px-4 py-2.5 text-xs font-semibold rounded-xl hover:bg-primary/10 hover:text-primary transition-colors uppercase tracking-wider">Fooding</a>
+                    </div>
+                </div>
+
+                <a href="contact" class="relative py-2 hover:text-primary transition-colors duration-300 <%= page === 'contact' ? 'text-primary' : 'text-text-primary' %> after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 <%= page === 'contact' ? 'after:w-full' : 'after:w-0 hover:after:w-full' %>">Contact</a>
+            </nav>
+
+            <!-- Actions Controls -->
+            <div class="flex items-center gap-4">
+                <!-- List Property Premium Button -->
+                <a href="owner/newOwner" class="hidden sm:inline-flex px-5 py-2 bg-slate-950 text-white font-heading text-xs font-bold rounded-full border border-slate-900 hover:bg-transparent hover:text-slate-950 hover:border-slate-950 transition-all duration-300 shadow-sm uppercase tracking-wider">
+                    List Property
+                </a>
+
+                <!-- Profile Button -->
+                <a href="/profile" class="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white hover:bg-primary-hover shadow-md hover:scale-105 transition-all duration-300" aria-label="User Profile" style="box-shadow: 0 4px 14px rgba(5, 150, 105, 0.2)">
+                    <i class="fa-regular fa-user"></i>
+                </a>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="lg:hidden h-10 w-10 flex items-center justify-center rounded-full border border-border-color hover:border-primary text-text-primary hover:text-primary transition-all duration-300 cursor-pointer" aria-label="Open Menu">
+                    <i class="fa fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Expandable Sidebar Menu -->
+        <div id="mobile-sidebar" class="lg:hidden fixed top-0 right-0 h-screen w-72 bg-bg-card backdrop-blur-lg border-l border-border-color shadow-2xl z-[9999] p-6 flex flex-col gap-6 translate-x-full transition-transform duration-300">
+            <div class="flex justify-between items-center border-b border-border-color pb-4">
+                <span class="font-heading font-extrabold text-xl tracking-wider">FM<span class="text-primary">PG</span></span>
+                <button id="close-sidebar-btn" class="h-8 w-8 rounded-full flex items-center justify-center hover:bg-primary/10 text-text-secondary hover:text-primary transition-colors cursor-pointer">
+                    <i class="fa fa-times text-lg"></i>
+                </button>
+            </div>
+            <nav class="flex flex-col gap-3 font-heading text-sm font-semibold uppercase tracking-wider">
+                <a href="/" class="px-4 py-2.5 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors <%= page === 'home' ? 'text-primary bg-primary/10' : 'text-text-primary' %>">Home</a>
+                <a href="about" class="px-4 py-2.5 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors <%= page === 'about' ? 'text-primary bg-primary/10' : 'text-text-primary' %>">About</a>
+                <a href="service" class="px-4 py-2.5 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors <%= page === 'service' ? 'text-primary bg-primary/10' : 'text-text-primary' %>">Services</a>
+                <div class="h-[1px] bg-border-color/30 my-1"></div>
+                <a href="destination" class="px-4 py-2.5 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors <%= page === 'destination' ? 'text-primary bg-primary/10' : 'text-text-primary' %>">Destinations</a>
+                <a href="fooding" class="px-4 py-2.5 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors">Fooding</a>
+                <a href="owner/newOwner" class="px-4 py-2.5 rounded-xl hover:bg-primary/10 hover:text-primary text-primary transition-colors">List Your Property</a>
+                <div class="h-[1px] bg-border-color/30 my-1"></div>
+                <a href="contact" class="px-4 py-2.5 rounded-xl hover:bg-primary/10 hover:text-primary transition-colors <%= page === 'contact' ? 'text-primary bg-primary/10' : 'text-text-primary' %>">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Elegant Minimal Breadcrumbs (Satisfying user comment: No dark/large hero section on inner pages) -->
+    <% if (page !== 'home' && typeof title !== 'undefined') { %>
+    <div class="w-full bg-white border-b border-border-color-light py-8 relative">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-fade-in-up">
+            <div>
+                <span class="text-primary font-bold text-xs uppercase tracking-widest">Find My PG</span>
+                <h1 class="font-heading text-3xl font-black text-text-primary tracking-tight mt-1">
+                    <%= title %>
+                </h1>
+            </div>
+            <nav class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-text-secondary">
+                <a href="/" class="hover:text-primary transition-colors duration-300">Home</a>
+                <i class="fa fa-chevron-right text-[10px] opacity-40 text-primary"></i>
+                <span class="text-primary font-extrabold"><%= title %></span>
+            </nav>
+        </div>
+    </div>
+    <% } %>
+</div>
+
+<!-- Header Stickiness Logic & Sidebars Script -->
+<script>
+    (function() {
+        const header = document.getElementById('sticky-header');
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const closeBtn = document.getElementById('close-sidebar-btn');
+        const sidebar = document.getElementById('mobile-sidebar');
+
+        // Sticky effect on scroll
+        const checkScroll = () => {
+            if (window.scrollY > 40) {
+                header.classList.remove('bg-transparent', 'border-transparent', 'py-5');
+                header.classList.add('bg-bg-nav', 'backdrop-blur-md', 'border-border-color', 'shadow-sm', 'py-3.5', 'fixed', 'top-0', 'left-0');
+                header.style.boxShadow = '0 10px 30px -10px rgba(5, 150, 105, 0.06)';
+            } else {
+                header.classList.remove('bg-bg-nav', 'backdrop-blur-md', 'border-border-color', 'shadow-sm', 'py-3.5', 'fixed', 'top-0', 'left-0');
+                header.classList.add('bg-transparent', 'border-transparent', 'py-5');
+                header.style.boxShadow = 'none';
+            }
+        };
+
+        window.addEventListener('scroll', checkScroll);
+        // Run initial check
+        checkScroll();
+
+        // Sidebar interactions
+        if (mobileBtn && sidebar) {
+            mobileBtn.addEventListener('click', () => {
+                sidebar.classList.remove('translate-x-full');
+            });
+        }
+        if (closeBtn && sidebar) {
+            closeBtn.addEventListener('click', () => {
+                sidebar.classList.add('translate-x-full');
+            });
+        }
+
+        // Dropdown interactions (touch + click reliability)
+        const pagesTrigger = document.getElementById('pages-dropdown-trigger');
+        const pagesMenu = document.getElementById('pages-dropdown-menu');
+        const pagesChevron = document.getElementById('pages-chevron');
+        const pagesWrapper = document.getElementById('pages-dropdown-wrapper');
+
+        if (pagesTrigger && pagesMenu) {
+            pagesTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isOpen = !pagesMenu.classList.contains('invisible');
+                if (isOpen) {
+                    pagesMenu.classList.add('opacity-0', 'invisible', 'translate-y-2');
+                    pagesMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+                    if (pagesChevron) pagesChevron.classList.remove('rotate-180');
+                } else {
+                    pagesMenu.classList.remove('opacity-0', 'invisible', 'translate-y-2');
+                    pagesMenu.classList.add('opacity-100', 'visible', 'translate-y-0');
+                    if (pagesChevron) pagesChevron.classList.add('rotate-180');
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (pagesWrapper && !pagesWrapper.contains(e.target)) {
+                    pagesMenu.classList.add('opacity-0', 'invisible', 'translate-y-2');
+                    pagesMenu.classList.remove('opacity-100', 'visible', 'translate-y-0');
+                    if (pagesChevron) pagesChevron.classList.remove('rotate-180');
+                }
+            });
+        }
+    })();
+</script>

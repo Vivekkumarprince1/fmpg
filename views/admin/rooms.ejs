@@ -1,23 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Rooms</title>
-</head>
-<body>
-    <h1>Manage Rooms</h1>
-    <a href="/admin/rooms/add">Add New Room</a>
-    <ul>
-        <% rooms.forEach(room => { %>
-            <li>
-                <%= room.number %> - <%= room.type %> - <%= room.price %> - <%= room.available %>
-                <a href="/admin/rooms/edit/<%= room._id %>">Edit</a>
-                <form action="/admin/rooms/delete/<%= room._id %>" method="POST" style="display:inline;">
-                    <button type="submit">Delete</button>
-                </form>
-            </li>
-        <% }) %>
-    </ul>
+<%- include('partials/header') %>
+
+<div class="p-6 space-y-6">
+  <!-- Title Section -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border-color pb-4">
+    <div>
+      <h1 class="text-3xl font-extrabold font-heading text-primary">Manage Rooms</h1>
+      <p class="text-text-secondary text-sm mt-1">Add, update availability, configure pricing, and delete accommodation slots.</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <a href="/profile" class="inline-flex items-center gap-2 bg-bg-card hover:bg-border-color border border-border-color text-text-primary px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300">
+        <i class="fa-solid fa-arrow-left"></i>
+        Profile
+      </a>
+      <a href="/admin/rooms/add" class="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md shadow-primary/20 hover:shadow-primary/35 transition-all duration-300 hover:-translate-y-0.5">
+        <i class="fa-solid fa-plus"></i>
+        Add New Room
+      </a>
+    </div>
+  </div>
+
+  <!-- Rooms Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <% if (rooms && rooms.length > 0) { %>
+      <% rooms.forEach(room => { %>
+        <div class="glass-panel rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between shadow-lg hover:scale-[1.01] transition-all duration-300 border border-border-color">
+          <!-- Room Sharing Label Badge -->
+          <div class="absolute top-4 right-4">
+            <% 
+              let availBadge = "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20";
+              if (!room.available) {
+                availBadge = "bg-red-500/10 text-red-500 border border-red-500/20";
+              }
+            %>
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider <%= availBadge %>">
+              <span class="w-1 h-1 rounded-full bg-current"></span>
+              <%= room.available ? 'Available' : 'Fully Booked' %>
+            </span>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 bg-primary/10 text-primary flex items-center justify-center rounded-2xl">
+                <i class="fa-solid fa-door-open text-xl animate-pulse"></i>
+              </div>
+              <div>
+                <h3 class="font-heading font-extrabold text-lg text-text-primary">Room <%= room.number || 'N/A' %></h3>
+                <p class="text-xs text-text-secondary capitalize font-semibold tracking-wider font-heading"><%= room.type %> Sharing</p>
+              </div>
+            </div>
+
+            <!-- Pricing / Details -->
+            <div class="flex items-center justify-between border-t border-b border-border-color py-3 my-2">
+              <div>
+                <span class="block text-[9px] uppercase font-bold text-text-secondary tracking-widest">Monthly Rent</span>
+                <span class="text-xl font-extrabold text-primary font-heading">₹<%= room.price %></span>
+              </div>
+              <div class="text-right">
+                <span class="block text-[9px] uppercase font-bold text-text-secondary tracking-widest">Capacity</span>
+                <span class="text-sm font-bold text-text-primary"><%= room.capacity || '1' %> Bed(s)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex items-center gap-3 pt-4 border-t border-border-color/60 mt-4">
+            <a href="/admin/rooms/edit/<%= room._id %>" class="flex-1 text-center bg-bg-body hover:bg-border-color border border-border-color text-text-primary text-xs font-semibold py-2.5 rounded-xl transition-all duration-300">
+              <i class="fa-solid fa-pen-to-square mr-1"></i> Edit Room
+            </a>
+            <form action="/admin/rooms/delete/<%= room._id %>" method="POST" class="flex-1"
+              onsubmit="return confirm('Are you sure you want to delete this room?');">
+              <button type="submit" class="w-full bg-red-500/10 hover:bg-red-500 hover:text-white border border-red-500/20 text-red-500 text-xs font-semibold py-2.5 rounded-xl transition-all duration-300 cursor-pointer">
+                <i class="fa-solid fa-trash-can mr-1"></i> Delete
+              </button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    <% } else { %>
+      <div class="col-span-full glass-panel rounded-2xl p-12 text-center text-text-secondary border border-border-color">
+        <i class="fa-solid fa-door-closed text-5xl text-border-color mb-3 block animate-pulse"></i>
+        <h3 class="font-heading font-bold text-lg mb-1 text-text-primary">No Rooms Found</h3>
+        <p class="text-sm">Click "Add New Room" above to list your first accommodation unit.</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Close Sidebar & Main wrappers opened in partials/header -->
+      </div>
+   </div>
+
+<!-- vendor scripts -->
+<script src="<%= assetUrl('assets/vendors/js/vendor.bundle.base.js') %>"></script>
+<script src="<%= assetUrl('assets/js/material.js') %>"></script>
+<script src="<%= assetUrl('assets/js/misc.js') %>"></script>
 </body>
 </html>

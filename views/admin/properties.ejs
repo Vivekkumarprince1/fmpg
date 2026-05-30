@@ -1,119 +1,146 @@
 <%- include('partials/header') %>
 
-                    <h1>Manage Properties</h1>
-                    <a href="/admin/properties/add">Add New Property</a><br>
-                    <a href="/profile"> back to profile</a>
+<div class="p-6 space-y-6 animate-fade-in-up">
+  <!-- Section Title & CTAs -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border-color pb-4">
+    <div>
+      <h1 class="text-3xl font-extrabold font-heading text-primary">Manage Properties</h1>
+      <p class="text-text-secondary text-sm mt-1">Review active PG/hostel inventories, upload photos, and modify listings.</p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <a href="/profile" class="inline-flex items-center gap-2 bg-bg-card hover:bg-border-color border border-border-color text-text-primary px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300">
+        <i class="fa-solid fa-arrow-left"></i>
+        Profile
+      </a>
+      <a href="/admin/properties/add" class="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md shadow-primary/20 hover:shadow-primary/35 transition-all duration-300 hover:-translate-y-0.5">
+        <i class="fa-solid fa-square-plus"></i>
+        Add New Property
+      </a>
+    </div>
+  </div>
 
+  <!-- Properties Table Card -->
+  <div class="glass-panel rounded-2xl overflow-hidden shadow-xl border border-border-color">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse bg-bg-card">
+        <thead>
+          <tr class="bg-primary text-white">
+            <th class="p-4 font-heading font-semibold text-sm">Property Name</th>
+            <th class="p-4 font-heading font-semibold text-sm">Type</th>
+            <th class="p-4 font-heading font-semibold text-sm">Locations</th>
+            <th class="p-4 font-heading font-semibold text-sm">Amenities</th>
+            <th class="p-4 font-heading font-semibold text-sm">Description</th>
+            <th class="p-4 font-heading font-semibold text-sm">Room Inventory</th>
+            <th class="p-4 font-heading font-semibold text-sm text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border-color text-sm">
+          <% if (properties && properties.length > 0) { %>
+            <% properties.forEach(property => { %>
+              <tr class="hover:bg-primary/5 transition-colors duration-200">
+                <!-- Name -->
+                <td class="p-4 font-semibold text-text-primary">
+                  <div class="space-y-1">
+                    <span class="block font-bold text-base"><%= property.propertyName %></span>
+                    <span class="block text-[10px] font-mono text-text-secondary select-all">ID: <%= property._id %></span>
+                  </div>
+                </td>
+                
+                <!-- Type -->
+                <td class="p-4 font-semibold text-text-secondary">
+                  <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
+                    <%= property.type %>
+                  </span>
+                </td>
+                
+                <!-- Locations -->
+                <td class="p-4">
+                  <ul class="space-y-1 max-w-[150px] overflow-hidden text-xs text-text-secondary font-medium">
+                    <% property.locations.forEach(location => { %>
+                      <li class="truncate"><i class="fa-solid fa-location-dot text-primary mr-1 text-[10px]"></i><%= location %></li>
+                    <% }) %>
+                  </ul>
+                </td>
+                
+                <!-- Amenities -->
+                <td class="p-4">
+                  <div class="flex flex-wrap gap-1 max-w-[180px]">
+                    <% property.amenities.forEach(amenity => { %>
+                      <span class="bg-bg-body border border-border-color text-[10px] font-semibold px-2 py-0.5 rounded text-text-secondary">
+                        <%= amenity %>
+                      </span>
+                    <% }) %>
+                  </div>
+                </td>
+                
+                <!-- Description -->
+                <td class="p-4 max-w-[200px]">
+                  <p class="truncate text-xs text-text-secondary font-medium" title="<%= property.description %>">
+                    <%= property.description %>
+                  </p>
+                </td>
+                
+                <!-- Rooms -->
+                <td class="p-4">
+                  <div class="flex flex-wrap gap-1 text-[10px] max-w-[150px]">
+                    <% property.rooms.forEach(room => { %>
+                      <span class="bg-primary/5 border border-primary/10 px-2 py-0.5 rounded font-mono font-bold capitalize text-primary">
+                        <%= room.type %>
+                      </span>
+                    <% }) %>
+                  </div>
+                </td>
+                
+                <!-- Actions -->
+                <td class="p-4 text-center">
+                  <div class="flex items-center justify-center gap-3">
+                    <a href="/admin/properties/edit/<%= property._id %>" class="text-primary hover:text-primary-hover font-semibold flex items-center gap-0.5 transition-colors">
+                      <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </a>
+                    <form action="/admin/properties/delete/<%= property._id %>" method="POST" style="display:inline;"
+                      onsubmit="confirmAction('delete', event);">
+                      <button type="submit" class="text-red-500 hover:text-red-600 font-semibold flex items-center gap-0.5 transition-colors cursor-pointer">
+                        <i class="fa-solid fa-trash-can"></i> Delete
+                      </button>
+                    </form>
+                    <a href="/admin/view/<%= property._id %>?owner._id=<%= property._id %>" class="bg-bg-body hover:bg-border-color border border-border-color text-text-primary text-xs font-bold px-2.5 py-1.5 rounded-xl transition-all duration-300">
+                      <i class="fa-solid fa-eye text-primary"></i> View
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="7" class="p-12 text-center text-text-secondary font-medium">
+                <i class="fa-solid fa-hotel text-4xl text-border-color mb-3 block animate-pulse"></i>
+                No properties found in database.
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
+<script>
+  function confirmAction(action, event) {
+    event.preventDefault();
+    const confirmation = confirm(`Are you sure you want to ${action} this Property?`);
+    if (confirmation) {
+      event.target.submit();
+    }
+  }
+</script>
 
-                    <!-- <b>Name:</b>   -->
-                    <ol>
-                        <table class="customers">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Property ID</th>
-                                    <th>Location</th>
-                                    <th>Type</th>
-                                    <th>Amenities</th>
-                                    <th>Description</th>
-                                    <th>Rooms</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% properties.forEach(property=> { %>
+<!-- Close Sidebar & Main wrappers opened in partials/header -->
+      </div>
+   </div>
 
-                                    <tr>
-                                        <td>
-                                            <li>
-                                                <%= property.propertyName %>
-                                            </li>
-                                        </td>
-
-                                        <td>
-                                            <li>
-                                                <%= property._id %>
-                                            </li>
-                                        </td>
-                                        <!--  -->
-                                        <td>
-                                            <ul>
-                                                <% property.locations.forEach(location=> { %>
-                                                    <li>
-                                                        <%= location %>
-                                                    </li>
-                                                    <% }) %>
-                                            </ul>
-                                        </td>
-                                        <td>
-                                            <%= property.type %>
-                                        </td>
-                                        <td>
-                                            <ul>
-                                                <% property.amenities.forEach(amenity=> { %>
-                                                    <li>
-                                                        <%= amenity %>
-                                                    </li>
-                                                    <% }) %>
-                                            </ul>
-                                        </td>
-                                        <td>
-                                            <%= property.description %>
-                                        </td>
-                                        <td>
-                                            <ul>
-                                                <% property.rooms.forEach(room=> { %>
-                                                    <li>
-                                                        <%= room.type %>
-                                                    </li>
-                                                    <% }) %>
-                                            </ul>
-                                        </td>
-                                        <td>
-                                            <a href="/admin/properties/edit/<%= property._id %>">Edit</a><br>
-                                            <form action="/admin/properties/delete/<%= property._id %>" method="POST"
-                                                style="display:inline;" onsubmit="confirmAction('delete', event);">
-                                                <button type="submit">Delete</button>
-                                            </form>
-
-                                            <a class="btn"
-                                                href="/admin/view/<%= property._id %>? owner._id=<%= property._id %>">
-                                                <button>View</button>
-                                            </a>
-                                        </td>
-                                    </tr>
-
-                                    <% }) %>
-                            </tbody>
-                        </table>
-                    </ol>
-                    <script>
-                        function confirmAction(action, event) {
-                            event.preventDefault(); // Prevent the form from submitting immediately
-                            const confirmation = confirm(`Are you sure you want to ${action} this Property`);
-                            if (confirmation) {
-                                event.target.submit(); // Submit the form if confirmed
-                            }
-                        }
-                    </script>
-
-            </div>
-            <!-- plugins:js -->
-            <script src="../assets/vendors/js/vendor.bundle.base.js"></script>
-            <!-- endinject -->
-            <!-- Plugin js for this page-->
-            <script src="../assets/vendors/chartjs/Chart.min.js"></script>
-            <script src="../assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
-            <script src="../assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-            <!-- End plugin js for this page-->
-            <!-- inject:js -->
-            <script src="../assets/js/material.js"></script>
-            <script src="../assets/js/misc.js"></script>
-            <!-- endinject -->
-            <!-- Custom js for this page-->
-            <script src="../assets/js/dashboard.js"></script>
-            <!-- End custom js for this page-->
+<!-- vendor scripts -->
+<script src="<%= assetUrl('assets/vendors/js/vendor.bundle.base.js') %>"></script>
+<script src="<%= assetUrl('assets/js/material.js') %>"></script>
+<script src="<%= assetUrl('assets/js/misc.js') %>"></script>
 </body>
-
 </html>

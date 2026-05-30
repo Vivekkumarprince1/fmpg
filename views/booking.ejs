@@ -3,207 +3,146 @@
 
 <head>
     <meta charset="utf-8">
-    <title>FMPG</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-    <link rel="icon" href="img/logo.png" type="image/icon type">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/footer.css">
+    <title>Book a Room - FMPG</title>
+    <!-- Include central Tailwind Configuration -->
+    <%- include('tailwind-head') %>
 </head>
 
-<body>
-    <!-- header start -->
+<body class="bg-bg-body text-text-primary transition-colors duration-300">
+
+    <!-- Header Start -->
     <%- include('header') %>
-    <!-- header end -->
+    <!-- Header End -->
 
+    <!-- Process Section Start -->
+    <section class="py-16 max-w-7xl mx-auto px-6 flex flex-col gap-12">
+        <div class="text-center flex flex-col gap-2">
+            <span class="text-primary font-bold text-sm tracking-widest uppercase">Process</span>
+            <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-black text-text-primary tracking-tight">3 Easy Steps</h2>
+        </div>
 
-    <!-- Process Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center pb-4 wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Process</h6>
-                <h1 class="mb-5">3 Easy Steps</h1>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+            <div class="hidden md:block absolute top-[4.5rem] left-[15%] right-[15%] h-[2px] bg-border-color z-0"></div>
+            
+            <div class="relative flex flex-col items-center gap-4 text-center z-10 group">
+                <div class="h-20 w-20 rounded-full bg-primary text-white border-8 border-bg-body flex items-center justify-center text-2xl shadow-xl transition-all duration-300 group-hover:scale-110">
+                    <i class="fa fa-globe"></i>
+                </div>
+                <h3 class="font-heading text-xl font-bold mt-2">1. Choose A Room</h3>
+                <p class="text-sm text-text-secondary max-w-xs leading-relaxed font-medium">Browse verified listings, filter features, and select your ideal room setup.</p>
             </div>
-            <div class="row gy-5 gx-4 justify-content-center">
-                <div class="col-lg-4 col-sm-6 text-center pt-4 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="position-relative border border-primary pt-5 pb-4 px-4">
-                        <div class="d-inline-flex align-items-center justify-content-center bg-primary rounded-circle position-absolute top-0 start-50 translate-middle shadow" style="width: 100px; height: 100px;">
-                            <i class="fa fa-globe fa-3x text-white"></i>
-                        </div>
-                        <h5 class="mt-4">Choose A Room</h5>
-                        <hr class="w-25 mx-auto bg-primary mb-1">
-                        <hr class="w-50 mx-auto bg-primary mt-0">
-                        <p class="mb-0">Simple select a room where you want to live</p>
+
+            <div class="relative flex flex-col items-center gap-4 text-center z-10 group">
+                <div class="h-20 w-20 rounded-full bg-primary text-white border-8 border-bg-body flex items-center justify-center text-2xl shadow-xl transition-all duration-300 group-hover:scale-110">
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                </div>
+                <h3 class="font-heading text-xl font-bold mt-2">2. Pay Securely</h3>
+                <p class="text-sm text-text-secondary max-w-xs leading-relaxed font-medium">Verify rental inclusions, complete security payouts instantly via secure online UPI.</p>
+            </div>
+
+            <div class="relative flex flex-col items-center gap-4 text-center z-10 group">
+                <div class="h-20 w-20 rounded-full bg-primary text-white border-8 border-bg-body flex items-center justify-center text-2xl shadow-xl transition-all duration-300 group-hover:scale-110">
+                    <i class="fa-regular fa-building"></i>
+                </div>
+                <h3 class="font-heading text-xl font-bold mt-2">3. Move In Today</h3>
+                <p class="text-sm text-text-secondary max-w-xs leading-relaxed font-medium">Collect your confirmation, check-in smoothly, and start hassle-free living!</p>
+            </div>
+        </div>
+    </section>
+    <!-- Process Section End -->
+
+    <!-- Booking Form Section Start -->
+    <main class="py-12 max-w-5xl mx-auto px-6">
+        <div class="glass-panel p-8 md:p-12 rounded-3xl bg-bg-card border-border-color shadow-2xl">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Side Text (5 Cols) -->
+                <div class="lg:col-span-5 flex flex-col gap-6">
+                    <span class="text-primary font-bold text-sm tracking-widest uppercase">Booking</span>
+                    <h1 class="font-heading text-3xl md:text-4xl lg:text-5xl font-black text-text-primary leading-tight">Online Room Booking</h1>
+                    <p class="text-text-secondary leading-relaxed font-medium">
+                        Secure your room instantly with our encrypted booking portal. Transparent terms and instant confirmations give you absolute peace of mind.
+                    </p>
+                    <div class="flex flex-col gap-3 text-sm font-semibold mt-2">
+                        <div class="flex items-center gap-3"><i class="fa fa-shield-halved text-primary text-lg shrink-0"></i> <span class="text-text-primary">100% Encrypted Transactions</span></div>
+                        <div class="flex items-center gap-3"><i class="fa fa-file-signature text-primary text-lg shrink-0"></i> <span class="text-text-primary">Clear Digital Rental Agreement</span></div>
+                        <div class="flex items-center gap-3"><i class="fa fa-circle-check text-primary text-lg shrink-0"></i> <span class="text-text-primary">Instant Booking Confirmations</span></div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-sm-6 text-center pt-4 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="position-relative border border-primary pt-5 pb-4 px-4">
-                        <div class="d-inline-flex align-items-center justify-content-center bg-primary rounded-circle position-absolute top-0 start-50 translate-middle shadow" style="width: 100px; height: 100px;">
-                            <i class="fa fa-dollar-sign fa-3x text-white"></i>
+
+                <!-- Right Side Form (7 Cols) -->
+                <div class="lg:col-span-7 p-6 rounded-2xl bg-bg-body border border-border-color shadow-inner">
+                    <h2 class="font-heading text-2xl font-black text-text-primary mb-6">Enter Details</h2>
+                    <form action="/api/bookings" method="post" class="flex flex-col gap-4">
+                        <!-- User Name & Mobile -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex flex-col gap-1">
+                                <label for="username" class="text-xs font-bold text-text-secondary">Your Name</label>
+                                <input type="text" id="username" name="username" class="w-full bg-bg-card border border-border-color rounded-xl py-3 px-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors" placeholder="Vikas" required>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label for="mobile" class="text-xs font-bold text-text-secondary">Mobile Number</label>
+                                <input type="text" id="mobile" name="mobile" class="w-full bg-bg-card border border-border-color rounded-xl py-3 px-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors" placeholder="+91 99999 99999" required>
+                            </div>
                         </div>
-                        <h5 class="mt-4">Pay Online</h5>
-                        <hr class="w-25 mx-auto bg-primary mb-1">
-                        <hr class="w-50 mx-auto bg-primary mt-0">
-                        <p class="mb-0">Pay through UPI</p>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-sm-6 text-center pt-4 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="position-relative border border-primary pt-5 pb-4 px-4">
-                        <div class="d-inline-flex align-items-center justify-content-center bg-primary rounded-circle position-absolute top-0 start-50 translate-middle shadow" style="width: 100px; height: 100px;">
-                            <i class="fa fa-3x fa-hotel text-primary mb-4"></i>
+
+                        <!-- Start Date & End Date -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex flex-col gap-1">
+                                <label for="startDate" class="text-xs font-bold text-text-secondary">Start Date</label>
+                                <input type="date" id="startDate" name="startDate" class="w-full bg-bg-card border border-border-color rounded-xl py-3 px-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors" required>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label for="endDate" class="text-xs font-bold text-text-secondary">End Date</label>
+                                <input type="date" id="endDate" name="endDate" class="w-full bg-bg-card border border-border-color rounded-xl py-3 px-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors" required>
+                            </div>
                         </div>
-                        <h5 class="mt-4">Move In Today</h5>
-                        <hr class="w-25 mx-auto bg-primary mb-1">
-                        <hr class="w-50 mx-auto bg-primary mt-0">
-                        <p class="mb-0">Start hassle-free living from today </p>
-                    </div>
+
+                        <!-- Special Request -->
+                        <div class="flex flex-col gap-1">
+                            <label for="specialRequest" class="text-xs font-bold text-text-secondary">Special Request (Optional)</label>
+                            <textarea id="specialRequest" name="specialRequest" rows="3" class="w-full bg-bg-card border border-border-color rounded-xl py-3 px-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors resize-none" placeholder="e.g. Quiet floor, study-desk preferences..."></textarea>
+                        </div>
+
+                        <!-- Hidden IDs variables -->
+                        <input type="hidden" id="userId" name="userId" value="<%= user._id %>" required>
+                        <input type="hidden" id="roomId" name="roomId" value="<%= typeof roomT !== 'undefined' && roomT ? roomT._id : '' %>" required>
+                        <input type="hidden" id="propertyID" name="propertyID" required>
+
+                        <!-- Submit Button -->
+                        <button class="w-full py-4 bg-primary hover:bg-primary-hover text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.01] transition-all cursor-pointer mt-2" type="submit">
+                            Confirm Booking
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Process Start -->
+    </main>
+    <!-- Booking Form Section End -->
 
-
-
-    <!-- Booking Start -->
-    <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container">
-          <div class="booking p-5">
-            <div class="row g-5 align-items-center">
-              <div class="col-md-6 text-white">
-                <h6 class="text-white text-uppercase">Booking</h6>
-                <h1 class="text-white mb-4">Online Booking</h1>
-                <p class="mb-4">online booking guarantees the protection of personal and financial information through encrypted transactions, secure payment gateways, and strict privacy policies, ensuring a seamless and trustworthy reservation process.</p>
-                <p class="mb-4">Online Payment ensures your booking is confirmed</p>
-                <a class="btn btn-outline-light py-3 px-5 mt-2" href="">Read More</a>
-              </div>
-              <div class="col-md-6">
-                <h1 class="text-white mb-4">Book a Room</h1>
-                <form action="/api/bookings" method="post">
-                  <div class="row g-3">
-                    <div class="col-md-6">
-                      <div class="form-floating">
-                        <input type="text" class="form-control bg-transparent text-white" id="username" name="username" placeholder="Your Name" required>
-                        <label for="username">Your Name</label>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-floating">
-                        <input type="text" class="form-control bg-transparent text-white" id="mobile" name="mobile" placeholder="Your Mobile Number" required>
-                        <label for="mobile">Your Mobile Number</label>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-floating date" id="date3" data-target-input="nearest">
-                        <input type="date" class="form-control bg-transparent text-white" id="startDate" name="startDate" placeholder="Start Date & Time" required>
-                        <label for="startDate">Start Date</label>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-floating date" id="date3" data-target-input="nearest">
-                        <input type="date" class="form-control bg-transparent text-white" id="endDate" name="endDate" placeholder="End Date & Time" required>
-                        <label for="endDate">End Date</label>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-floating">
-                        <input type="hidden" class="form-control bg-transparent" id="userId" name="userId" placeholder="User ID" value="<%=user._id %>" readonly required>
-                        <!-- <label for="userId">User ID</label> -->
-                      </div>
-                    </div>
-                    <% if (typeof roomT !== 'undefined' && roomT) { %>
-                        <div class="col-md-6">
-                          <div class="form-floating">
-                            <input type="text" class="form-control bg-transparent" id="roomId" name="roomId" placeholder="Room ID" value="<%= roomT._id %>" readonly required>
-                            <label for="roomId">Room Type ID</label>
-                          </div>
-                        </div>
-                      <% } else { %>
-                        <div class="col-md-6">
-                          <div class="form-floating">
-                            <input type="hidden" class="form-control bg-transparent text-white" id="roomId" name="roomId" placeholder="Room ID"  readonly required>
-                            <!-- <label for="roomId">Room ID</label> -->
-                          </div>
-                        </div>
-                      <% } %>
-
-                      <!-- Hidden input for propertyID -->
-                      <div class="col-md-6">
-                        <div class="form-floating">
-                          <input type="hidden" class="form-control bg-transparent" id="propertyID" name="propertyID" readonly required>
-                          <!-- <label for="propertyID">Property ID</label> -->
-                        </div>
-                      </div>
-                                            
-
-                    <div class="col-12">
-                      <div class="form-floating">
-                        <textarea class="form-control bg-transparent text-white" placeholder="Special Request" id="specialRequest" name="specialRequest" style="height: 100px"></textarea>
-                        <label for="specialRequest">Special Request</label>
-                      </div>
-                    </div>
-                    <div class="col-12">
-                      <button class="btn btn-outline-light w-100 py-3" type="submit">Book Now</button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    <!-- Booking end -->
-        
-
-    <!--footer start-->
+    <!-- Footer Start -->
     <%- include('footer') %>
-    <!--footer end-->
+    <!-- Footer End -->
 
-    <!-- Template Javascript -->
+    <!-- Main JavaScript -->
     <script src="js/main.js"></script>
     <script>
         const getRoomAndProperty = () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const roomID = urlParams.get('roomID');
-      const propertyID = urlParams.get('propertyID');
-      return { roomID, propertyID };
-  }
-  
-  document.addEventListener('DOMContentLoaded', function() {
-      const { roomID, propertyID } = getRoomAndProperty();
-      if (roomID) {
-          document.getElementById('roomId').value = roomID;
-      }
-      if (propertyID) {
-          document.getElementById('propertyID').value = propertyID; // Ensure this sets the field
-      }
-  });
+            const urlParams = new URLSearchParams(window.location.search);
+            const roomID = urlParams.get('roomID');
+            const propertyID = urlParams.get('propertyID');
+            return { roomID, propertyID };
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const { roomID, propertyID } = getRoomAndProperty();
+            if (roomID) {
+                document.getElementById('roomId').value = roomID;
+            }
+            if (propertyID) {
+                document.getElementById('propertyID').value = propertyID;
+            }
+        });
     </script>
 </body>
 

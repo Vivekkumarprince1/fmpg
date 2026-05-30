@@ -1,100 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="utf-8">
-    <title>FMPG</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-    <link rel="icon" href="img/logo.png" type="image/icon type">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <!-- <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet"> -->
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/footer.css">
+    <title>Frequently Asked Questions - FMPG</title>
+    <link rel="icon" href="/img/logo.png" type="image/icon type">
+    
+    <!-- Central Tailwind CSS & Theme Config -->
+    <%- include('tailwind-head') %>
 </head>
 
-<body>
-    <!-- header start -->
+<body class="bg-bg-body text-text-primary min-h-screen flex flex-col transition-colors duration-300">
+    <!-- Header -->
     <%- include('header') %>
-    <!-- header end -->
 
-    
-<div class="f101">
-    <h1>Frequently Asked Questions</h1>
-       
-        <br><b>1.What types of accommodations do you offer?</b>
-       <br> -We offer a variety of PG accommodations including single rooms, shared rooms, and dormitory-style arrangements. Some PGs come with additional amenities like meals, Wi-Fi, laundry, and housekeeping.
-        
-       <br>  <b>2.How do I book a PG through your service?</b>
-       <br> -You can book a PG by contacting us directly or through our website/app. Once you choose a PG, we’ll guide you through the booking and payment process.
-        
-        <br><b>3.What payment methods are accepted?</b>
-       <br> -We accept various payment methods including UPI, and digital wallets. You can choose the payment method that is most convenient for you.
-        
-        <br><b> 4.Do I need to pay any advance or deposit?</b>
-       <br> -Most PGs require a security deposit along with the first month’s rent. The deposit amount varies depending on the PG and location. We will inform you of any deposit requirements during the booking process.
-        
-         <br><b>5.Is there any service charge for using your platform?</b>
-        <br>-Yes, we charge a nominal service fee for helping you find and book your PG. The exact fee will be communicated to you before you finalize your booking.
-        
-        <br><b>6.How do you verify the PGs listed on your platform?</b>
-        <br>-We conduct thorough checks to verify the authenticity and quality of each PG listed on our platform. This includes background checks, visits, and reviews from previous tenants.
-        
-        <br><b>7.What if I face any issues after moving in?</b>
-       <br> -We offer post-booking support to help you with any issues or concerns that may arise after you move in. You can reach out to our customer support team for assistance.
-        
-        <br><b>8.Can I cancel my booking?</b>
-        <br>-Yes, you can cancel your booking, but the cancellation policy depends on the specific PG’s terms. Some PGs may offer a full or partial refund, while others may have a non-refundable policy.
-        <br>
-         <b>9.How do I get a refund if I cancel my booking?</b>
-       <br> -If you are eligible for a refund based on the PG’s cancellation policy, we will process your refund within [5 working days]. The refund will be credited to your original payment method.
-        
-        <br> <b>10.What if I want to change my PG after moving in?</b>
-        <br>-If you wish to move to a different PG after moving in, we can assist you in finding a new place. However, any financial implications, such as forfeiture of deposit, depend on the original PG’s terms.
-        
-        <br> <b>11.How can I contact customer support?</b>
-        <br>-You can contact our customer support team via phone, email, or live chat on our website. We are available [mention hours/days] to assist you with any queries or issues.
-        
-        <br> <b>12.Do you offer assistance with relocation?</b>
-        <br>-Yes, we can assist with your relocation by connecting you with reliable movers and packers. This service is optional and comes with an additional cost.
-        
-        <br><b>13.Can I schedule a visit to the PG before booking?</b>
-        <br>-Yes, you can schedule a visit to any PG before making your booking. We recommend visiting the PG to ensure it meets your expectations.
+    <!-- FAQs Hero Section -->
+    <section class="py-12 md:py-16 bg-gradient-to-b from-primary/5 to-transparent">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-5xl font-extrabold font-heading text-primary mb-4">Frequently Asked Questions</h1>
+            <p class="text-text-secondary max-w-xl mx-auto leading-relaxed">Find quick answers to common queries about PG bookings, advance deposits, verification protocols, and cancellation policies.</p>
+        </div>
+    </section>
 
-</div> 
-   
-        
+    <!-- FAQs Accordion List -->
+    <main class="flex-grow max-w-4xl mx-auto w-full px-4 pb-16">
+        <div class="glass-panel rounded-3xl p-6 md:p-10 shadow-xl border border-border-color space-y-6">
+            
+            <!-- Dynamic FAQ Items -->
+            <% 
+              const faqList = [
+                { q: "What types of accommodations do you offer?", a: "We offer a variety of PG accommodations including single rooms, shared rooms, and dormitory-style arrangements. Some PGs come with additional amenities like meals, Wi-Fi, laundry, and housekeeping." },
+                { q: "How do I book a PG through your service?", a: "You can book a PG by contacting us directly or through our website/app. Once you choose a PG, we’ll guide you through the booking and payment process." },
+                { q: "What payment methods are accepted?", a: "We accept various payment methods including UPI, cards, and digital wallets. You can choose the payment method that is most convenient for you." },
+                { q: "Do I need to pay any advance or deposit?", a: "Most PGs require a security deposit along with the first month’s rent. The deposit amount varies depending on the PG and location. We will inform you of any deposit requirements during the booking process." },
+                { q: "Is there any service charge for using your platform?", a: "Yes, we charge a nominal service fee for helping you find and book your PG. The exact fee will be communicated to you before you finalize your booking." },
+                { q: "How do you verify the PGs listed on your platform?", a: "We conduct thorough checks to verify the authenticity and quality of each PG listed on our platform. This includes background checks, visits, and reviews from previous tenants." },
+                { q: "What if I face any issues after moving in?", a: "We offer post-booking support to help you with any issues or concerns that may arise after you move in. You can reach out to our customer support team for assistance." },
+                { q: "Can I cancel my booking?", a: "Yes, you can cancel your booking, but the cancellation policy depends on the specific PG’s terms. Some PGs may offer a full or partial refund, while others may have a non-refundable policy." },
+                { q: "How do I get a refund if I cancel my booking?", a: "If you are eligible for a refund based on the PG’s cancellation policy, we will process your refund within 5 working days. The refund will be credited to your original payment method." },
+                { q: "What if I want to change my PG after moving in?", a: "If you wish to move to a different PG after moving in, we can assist you in finding a new place. However, any financial implications, such as forfeiture of deposit, depend on the original PG’s terms." },
+                { q: "How can I contact customer support?", a: "You can contact our customer support team via phone, email, or live chat on our website. We are available daily to assist you with any queries or issues." },
+                { q: "Do you offer assistance with relocation?", a: "Yes, we can assist with your relocation by connecting you with reliable movers and packers. This service is optional and comes with an additional cost." },
+                { q: "Can I schedule a visit to the PG before booking?", a: "Yes, you can schedule a visit to any PG before making your booking. We recommend visiting the PG to ensure it meets your expectations." }
+              ];
+            %>
 
+            <div class="space-y-4">
+                <% faqList.forEach((faq, index) => { %>
+                    <details class="group bg-bg-body border border-border-color rounded-2xl p-5 [&_summary::-webkit-details-marker]:hidden transition-all duration-300">
+                        <summary class="flex items-center justify-between cursor-pointer focus:outline-none">
+                            <h3 class="font-heading font-extrabold text-sm md:text-base text-text-primary group-open:text-primary transition-colors pr-4">
+                                <%= index + 1 %>. <%= faq.q %>
+                            </h3>
+                            <span class="w-7 h-7 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-open:rotate-180 transition-transform duration-300">
+                                <i class="fa-solid fa-chevron-down text-xs"></i>
+                            </span>
+                        </summary>
+                        <p class="mt-4 text-xs md:text-sm text-text-secondary leading-relaxed font-body border-t border-border-color/60 pt-4">
+                            <%= faq.a %>
+                        </p>
+                    </details>
+                <% }) %>
+            </div>
 
-    <!-- Footer Start -->
+            <!-- Still Need Help Box -->
+            <div class="bg-primary/5 border border-primary/10 rounded-2xl p-6 text-center mt-8 space-y-3">
+                <h4 class="font-heading font-bold text-lg">Still have questions?</h4>
+                <p class="text-xs md:text-sm text-text-secondary">Can't find the answers you're looking for? Reach out to our dedicated support desk.</p>
+                <a href="/contact" class="inline-flex items-center gap-1.5 bg-primary hover:bg-primary-hover text-white text-xs font-semibold px-6 py-2.5 rounded-xl shadow-md shadow-primary/20 hover:scale-[1.01] transition-all cursor-pointer">
+                    <i class="fa-solid fa-envelope"></i> Contact Support Desk
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
     <%- include('footer') %>
-    <!-- Footer End -->
-
-    <!-- Template Javascript -->
-    <script src="js/main.js"></script>
 </body>
 
 </html>

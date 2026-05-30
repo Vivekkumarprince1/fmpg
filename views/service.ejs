@@ -3,140 +3,73 @@
 
 <head>
     <meta charset="utf-8">
-    <title>FMPG</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-    <link rel="icon" href="img/logo.png" type="image/icon type">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/footer.css">
+    <title>Our Services - FMPG</title>
+    <!-- Include central Tailwind Configuration -->
+    <%- include('tailwind-head') %>
 </head>
 
-<body>
-    <!-- header start -->
+<body class="bg-bg-body text-text-primary transition-colors duration-300">
+
+    <!-- Header Start -->
     <%- include('header') %>
-    <!-- header end -->
+    <!-- Header End -->
 
-    <!-- Service Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Services</h6>
-                <h1 class="mb-5">Our Services</h1>
+    <!-- Services Section Start -->
+    <section class="py-20 max-w-7xl mx-auto px-6">
+        <div class="flex flex-col gap-12 text-center">
+            <div class="flex flex-col gap-2">
+                <span class="text-primary font-bold text-sm tracking-widest uppercase">Services</span>
+                <h2 class="font-heading text-3xl md:text-4xl lg:text-5xl font-black text-text-primary tracking-tight">Our Premium Offerings</h2>
+                <p class="max-w-xl mx-auto text-text-secondary mt-2">Discover comfortable and hassle-free living arrangements handpicked for students and corporate professionals.</p>
             </div>
-            <div class="row g-4">
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="service-item rounded pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-3x fa-globe text-primary mb-4"></i>
-                            <h5>Single Room PG</h5>
-                            <p>Our single rooms are thoughtfully designed to offer you maximum comfort and privacy.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="service-item rounded pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-3x fa-hotel text-primary mb-4"></i>
-                            <h5>Double Room PG </h5>
-                            <p>Awesome Room with attach bathroom , Start living with your bestfriend</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="service-item rounded pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-3x fa-hotel text-primary mb-4"></i>
-                            <h5>Flat</h5>
-                            <p>Start your hassle free living with family or friend</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-                    <div class="service-item rounded pt-3">
-                        <div class="p-4">
-                            <i class="fa fa-3x fa-hotel text-primary mb-4"></i>
-                            <h5>Hostel</h5>
-                            <p>Take experiance of best living and hygenic food</p>
-                        </div>
-                    </div>
-                </div>
-               
-                
 
-                
-            </div>
-        </div>
-    </div>
-    <!-- Service End -->
+            <!-- Service items grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Single Room PG Card -->
+                <div class="glass-panel p-8 rounded-3xl flex flex-col items-center gap-5 text-center group cursor-pointer hover:bg-primary hover:text-white transition-premium">
+                    <div class="h-16 w-16 rounded-2xl bg-primary/10 group-hover:bg-white/20 text-primary group-hover:text-white flex items-center justify-center text-3xl transition-colors">
+                        <i class="fa fa-globe"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-heading group-hover:text-white">Single Room PG</h3>
+                    <p class="text-sm text-text-secondary group-hover:text-white/80 leading-relaxed font-medium">Our single rooms are thoughtfully designed to offer you maximum comfort and absolute privacy.</p>
+                </div>
 
+                <!-- Double Room PG Card -->
+                <div class="glass-panel p-8 rounded-3xl flex flex-col items-center gap-5 text-center group cursor-pointer hover:bg-primary hover:text-white transition-premium">
+                    <div class="h-16 w-16 rounded-2xl bg-primary/10 group-hover:bg-white/20 text-primary group-hover:text-white flex items-center justify-center text-3xl transition-colors">
+                        <i class="fa fa-hotel"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-heading group-hover:text-white">Double Room PG</h3>
+                    <p class="text-sm text-text-secondary group-hover:text-white/80 leading-relaxed font-medium">Awesome Room with attached bathroom. Start premium shared living with your best friend.</p>
+                </div>
 
-    <!-- Testimonial Start -->
-    <!-- <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container">
-            <div class="text-center">
-                <h6 class="section-title bg-white text-center text-primary px-3">Testimonial</h6>
-                <h1 class="mb-5">Our Clients Say!!!</h1>
-            </div>
-            <div class="owl-carousel testimonial-carousel position-relative">
-                <div class="testimonial-item bg-white text-center border p-4">
-                    <img class="bg-white rounded-circle shadow p-1 mx-auto mb-3" src="img/testimonial-1.jpg" style="width: 80px; height: 80px;">
-                    <h5 class="mb-0">John Doe</h5>
-                    <p>New York, USA</p>
-                    <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
+                <!-- Flat Card -->
+                <div class="glass-panel p-8 rounded-3xl flex flex-col items-center gap-5 text-center group cursor-pointer hover:bg-primary hover:text-white transition-premium">
+                    <div class="h-16 w-16 rounded-2xl bg-primary/10 group-hover:bg-white/20 text-primary group-hover:text-white flex items-center justify-center text-3xl transition-colors">
+                        <i class="fa fa-building"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-heading group-hover:text-white">Apartment / Flat</h3>
+                    <p class="text-sm text-text-secondary group-hover:text-white/80 leading-relaxed font-medium">Start your independent hassle-free living with family, colleagues or friends.</p>
                 </div>
-                <div class="testimonial-item bg-white text-center border p-4">
-                    <img class="bg-white rounded-circle shadow p-1 mx-auto mb-3" src="img/testimonial-2.jpg" style="width: 80px; height: 80px;">
-                    <h5 class="mb-0">John Doe</h5>
-                    <p>New York, USA</p>
-                    <p class="mt-2 mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
-                </div>
-                <div class="testimonial-item bg-white text-center border p-4">
-                    <img class="bg-white rounded-circle shadow p-1 mx-auto mb-3" src="img/testimonial-3.jpg" style="width: 80px; height: 80px;">
-                    <h5 class="mb-0">John Doe</h5>
-                    <p>New York, USA</p>
-                    <p class="mt-2 mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
-                </div>
-                <div class="testimonial-item bg-white text-center border p-4">
-                    <img class="bg-white rounded-circle shadow p-1 mx-auto mb-3" src="img/testimonial-4.jpg" style="width: 80px; height: 80px;">
-                    <h5 class="mb-0">John Doe</h5>
-                    <p>New York, USA</p>
-                    <p class="mt-2 mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
+
+                <!-- Hostel Card -->
+                <div class="glass-panel p-8 rounded-3xl flex flex-col items-center gap-5 text-center group cursor-pointer hover:bg-primary hover:text-white transition-premium">
+                    <div class="h-16 w-16 rounded-2xl bg-primary/10 group-hover:bg-white/20 text-primary group-hover:text-white flex items-center justify-center text-3xl transition-colors">
+                        <i class="fa fa-hotel"></i>
+                    </div>
+                    <h3 class="text-xl font-bold font-heading group-hover:text-white">Premium Hostel</h3>
+                    <p class="text-sm text-text-secondary group-hover:text-white/80 leading-relaxed font-medium">Experience secure community living with high-speed WiFi and hygienic food plans.</p>
                 </div>
             </div>
         </div>
-    </div> -->
-    <!-- Testimonial End -->
-        
+    </section>
+    <!-- Services Section End -->
 
-    <!--footer start-->
+    <!-- Footer Start -->
     <%- include('footer') %>
-    <!--footer end-->
+    <!-- Footer End -->
 
-    <!-- Template Javascript -->
+    <!-- Main JavaScript -->
     <script src="js/main.js"></script>
 </body>
 

@@ -3,619 +3,510 @@
 
 <head>
     <meta charset="utf-8">
-    <title>FMPG</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
-
-    <!-- Favicon -->
-    <!-- <link href="img/favicon.ico" rel="icon"> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="icon" href="img/logo.png" type="image/icon type">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap"
-        rel="stylesheet">
-
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="lib/animate/animate.min.css" rel="stylesheet">
-    <!-- <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet"> -->
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/footer.css" rel="stylesheet">
-    <link href="css/loader.css" rel="stylesheet">
+    <title>FMPG - Hassle Free Premium Living</title>
+    <!-- Include central Tailwind Configuration -->
+    <%- include('tailwind-head') %>
+    
     <style>
-        body .alert-custom {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1050;
-            width: 80%;
-            max-width: 400px;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            font-size: 1.2rem;
-            font-weight: 600;
-            text-align: center;
-            background: rgba(36, 193, 96, 0.9);
-            backdrop-filter: blur(80%);
-            opacity: 0.8;
-            animation: fadeIn 1s forwards, fadeOut 1s forwards 3s;
+        /* Custom alerts styling to fit dark/light seamlessly */
+        .alert-custom {
+            animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards, fadeOut 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards 3.5s;
         }
 
-
-
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; transform: translate(-50%, -60%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
         }
 
         @keyframes fadeOut {
-            from {
-                opacity: 1;
-            }
-
-            to {
-                opacity: 0;
-            }
-        }
-
-        .suggestions-container {
-            position: absolute;
-            top: 100%;
-            /* Positions the dropdown right below the input */
-            left: 0;
-            width: 100%;
-            background-color: white;
-            /* border-radius: 0 0 20px 20px; */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            z-index: 999;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-
-        .dropdown-item {
-            padding: 10px;
-            cursor: pointer;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .dropdown-item:hover {
-            background-color: #f0f0f0;
-        }
-
-        /* Style to match the input field's rounded corners when dropdown appears */
-        #input {
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-        }
-
-        .suggestions-container div:last-child {
-            border-bottom: none;
-            /* Remove the last item's bottom border */
-        }
-
-
-        #near-me-btn {
-            position: absolute;
-            right: 110px;
-            /* Adjust this value to move the button closer to Search */
-            top: 0;
-            margin-top: 7px;
-            margin-left: 0px;
-        }
-
-        #search-btn {
-            position: absolute;
-            right: 6px;
-            top: 0;
-            margin-top: 7px;
-        }
-
-        .full-height {
-            height: 100%;
+            from { opacity: 1; transform: translate(-50%, -50%); }
+            to { opacity: 0; transform: translate(-50%, -40%); }
         }
     </style>
-
 </head>
 
-<body>
+<body class="bg-bg-body text-text-primary transition-colors duration-300">
 
+    <!-- Header Start (Contains Spinner, Social Topbar, Sticky Navbar) -->
+    <%- include('header') %>
+    <!-- Header End -->
 
-    <!-- Spinner Start -->
-    <div id="spinner"
-        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-
-    <!-- <script src="../assets/js/preloader.js"></script>
-    <script src="https://raw.githubusercontent.com/bjornd/jvectormap/master/public/javascript/jquery-jvectormap-in-mill.js"></script> -->
-
-
-
-    <!-- Spinner End -->
-
-    <!-- Topbar Start -->
-    <div class="container-fluid bg-dark px-5 d-none d-lg-block">
-        <div class="row gx-0">
-            <div class="col-lg-8 text-center text-lg-start mb-2 mb-lg-0">
-                <div class="d-inline-flex align-items-center" style="height: 45px;">
-                    <small class="me-3 text-light"><a href="https://maps.app.goo.gl/KJCAo6hSidjYhC5D8"
-                            style="color: white;" class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>UIET Hoshiarpur
-                            , india</a><br>
-                    </small>
-                    <small class="me-3 text-light"><a href=" tel: +917321835093" style="color: white;" class="mb-2"><i
-                                class="fa fa-phone-alt me-3"></i>+917321835093</a><br>
-                    </small>
-                    <small class="text-light"><a href="mailto: fmpg974@gmail.com?" style="color: white;" class="mb-2"><i
-                                class="fa fa-envelope me-3"></i>fmpg974@gmail.com</a>
-                    </small>
-                </div>
-            </div>
-            <div class="col-lg-4 text-center text-lg-end">
-                <div class="d-inline-flex align-items-center" style="height: 45px;">
-                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2"
-                        href=" https://x.com/Find_My_PG " target="_blank"><i class="fab fa-twitter fw-normal"></i></a>
-                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" target="_blank"
-                        href=" https://www.facebook.com/profile.php?id=61564104987167 "><i
-                            class="fab fa-facebook-f fw-normal"></i></a>
-                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" target="_blank"
-                        href=" https://www.linkedin.com/company/findmypg/"><i
-                            class="fab fa-linkedin-in fw-normal"></i></a>
-                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" target="_blank"
-                        href="  https://www.instagram.com/f_m_pg?utm_source=qr&igsh=MTl4bm82anA5dmt4aA=="><i
-                            class="fab fa-instagram fw-normal"></i></a>
-                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle" target="_blank"
-                        href="http://www.youtube.com/@FMPG"><i class="fab fa-youtube fw-normal"></i></a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Topbar End -->
-
-    <!-- Display success message -->
+    <!-- Display dynamic success/notification alerts -->
     <% if (typeof success !=='undefined' && success) { %>
-        <div class="alert alert-success alert-custom" id="message-alert">
-            <%= success %>
+        <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[10000] w-[90%] max-w-md p-6 rounded-3xl bg-primary text-white font-bold text-center shadow-2xl backdrop-blur-md alert-custom" id="message-alert" style="box-shadow: var(--shadow-gold)">
+            <div class="flex flex-col items-center gap-3">
+                <i class="fa-regular fa-circle-check text-4xl"></i>
+                <span class="text-lg font-heading tracking-wide"><%= success %></span>
+            </div>
         </div>
-        <% } %>
+    <% } %>
 
-
-            <!-- Navbar & Hero Start -->
-            <div class="container-fluid position-relative p-0">
-                <nav class="navbar navbar-expand-lg navbar-light px-4 px-lg-5 py-3 py-lg-0">
-                    <a href="" class="navbar-brand p-0">
-                        <h1 class="text-primary m-0"><i class="fa"><img src="<%= assetUrl('img/logo.png') %>" alt=""></i>FMPG</h1>
-                    </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarCollapse">
-                        <span class="fa fa-bars"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarCollapse">
-                        <div class="navbar-nav ms-auto py-0">
-                            <a href="index" class="nav-item nav-link active">Home</a>
-                            <a href="about" class="nav-item nav-link">About</a>
-                            <a href="service" class="nav-item nav-link">Services</a>
-                            <!-- <a href="package.html" class="nav-item nav-link">Packages</a> -->
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
-                                <div class="dropdown-menu m-0">
-                                    <a href="destination" class="dropdown-item">Destination</a>
-                                    <a href="fooding" class="dropdown-item">fooding</a>
-                                    <!-- <a href="team" class="dropdown-item">Team</a> -->
-                                </div>
-                            </div>
-                            <a href="contact" class="nav-item nav-link">Contact</a>
+    <!-- Hero Search Section Start (Overhauled to Premium White Canvas with Isometric 3D Collage) -->
+    <section class="relative w-full overflow-hidden bg-white bg-grid-pattern pt-16 pb-24 lg:py-32">
+        <!-- Luxury ambient glowing background elements -->
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-primary/4 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute top-60 right-0 w-[450px] h-[450px] bg-primary/4 rounded-full blur-[110px] pointer-events-none"></div>
+        
+        <div class="relative max-w-7xl mx-auto px-6 md:px-12 z-10 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            <!-- Left Side: Copywriting & 3D Search Command Panel -->
+            <div class="lg:col-span-7 flex flex-col items-start gap-6 text-left animate-fade-in-up">
+                <!-- Golden Badge -->
+                <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest shadow-sm">
+                    <i class="fa fa-home"></i> Premium Real Estate Living
+                </span>
+                
+                <h1 class="font-heading text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-text-primary leading-tight">
+                    Enjoy Your <br><span class="text-primary relative inline-block">Hassle-Free<span class="absolute left-0 bottom-1 w-full h-[6px] bg-primary/15 rounded"></span></span> Living Space
+                </h1>
+                
+                <p class="max-w-xl text-base sm:text-lg text-text-secondary font-medium leading-relaxed">
+                    Your exclusive home away from home. Discover premium, handpicked, verified accommodations curated specifically for students and professionals.
+                </p>
+                
+                <!-- Search Panel (Redesigned as floating 3D commands card) -->
+                <div class="card-3d w-full max-w-2xl mt-4 relative">
+                    <div class="glass-panel rounded-3xl p-3 bg-white/95 border-primary/25 hover:border-primary/40 flex flex-col sm:flex-row items-stretch gap-2.5 shadow-gold">
+                        <div class="relative flex-1 flex items-center">
+                            <i class="fa fa-map-marker-alt text-primary absolute left-4 text-lg pop-3d"></i>
+                            <input class="w-full bg-transparent py-4 pl-12 pr-12 text-text-primary placeholder-slate-400 font-bold border-0 focus:outline-none focus:ring-0 text-base" id="input" type="text" placeholder="Where do you want to live? (e.g. Hoshiarpur)" autocapitalize="on" required>
+                            
+                            <!-- Near Me GPS button -->
+                            <button type="button" class="absolute right-4 text-text-secondary hover:text-primary transition-colors cursor-pointer pop-3d" id="near-me-btn" title="Detect location">
+                                <i class="fa-solid fa-location-crosshairs text-lg"></i>
+                            </button>
                         </div>
-                        <!-- <a href="/login" class="btn btn-primary rounded-pill py-2 px-4">Login</a> -->
-                        <a href="/profile" class="btn btn-primary rounded-pill py-2 px-4"><i
-                                class="fa-regular fa-user"></i></a>
-                    </div>
-                </nav>
 
-                <div class="container-fluid bg-primary py-5 mb-5 hero-header">
-                    <div class="container py-5">
-                        <div class="row justify-content-center py-5">
-                            <div class="col-lg-10 pt-lg-5 mt-lg-5 text-center">
-                                <h1 class="display-3 text-white mb-3 animated slideInDown">Enjoy Your Hassle Free Living
-                                </h1>
-                                <p class="fs-4 text-white mb-4 animated slideInDown">Your home away from home, where
-                                    comfort
-                                    meets convenience!</p>
-                                <div class="position-relative w-75 mx-auto animated slideInDown">
-                                    <div class="position-relative" style="width: 100%;">
-                                        <input class="form-control border-0 w-100 py-3 ps-4 pe-5" id="input" type="text"
-                                            placeholder="Eg: Hoshiarpur" autocapitalize="on" required>
+                        <!-- Search submit button -->
+                        <button type="button" class="px-8 py-4 bg-primary text-white font-black uppercase tracking-wider text-sm rounded-2xl shadow-md hover:bg-primary-hover hover:scale-[1.02] transition-all cursor-pointer disabled:opacity-50 disabled:pointer-events-none pop-3d" id="search-btn" disabled style="box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15)">
+                            <i class="fa fa-search mr-2"></i> Find PG
+                        </button>
 
-                                        <!-- Near Me button -->
-                                        <button type="button" class="btn py-2 px-3" id="near-me-btn">
-                                            <i class="fa-sharp-duotone fa-solid fa-location-crosshairs"></i>
-                                        </button>
-
-                                        <!-- Search button -->
-                                        <button type="button" class="btn btn-primary py-2 px-4" id="search-btn"
-                                            disabled>
-                                            Search
-                                        </button>
-
-                                        <!-- Suggestions container -->
-                                        <div class="suggestions-container" id="dropdown" style="display: none;"></div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
+                        <!-- Suggestions Dropdown list -->
+                        <div class="suggestions-container absolute top-full left-0 right-0 mt-3 rounded-2xl border border-border-color bg-white p-2 shadow-xl z-[999] max-h-56 overflow-y-auto text-text-primary text-left" id="dropdown" style="display: none;"></div>
                     </div>
                 </div>
             </div>
-            <!-- Navbar & Hero End -->
+
+            <!-- Right Side: Beautiful 3D Layered Isometric Collage (Premium Real Estate Concept) -->
+            <div class="lg:col-span-5 hidden lg:block relative h-[420px] preserve-3d animate-fade-in-up">
+                <!-- Background decorative luxury circle frame -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full border-2 border-dashed border-primary/15 animate-spin-slow"></div>
+                
+                <!-- Main Layer: Premium Villa Image Card (Skewed slightly) -->
+                <div class="card-3d absolute top-6 left-6 w-80 h-72 rounded-[32px] overflow-hidden shadow-2xl border-4 border-white transition-premium cursor-pointer" style="transform: rotate(-4deg) rotateY(15deg);">
+                    <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80" alt="Premium Living Villa">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent"></div>
+                </div>
+
+                <!-- Overlapping Floating Card 1: Rating Badge (Pops in 3D) -->
+                <div class="card-3d absolute bottom-12 -left-4 px-5 py-3 rounded-2xl bg-white border border-border-color shadow-gold flex items-center gap-2.5 transition-premium cursor-pointer" style="transform: translateZ(60px) rotate(4deg);">
+                    <div class="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm font-black">★</div>
+                    <div>
+                        <p class="text-xs font-black text-text-primary">4.9 / 5.0 Rated</p>
+                        <p class="text-[9px] text-text-secondary font-semibold uppercase tracking-wider">Premium Standard</p>
+                    </div>
+                </div>
+
+                <!-- Overlapping Floating Card 2: Micro Property Tag (Pops in 3D) -->
+                <div class="card-3d absolute top-12 right-2 px-5 py-3.5 rounded-2xl bg-slate-950 text-white shadow-2xl flex items-center gap-3 transition-premium cursor-pointer" style="transform: translateZ(80px) rotate(-6deg);">
+                    <i class="fa fa-circle-check text-primary text-lg"></i>
+                    <div>
+                        <p class="text-xs font-black">100% Verified</p>
+                        <p class="text-[9px] text-primary font-bold uppercase tracking-widest">Secure Homes</p>
+                    </div>
+                </div>
+
+                <!-- Extra Decorative Grid Elements -->
+                <div class="absolute bottom-2 right-12 text-primary/30 text-5xl opacity-40"><i class="fa-solid fa-grid-2 animate-pulse"></i></div>
+            </div>
+        </div>
+    </section>
+    <!-- Hero Search Section End -->
 
 
-            <!-- About Start -->
-            <div class="container-xxl py-5">
-                <div class="container">
-                    <div class="row g-5">
-                        <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s" style="min-height: 400px;">
-                            <div class="position-relative h-100">
-                                <img class="img-fluid position-absolute w-100 h-100" src="<%= assetUrl('img/about.jpg') %>" alt=""
-                                    style="object-fit: cover;">
-                            </div>
+    <!-- About Section Start (Refactored to Premium Layout with Staggered GSAP) -->
+    <section class="py-24 max-w-7xl mx-auto px-6 md:px-12 bg-white">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            <!-- Left Column: About Image & Interactive 3D Stat Banner -->
+            <div class="lg:col-span-6 relative aspect-[4/3] w-full rounded-[40px] overflow-hidden shadow-2xl border border-border-color-light group gsap-reveal">
+                <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="<%= assetUrl('img/about.jpg') %>" alt="Comfortable Hostel Room">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent"></div>
+                
+                <!-- Floating 3D Stat Banner (Redesigned as luxurious glass panel) -->
+                <div class="card-3d absolute bottom-6 left-6 right-6 p-6 rounded-3xl bg-white/90 backdrop-blur-md border border-primary/20 text-text-primary flex items-center justify-between shadow-gold">
+                    <div class="text-center flex-1">
+                        <span class="text-3xl font-black text-primary font-heading tracking-tight flex justify-center items-center gap-0.5">
+                            <span class="gsap-counter" data-target="100">0</span>%
+                        </span>
+                        <p class="text-[10px] text-text-secondary font-black uppercase tracking-widest mt-1 pop-3d">Verified Units</p>
+                    </div>
+                    <div class="h-10 w-[1px] bg-border-color"></div>
+                    <div class="text-center flex-1">
+                        <span class="text-3xl font-black text-secondary font-heading tracking-tight flex justify-center items-center gap-0.5">
+                            24/7
+                        </span>
+                        <p class="text-[10px] text-text-secondary font-black uppercase tracking-widest mt-1 pop-3d">Live Help Desk</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: About Content (Staggered Entrance) -->
+            <div class="lg:col-span-6 flex flex-col gap-6 items-start text-left gsap-slide-in" data-side="right">
+                <div class="flex flex-col gap-2">
+                    <span class="text-primary font-black text-xs tracking-widest uppercase relative pl-8 before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[2px] before:w-6 before:bg-primary">Exclusive Choice</span>
+                    <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-black text-text-primary tracking-tight leading-tight">
+                        Welcome to <span class="text-primary">FMPG</span> Portal
+                    </h2>
+                </div>
+                
+                <p class="text-text-secondary leading-relaxed text-base font-semibold">
+                    FMPG is your premier portal for high-end, comfortable student and professional PG living. We provide verified luxury stays that bridge modern convenience with structural security.
+                </p>
+                <p class="text-text-secondary leading-relaxed text-sm">
+                    Our meticulously curated single and shared suites are tailored to offer optimal privacy. Each accommodation is fully furnished and equipped with robust high-speed Wi-Fi, air conditioning, snug beds, study counters, and premium hygienic restrooms.
+                </p>
+
+                <!-- Checkmarks Grid (Redesigned with gold check dots) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full mt-3">
+                    <div class="flex items-center gap-3">
+                        <div class="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs shadow-sm">
+                            <i class="fa fa-check"></i>
                         </div>
-                        <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
-                            <h6 class="section-title bg-white text-start text-primary pe-3">About Us</h6>
-                            <h1 class="mb-4">Welcome to <span class="text-primary">FMPG</span></h1>
-                            <p class="mb-4">FMPG your premier choice for hastle-free and comfortable hostel living! We
-                                pride
-                                ourselves on creating a home away from home, offering you a perfect blend of
-                                convenience,
-                                security, and community. Whether you're a student, a working professional, or a
-                                traveler. Join
-                                us and experience a new standard of living where comfort meets convenience and every
-                                stay feels
-                                like home.</p>
-                            <p class="mb-4">Our single rooms are thoughtfully designed to offer you maximum comfort and
-                                privacy.
-                                Each room is fully furnished with a cozy bed, a spacious wardrobe, a study desk, and
-                                ample
-                                lighting to create an ideal environment for both relaxation and productivity. With
-                                high-speed
-                                internet, air conditioning, and a dedicated bathroom, you can enjoy all the comforts of
-                                home.
+                        <span class="text-sm font-bold text-text-primary uppercase tracking-wide text-xs">Handpicked Luxury PGs</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs shadow-sm">
+                            <i class="fa fa-check"></i>
+                        </div>
+                        <span class="text-sm font-bold text-text-primary uppercase tracking-wide text-xs">Direct Paperless Booking</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs shadow-sm">
+                            <i class="fa fa-check"></i>
+                        </div>
+                        <span class="text-sm font-bold text-text-primary uppercase tracking-wide text-xs">Dedicated Concierge</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="h-6 w-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs shadow-sm">
+                            <i class="fa fa-check"></i>
+                        </div>
+                        <span class="text-sm font-bold text-text-primary uppercase tracking-wide text-xs">100% Pricing Integrity</span>
+                    </div>
+                </div>
+
+                <a class="mt-4 px-8 py-4 bg-primary text-white font-heading text-xs font-black uppercase tracking-widest rounded-2xl shadow-gold hover:bg-primary-hover hover:scale-105 transition-all duration-300" href="about">
+                    Learn More About Us
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- About Section End -->
+
+
+    <!-- Services Section Start (Redesigned as Staggered 3D Cards) -->
+    <section class="py-24 bg-bg-body-alt border-y border-border-color transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-6 md:px-12 text-center flex flex-col gap-16">
+            <div class="flex flex-col gap-2 items-center gsap-reveal">
+                <span class="text-primary font-black text-xs tracking-widest uppercase pl-8 relative before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[2px] before:w-6 before:bg-primary">Curated Portfolios</span>
+                <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-black text-text-primary tracking-tight">Our Elite Categories</h2>
+            </div>
+
+            <!-- Service items grid (Equipped with GSAP staggers & 3D tilt) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 gsap-stagger">
+                <!-- Single Room PG Card -->
+                <div class="card-3d glass-panel p-8 rounded-[32px] flex flex-col items-center gap-5 text-center group cursor-pointer hover:bg-primary hover:text-white transition-premium bg-white gsap-stagger-item">
+                    <div class="h-16 w-16 rounded-2xl bg-primary/10 group-hover:bg-white/20 text-primary group-hover:text-white flex items-center justify-center text-3xl transition-colors shadow-sm pop-3d">
+                        <i class="fa fa-globe"></i>
+                    </div>
+                    <h3 class="text-lg font-black font-heading group-hover:text-white uppercase tracking-wider mt-2">Single Room</h3>
+                    <p class="text-xs text-text-secondary group-hover:text-white/80 leading-relaxed font-semibold">Exquisite solo chambers designed to host your absolute work-focus and private comfort.</p>
+                </div>
+
+                <!-- Double Room PG Card -->
+                <div class="card-3d glass-panel p-8 rounded-[32px] flex flex-col items-center gap-5 text-center group cursor-pointer hover:bg-primary hover:text-white transition-premium bg-white gsap-stagger-item">
+                    <div class="h-16 w-16 rounded-2xl bg-primary/10 group-hover:bg-white/20 text-primary group-hover:text-white flex items-center justify-center text-3xl transition-colors shadow-sm pop-3d">
+                        <i class="fa fa-hotel"></i>
+                    </div>
+                    <h3 class="text-lg font-black font-heading group-hover:text-white uppercase tracking-wider mt-2">Shared Suites</h3>
+                    <p class="text-xs text-text-secondary group-hover:text-white/80 leading-relaxed font-semibold">Spacious chambers with custom bathroom fittings. Ideal shared layouts for peers.</p>
+                </div>
+
+                <!-- Flat Card -->
+                <div class="card-3d glass-panel p-8 rounded-[32px] flex flex-col items-center gap-5 text-center group cursor-pointer hover:bg-primary hover:text-white transition-premium bg-white gsap-stagger-item">
+                    <div class="h-16 w-16 rounded-2xl bg-primary/10 group-hover:bg-white/20 text-primary group-hover:text-white flex items-center justify-center text-3xl transition-colors shadow-sm pop-3d">
+                        <i class="fa fa-building"></i>
+                    </div>
+                    <h3 class="text-lg font-black font-heading group-hover:text-white uppercase tracking-wider mt-2">Independent Flat</h3>
+                    <p class="text-xs text-text-secondary group-hover:text-white/80 leading-relaxed font-semibold">Premium separate structures matching family comfort, friends stay, or team relocations.</p>
+                </div>
+
+                <!-- Hostel Card -->
+                <div class="card-3d glass-panel p-8 rounded-[32px] flex flex-col items-center gap-5 text-center group cursor-pointer hover:bg-primary hover:text-white transition-premium bg-white gsap-stagger-item">
+                    <div class="h-16 w-16 rounded-2xl bg-primary/10 group-hover:bg-white/20 text-primary group-hover:text-white flex items-center justify-center text-3xl transition-colors shadow-sm pop-3d">
+                        <i class="fa fa-hotel"></i>
+                    </div>
+                    <h3 class="text-lg font-black font-heading group-hover:text-white uppercase tracking-wider mt-2">Premium Hostels</h3>
+                    <p class="text-xs text-text-secondary group-hover:text-white/80 leading-relaxed font-semibold">Vibrant community spaces integrated with solid digital systems and organic meals.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Services Section End -->
+
+
+    <!-- Top Rooms Section Start (Redesigned as High-End Real Estate Listings) -->
+    <section class="py-24 max-w-7xl mx-auto px-6 md:px-12 flex flex-col gap-16 bg-white">
+        <div class="flex flex-col gap-2 items-center text-center gsap-reveal">
+            <span class="text-primary font-black text-xs tracking-widest uppercase pl-8 relative before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[2px] before:w-6 before:bg-primary">Top Recommendations</span>
+            <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-black text-text-primary tracking-tight">Luxury Accommodations</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 gsap-stagger">
+            <% properties.slice(0, 3).forEach(property => { %>
+                <article class="card-3d glass-panel rounded-[32px] overflow-hidden cursor-pointer flex flex-col group transition-premium bg-white gsap-stagger-item" onclick="readmore('<%= property._id %>')">
+                    <!-- Media Gallery with luxury accents -->
+                    <div class="relative overflow-hidden aspect-[4/3] w-full border-b border-border-color-light">
+                        <img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="<%= assetUrl(property.images[0]) %>" alt="<%= property.propertyName %>">
+                        <!-- Luxury Rating Badge -->
+                        <span class="absolute top-4 right-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md text-primary font-black text-xs shadow-sm pop-3d">
+                            ★ 5.0
+                        </span>
+                        <!-- Type Accent Gold Badge -->
+                        <span class="absolute bottom-4 left-4 inline-flex px-3 py-1.5 rounded-full bg-slate-950 text-white font-bold text-[10px] tracking-wider uppercase shadow-md pop-3d">
+                            <%= property.type %>
+                        </span>
+                    </div>
+
+                    <!-- Luxury Real Estate Specs Line -->
+                    <div class="grid grid-cols-3 border-b border-border-color-light text-text-secondary text-[11px] font-bold uppercase tracking-wider bg-bg-body-alt">
+                        <div class="text-center py-3.5 border-r border-border-color-light flex items-center justify-center gap-1">
+                            <i class="fa fa-bed text-primary"></i> Multi-Unit
+                        </div>
+                        <div class="text-center py-3.5 border-r border-border-color-light flex items-center justify-center gap-1">
+                            <i class="fa fa-expand text-primary"></i> 250+ sqft
+                        </div>
+                        <div class="text-center py-3.5 flex items-center justify-center gap-1">
+                            <i class="fa-solid fa-shield text-primary"></i> Secured
+                        </div>
+                    </div>
+
+                    <!-- Info Segment -->
+                    <div class="p-6 flex-1 flex flex-col gap-4 justify-between">
+                        <div class="flex flex-col gap-2">
+                            <h3 class="font-heading text-lg font-black group-hover:text-primary transition-colors text-text-primary line-clamp-1 uppercase tracking-wide">
+                                <%= property.propertyName %>
+                            </h3>
+                            <p class="text-xs text-text-secondary line-clamp-3 leading-relaxed font-medium">
+                                <%= property.description %>
                             </p>
-                            <div class="row gy-2 gx-4 mb-4">
-                                <div class="col-sm-6">
-                                    <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Handpicked PGs
-                                    </p>
-                                </div>
-                                <div class="col-sm-6">
-                                    <!-- <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>First Class Flights</p> -->
-                                </div>
-                                <div class="col-sm-6">
-                                    <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>24/7 Service</p>
+                        </div>
 
-                                </div>
-                                <div class="col-sm-6">
-                                    <!-- <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Latest Model Vehicles</p> -->
-                                </div>
-                                <div class="col-sm-6">
-                                    <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Hassle free
-                                        booking
-                                        process</p>
-                                </div>
-                                <div class="col-sm-6">
-                                    <!-- <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>5 Star Accommodations</p> -->
-                                </div>
+                        <!-- Amenities quick icons -->
+                        <div class="flex items-center gap-3 pt-2">
+                            <span class="h-7 w-7 rounded-full bg-primary/5 text-primary text-[10px] flex items-center justify-center shadow-sm" title="Wi-Fi"><i class="fa fa-wifi"></i></span>
+                            <span class="h-7 w-7 rounded-full bg-primary/5 text-primary text-[10px] flex items-center justify-center shadow-sm" title="AC Included"><i class="fa fa-snowflake"></i></span>
+                            <span class="h-7 w-7 rounded-full bg-primary/5 text-primary text-[10px] flex items-center justify-center shadow-sm" title="CCTV Support"><i class="fa fa-video"></i></span>
+                            <span class="h-7 w-7 rounded-full bg-primary/5 text-primary text-[10px] flex items-center justify-center shadow-sm" title="Clean Fooding"><i class="fa fa-utensils"></i></span>
+                        </div>
+
+                        <!-- CTA row inside listing -->
+                        <div class="pt-4 border-t border-border-color-light flex justify-between items-center">
+                            <div class="flex flex-col">
+                                <span class="text-[9px] font-black text-text-secondary uppercase tracking-widest">Rate Starts At</span>
+                                <span class="text-xl font-black text-primary font-heading tracking-tight">₹<%= property.price || 'Call' %> <span class="text-[10px] text-text-secondary font-medium">/mo</span></span>
                             </div>
-                            <a class="btn btn-primary py-3 px-5 mt-2" href="about">Read More</a>
+                            <button class="px-6 py-3 bg-slate-950 hover:bg-primary hover:scale-[1.02] text-white text-xs font-black uppercase tracking-wider rounded-2xl shadow-sm transition-all cursor-pointer pop-3d" onclick="event.stopPropagation(); readmore('<%= property._id %>')">
+                                Book Stay
+                            </button>
                         </div>
                     </div>
-                </div>
-            </div>
-            <!-- About End -->
+                </article>
+            <% }) %>
+        </div>
+        
+        <script>
+            const readmore = (propertyID) => {
+                const queryString = `propertyID=${propertyID}`;
+                window.location.href = `/readmore?${queryString}`;
+            };
+        </script>
+    </section>
+    <!-- Top Rooms Section End -->
 
 
-            <!-- Service Start -->
-            <div class="container-xxl py-5">
-                <div class="container">
-                    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                        <h6 class="section-title bg-white text-center text-primary px-3">Services</h6>
-                        <h1 class="mb-5">Our Services</h1>
-                    </div>
-                    <div class="row g-4">
-                        <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-                            <div class="service-item rounded pt-3">
-                                <div class="p-4">
-                                    <i class="fa fa-3x fa-globe text-primary mb-4"></i>
-                                    <h5>Single Room PG</h5>
-                                    <p>Our single rooms are thoughtfully designed to offer you maximum comfort and
-                                        privacy.</p>
-                                </div>
+    <!-- Secure Booking Banner Section Start (Overhauled to Premium Light-Canvas Layout with Trust Grids) -->
+    <section class="py-16 bg-white max-w-7xl mx-auto px-6 md:px-12">
+        <div class="card-3d relative w-full overflow-hidden bg-bg-body-alt rounded-[40px] p-8 md:p-16 border border-border-color/40 shadow-emerald" style="box-shadow: var(--shadow-emerald)">
+            <!-- Subtle background grids & ambient light glow -->
+            <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-primary/4 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute left-10 top-10 text-primary/10 text-9xl font-black select-none pointer-events-none opacity-20"><i class="fa fa-shield-halved"></i></div>
+            
+            <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Left Column: Trust Information & Grid Metrics -->
+                <div class="lg:col-span-7 flex flex-col gap-6 items-start text-left">
+                    <span class="text-primary font-black text-xs tracking-widest uppercase pl-8 relative before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[2px] before:w-6 before:bg-primary">Secure Booking</span>
+                    <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-black text-text-primary leading-tight tracking-tight">Instant & Fully Encrypted Reservation Portal</h2>
+                    
+                    <p class="text-text-secondary text-sm md:text-base leading-relaxed font-semibold">
+                        Our verified transaction protocol safeguards your booking payouts. We integrate high-grade 256-bit SSL/TLS security layers and trusted UPI checkout gateways to guarantee effortless, fully protected occupancy approvals.
+                    </p>
+                    
+                    <!-- Fintech Trust Metrics Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full mt-4 border-t border-border-color/20 pt-6">
+                        <div class="flex items-start gap-3.5">
+                            <div class="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-lg shadow-sm shrink-0">
+                                <i class="fa fa-lock"></i>
                             </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-                            <div class="service-item rounded pt-3">
-                                <div class="p-4">
-                                    <i class="fa fa-3x fa-hotel text-primary mb-4"></i>
-                                    <h5>Double Room PG </h5>
-                                    <p>Awesome Room with attach bathroom , Start living with your bestfriend</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-                            <div class="service-item rounded pt-3">
-                                <div class="p-4">
-                                    <i class="fa fa-3x fa-hotel text-primary mb-4"></i>
-                                    <h5>Flat</h5>
-                                    <p>Start your hassle free living with family or friend</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-                            <div class="service-item rounded pt-3">
-                                <div class="p-4">
-                                    <i class="fa fa-3x fa-hotel text-primary mb-4"></i>
-                                    <h5>Hostel</h5>
-                                    <p>Take experience of best living and hygenic food</p>
-                                </div>
+                            <div>
+                                <h4 class="font-heading text-xs font-black text-text-primary uppercase tracking-wider">Bank-Grade SSL</h4>
+                                <p class="text-[11px] text-text-secondary font-medium mt-1 leading-relaxed">256-Bit end-to-end encrypted occupancy lease checks.</p>
                             </div>
                         </div>
 
-
-
-
-                    </div>
-                </div>
-            </div>
-            <!-- Service End -->
-
-
-            <!-- room Start -->
-            <div class="container-xxl py-5">
-                <div class="container">
-                    <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                        <h6 class="section-title bg-white text-center text-primary px-3">Best rooms</h6>
-                        <h1 class="mb-5">Top Rooms</h1>
-                    </div>
-                    <div class="row g-4 justify-content-center">
-                        <!-- <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="package-item">
-
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="<%= assetUrl('PG-photos/sahara-1.jpg') %>" alt="">
-                        </div>
-                        <div class="d-flex border-bottom" style="color: #808b8d;">
-                            <small class="flex-fill text-center border-end py-2">Shared Room</small>
-                            <small class="flex-fill text-center border-end py-2"><i
-                                    class="fa fa-calendar-alt text-primary me-2"></i>1 Month</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>2
-                                Person</small>
-                        </div>
-                        <div class="text-center p-4">
-                            <h3 class="mb-0">Sahara PG</h3>
-                            <div class="mb-3">
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
+                        <div class="flex items-start gap-3.5">
+                            <div class="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-lg shadow-sm shrink-0">
+                                <i class="fa-brands fa-upi"></i>
                             </div>
-                            <p style="color: #808b8d;">Our double rooms are designed to provide a spacious and cozy
-                                living environment for two. Each room is fully furnished with two comfortable beds,
-                                ample storage space, study desks, and plenty of natural light. </p>
-                            <div class="d-flex justify-content-center mb-2">
-                                <button class="book-btn btn-primary btn " style="border-radius: 30px;" id="book-btn"
-                                    onclick="readmore_S()">Book Now</button>
-                                <script>
-                                    const readmore_S = () => {
-                                        const propertyID = "66cf92976bf755e4d885c799";
-                                        const queryString = `PropertyID=${propertyID}`;
-                                        window.location.href = `/readmore?${queryString}`;
-                                    };
-                                </script>
+                            <div>
+                                <h4 class="font-heading text-xs font-black text-text-primary uppercase tracking-wider">UPI Channels</h4>
+                                <p class="text-[11px] text-text-secondary font-medium mt-1 leading-relaxed">Pay secure rentals through all major platforms instantly.</p>
                             </div>
                         </div>
-                    </div>
-                </div> -->
 
-
-
-                        <% properties.slice(0, 3).forEach(property=> { %>
-                            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                                <div class="package-item" onclick="readmore('<%= property._id %>')">
-                                    <div class="overflow-hidden">
-                                        <img class="img-fluid" src="<%= assetUrl(property.images[0]) %>"
-                                            alt="<%= property.propertyName %>">
-                                    </div>
-                                    <div class="d-flex border-bottom" style="color: #808b8d;">
-                                        <small class="flex-fill text-center border-end py-2">
-                                            <%= property.type %>
-                                        </small>
-                                        <small class="flex-fill text-center border-end py-2"><i
-                                                class="fa fa-calendar-alt text-primary me-2"></i>Per Month
-                                        </small>
-                                        <small class="flex-fill text-center py-2"><i
-                                                class="fa fa-user text-primary me-2"></i>
-                                        </small>
-
-                                    </div>
-
-                                    <div class="text-center p-4">
-                                        <h3 class="mb-0">
-                                            <%= property.propertyName %>
-                                        </h3>
-                                        <div class="mb-3">
-                                            <small class="fa fa-star text-primary"></small>
-                                            <small class="fa fa-star text-primary"></small>
-                                            <small class="fa fa-star text-primary"></small>
-                                            <small class="fa fa-star text-primary"></small>
-                                            <small class="fa fa-star text-primary"></small>
-                                        </div>
-                                        <p style="color: #808b8d;">
-                                            <%= property.description %>
-                                        </p>
-                                    </div>
-                                    <!-- <div class="mb-3"></div> -->
-                                    <div class="d-flex justify-content-center mb-2">
-                                        <button class="book-btn btn-primary btn" style="border-radius: 30px;"
-                                            id="book-btn" onclick="readmore('<%= property._id %>')">Book Now</button>
-
-                                    </div>
-                                </div>
+                        <div class="flex items-start gap-3.5">
+                            <div class="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-lg shadow-sm shrink-0">
+                                <i class="fa fa-circle-check"></i>
                             </div>
-                            <% }) %>
-                                <script>
-                                    const readmore = (propertyID) => {
-                                        const queryString = `propertyID=${propertyID}`;
-                                        window.location.href = `/readmore?${queryString}`;
-                                    };
-                                </script>
-
-                    </div>
-                </div>
-            </div>
-            <!-- Package End -->
-
-
-            <!-- Booking Start -->
-            <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
-                <div class="container">
-                    <div class="booking p-5">
-                        <div class="row g-5 align-items-center">
-                            <div class="col-md-6 text-white">
-                                <h6 class="text-white text-uppercase">Booking</h6>
-                                <h1 class="text-white mb-4">Online Booking</h1>
-                                <p class="mb-4">Online booking guarantees the protection of personal and financial
-                                    information
-                                    through encrypted transactions, secure payment gateways, and strict privacy
-                                    policies,
-                                    ensuring a seamless and trustworthy reservation process.</p>
-                                <p class="mb-4">Secure your booking instantly with Online Payment</p>
-                                <!-- <a class="btn btn-outline-light p y-3 px-5 mt-2" href="">Read More</a> -->
+                            <div>
+                                <h4 class="font-heading text-xs font-black text-text-primary uppercase tracking-wider">100% Certified Stays</h4>
+                                <p class="text-[11px] text-text-secondary font-medium mt-1 leading-relaxed">Every listed room undergoes physical structural verification.</p>
                             </div>
-                            <div class="col-md-6">
-                                <h2 class="text-white mb-4" href="booking">Book your room</h2>
-                                <form action="/api/bookings" method="Post">
-                                    <div class="row g-3">
-                                        <div class="col-12">
-                                            <a class="btn btn-outline-light w-100 py-3" type="submit" id="resister"
-                                                href="search-page">Book Now</a>
-                                        </div>
-                                    </div>
-                                </form>
+                        </div>
+
+                        <div class="flex items-start gap-3.5">
+                            <div class="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-lg shadow-sm shrink-0">
+                                <i class="fa fa-rotate-left"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-heading text-xs font-black text-text-primary uppercase tracking-wider">Cancellation Integrity</h4>
+                                <p class="text-[11px] text-text-secondary font-medium mt-1 leading-relaxed">Transparent refund policies with immediate reversal support.</p>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- Booking Start -->
 
-
-            <!-- Process Start -->
-            <div class="container-xxl py-5">
-                <div class="container">
-                    <div class="text-center pb-4 wow fadeInUp" data-wow-delay="0.1s">
-                        <h6 class="section-title bg-white text-center text-primary px-3">Process</h6>
-                        <h1 class="mb-5">3 Easy Steps</h1>
-                    </div>
-                    <div class="row gy-5 gx-4 justify-content-center">
-                        <div class="col-lg-4 col-sm-6 text-center pt-4 wow fadeInUp" data-wow-delay="0.1s">
-                            <div class="position-relative border border-primary pt-5 pb-4 px-4">
-                                <div class="d-inline-flex align-items-center justify-content-center bg-primary rounded-circle position-absolute top-0 start-50 translate-middle shadow"
-                                    style="width: 100px; height: 100px;">
-                                    <i class="fa fa-globe fa-3x text-white"></i>
-                                </div>
-                                <h5 class="mt-4">Choose A Room</h5>
-                                <hr class="w-25 mx-auto bg-primary mb-1">
-                                <hr class="w-50 mx-auto bg-primary mt-0">
-                                <p class="mb-0">Simple select a room where you want to live</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-sm-6 text-center pt-4 wow fadeInUp" data-wow-delay="0.3s">
-                            <div class="position-relative border border-primary pt-5 pb-4 px-4 full-height">
-                                <div class="d-inline-flex align-items-center justify-content-center bg-primary rounded-circle position-absolute top-0 start-50 translate-middle shadow"
-                                    style="width: 100px; height: 100px;">
-                                    <i class="fa fa-rupee-sign fa-3x text-white"></i>
-                                </div>
-                                <h5 class="mt-4">Pay Online</h5>
-                                <hr class="w-25 mx-auto bg-primary mb-1">
-                                <hr class="w-50 mx-auto bg-primary mt-0">
-                                <p class="mb-0">Pay through UPI</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-sm-6 text-center pt-4 wow fadeInUp" data-wow-delay="0.5s">
-                            <div class="position-relative border border-primary pt-5 pb-4 px-4 full-height">
-                                <div class="d-inline-flex align-items-center justify-content-center bg-primary rounded-circle position-absolute top-0 start-50 translate-middle shadow"
-                                    style="width: 100px; height: 100px;">
-                                    <i class="fa bi bi-building fa-3x text-white"></i>
-                                </div>
-                                <h5 class="mt-4">Move In Today</h5>
-                                <hr class="w-25 mx-auto bg-primary mb-1">
-                                <hr class="w-50 mx-auto bg-primary mt-0">
-                                <p class="mb-0">Start hassle-free living from today </p>
-                            </div>
+                <!-- Right Column: Breathtaking Floating Glass Checkout Panel -->
+                <div class="lg:col-span-5 w-full glass-panel p-8 rounded-[32px] bg-white border border-border-color/30 flex flex-col gap-6 text-left shadow-emerald">
+                    <div class="flex items-center gap-3 border-b border-border-color-light pb-4">
+                        <span class="h-9 w-9 rounded-full bg-primary/10 text-primary flex items-center justify-center text-base shadow-sm">
+                            <i class="fa fa-shield-halved"></i>
+                        </span>
+                        <div>
+                            <h3 class="font-heading text-sm font-black text-text-primary uppercase tracking-widest pop-3d">Protected Stay</h3>
+                            <p class="text-[10px] text-text-secondary font-bold uppercase tracking-wider mt-0.5">Secure Transaction Panel</p>
                         </div>
                     </div>
+
+                    <!-- Bullet trust lists -->
+                    <ul class="flex flex-col gap-3.5 text-xs text-text-secondary font-semibold">
+                        <li class="flex items-center gap-2.5">
+                            <i class="fa fa-check text-primary text-sm"></i>
+                            <span>Zero hidden fees or list markups</span>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <i class="fa fa-check text-primary text-sm"></i>
+                            <span>Instant digital lease contract generation</span>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <i class="fa fa-check text-primary text-sm"></i>
+                            <span>24/7 dedicated support for check-in assistance</span>
+                        </li>
+                    </ul>
+
+                    <a href="search-page" class="w-full py-4.5 bg-primary hover:bg-primary-hover text-white font-heading text-xs font-black uppercase tracking-widest rounded-2xl shadow-emerald hover:scale-[1.01] transition-all text-center flex items-center justify-center gap-2 pop-3d" style="box-shadow: 0 4px 14px rgba(5, 150, 105, 0.2)">
+                        <span>Launch Stay Finder</span> <i class="fa fa-arrow-right text-[10px]"></i>
+                    </a>
                 </div>
             </div>
-            <!-- Process Start -->
+        </div>
+    </section>
+    <!-- Secure Booking Banner Section End -->
 
-            <!--footer start-->
-            <%- include('footer') %>
-                <!--footer end-->
 
-                <!-- Template Javascript -->
-                <script src="js/main.js"></script>
-                <script src="/js/locationScript.js"></script>
-                <script>
-                    // Automatically hide the message after 4 seconds
-                    setTimeout(function () {
-                        const alertMessage = document.getElementById('message-alert');
-                        if (alertMessage) {
-                            alertMessage.style.transition = 'opacity 1s ease';
-                            alertMessage.style.opacity = '0';
-                            setTimeout(() => alertMessage.remove(), 1000);  // Remove from DOM after fade-out
-                        }
-                    }, 4000);
-                </script>
-                <script>
-                    const searchButton = document.getElementById('searchButton');
-                    if (searchButton) {
-                        searchButton.onclick = function () {
-                            const userLat = sessionStorage.getItem('userLat');
-                            const userLng = sessionStorage.getItem('userLng');
-                            if (userLat && userLng) {
-                                window.location.href = `/search-page?lat=${userLat}&lng=${userLng}`;
-                            } else {
-                                alert("Location is required for this feature.");
-                            }
-                        };
-                    }
-                </script>
+    <!-- Process Section Start (Staggered Animation Circular Steps) -->
+    <section class="py-24 max-w-7xl mx-auto px-6 md:px-12 bg-white">
+        <div class="text-center flex flex-col gap-2 items-center gsap-reveal">
+            <span class="text-primary font-black text-xs tracking-widest uppercase pl-8 relative before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[2px] before:w-6 before:bg-primary">Onboarding</span>
+            <h2 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-black text-text-primary tracking-tight">3 Effortless Steps</h2>
+        </div>
 
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative mt-16 gsap-stagger">
+            <!-- Connector dashed line on desktop -->
+            <div class="hidden md:block absolute top-[4.5rem] left-[15%] right-[15%] h-[2px] border-t-2 border-dashed border-border-color-light z-0"></div>
+            
+            <!-- Step 1 -->
+            <div class="card-3d relative flex flex-col items-center gap-4 text-center z-10 group gsap-stagger-item">
+                <div class="h-20 w-20 rounded-full bg-white border-4 border-primary text-primary flex items-center justify-center text-2xl shadow-gold transition-all duration-500 group-hover:scale-110 pop-3d">
+                    <i class="fa fa-globe"></i>
+                </div>
+                <h3 class="font-heading text-lg font-black uppercase tracking-wider mt-2">1. Select Cham</h3>
+                <p class="text-xs text-text-secondary max-w-xs leading-relaxed font-semibold">Examine verified listings, filter custom preferences, and pinpoint your suite setup.</p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="card-3d relative flex flex-col items-center gap-4 text-center z-10 group gsap-stagger-item">
+                <div class="h-20 w-20 rounded-full bg-white border-4 border-primary text-primary flex items-center justify-center text-2xl shadow-gold transition-all duration-500 group-hover:scale-110 pop-3d">
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                </div>
+                <h3 class="font-heading text-lg font-black uppercase tracking-wider mt-2">2. Settle Payout</h3>
+                <p class="text-xs text-text-secondary max-w-xs leading-relaxed font-semibold">Validate rental rules, complete safety deposits instantly via secured UPI gateways.</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="card-3d relative flex flex-col items-center gap-4 text-center z-10 group gsap-stagger-item">
+                <div class="h-20 w-20 rounded-full bg-white border-4 border-primary text-primary flex items-center justify-center text-2xl shadow-gold transition-all duration-500 group-hover:scale-110 pop-3d">
+                    <i class="fa-regular fa-building"></i>
+                </div>
+                <h3 class="font-heading text-lg font-black uppercase tracking-wider mt-2">3. Instant Entry</h3>
+                <p class="text-xs text-text-secondary max-w-xs leading-relaxed font-semibold">Retrieve direct check-in keys, carry your baggage, and start hassle-free luxury living today!</p>
+            </div>
+        </div>
+    </section>
+    <!-- Process Section End -->
+
+
+    <!-- Footer inclusion (Includes standard libraries) -->
+    <%- include('footer') %>
+
+    <!-- Page Specific Script binds -->
+    <script src="js/main.js"></script>
+    <script src="/js/locationScript.js"></script>
+    <script>
+        // Automatic Fade-Out logic for dynamic alerts
+        setTimeout(function () {
+            const alertMessage = document.getElementById('message-alert');
+            if (alertMessage) {
+                setTimeout(() => alertMessage.remove(), 1000); // Remove from DOM fully after fade-out transition completes
+            }
+        }, 4000);
+
+        // Near-Me dynamic GPS redirect script binding
+        const searchButton = document.getElementById('search-btn');
+        if (searchButton) {
+            searchButton.addEventListener('click', function () {
+                const inputVal = document.getElementById('input').value.trim();
+                const userLat = sessionStorage.getItem('userLat');
+                const userLng = sessionStorage.getItem('userLng');
+                if (inputVal) {
+                    window.location.href = `/search-page?query=${encodeURIComponent(inputVal)}`;
+                } else if (userLat && userLng) {
+                    window.location.href = `/search-page?lat=${userLat}&lng=${userLng}`;
+                } else {
+                    alert("Please enter a location query or use Detect Location.");
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

@@ -1,44 +1,81 @@
 <%- include('partials/header') %>
 
-    <h1>Contact Messages</h1>
-<table class="customers">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Subject</th>
-            <th>Message</th>
-            <th>Date & Time</th> <!-- Updated column header -->
-        </tr>
-    </thead>
-    <tbody>
-        <% messages.forEach(function(message) { %>
+<div class="p-6 space-y-6 animate-fade-in-up">
+  <!-- Title Section -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border-color pb-4">
+    <div>
+      <h1 class="text-3xl font-extrabold font-heading text-primary">Contact Messages Inbox</h1>
+      <p class="text-text-secondary text-sm mt-1">Review query submissions, support requests, and user comments in chronological order.</p>
+    </div>
+    <div class="flex items-center gap-2 bg-primary/10 text-primary border border-primary/20 rounded-xl px-4 py-2 text-xs font-semibold self-start md:self-auto">
+      <i class="fa-solid fa-inbox animate-pulse"></i>
+      Active Inbox Feed
+    </div>
+  </div>
+
+  <!-- Messages Table Card -->
+  <div class="glass-panel rounded-2xl overflow-hidden shadow-xl border border-border-color">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse bg-bg-card">
+        <thead>
+          <tr class="bg-primary text-white">
+            <th class="p-4 font-heading font-semibold text-sm">Sender Name</th>
+            <th class="p-4 font-heading font-semibold text-sm">Email Address</th>
+            <th class="p-4 font-heading font-semibold text-sm">Subject</th>
+            <th class="p-4 font-heading font-semibold text-sm">Message Content</th>
+            <th class="p-4 font-heading font-semibold text-sm text-center">Date & Time</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border-color text-sm">
+          <% if (messages && messages.length > 0) { %>
+            <% messages.forEach(function(message) { %>
+              <tr class="hover:bg-primary/5 transition-colors duration-200">
+                <!-- Name -->
+                <td class="p-4 font-semibold text-text-primary">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
+                      <%= message.name.charAt(0).toUpperCase() %>
+                    </div>
+                    <span><%= message.name %></span>
+                  </div>
+                </td>
+                
+                <!-- Email -->
+                <td class="p-4 font-mono font-medium text-text-secondary"><%= message.email %></td>
+                
+                <!-- Subject -->
+                <td class="p-4 font-bold text-text-primary"><%= message.subject %></td>
+                
+                <!-- Message -->
+                <td class="p-4 max-w-[320px] leading-relaxed text-text-secondary font-medium"><%= message.message %></td>
+                
+                <!-- Date -->
+                <td class="p-4 text-center font-mono text-xs text-text-secondary">
+                  <%= message.date.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }) %>
+                </td>
+              </tr>
+            <% }); %>
+          <% } else { %>
             <tr>
-                <td><%= message.name %></td>
-                <td><%= message.email %></td>
-                <td><%= message.subject %></td>
-                <td><%= message.message %></td>
-                <!-- Display both date and time -->
-                <td><%= message.date.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }) %></td>
+              <td colspan="5" class="p-12 text-center text-text-secondary font-medium">
+                <i class="fa-solid fa-envelope-open-text text-4xl text-border-color mb-3 block animate-pulse"></i>
+                No contact messages found in inbox.
+              </td>
             </tr>
-        <% }); %>
-    </tbody>
-</table>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
-  <!-- plugins:js -->
-  <script src="../assets/vendors/js/vendor.bundle.base.js"></script>
-  <!-- endinject -->
-  <!-- Plugin js for this page-->
-  <script src="../assets/vendors/chartjs/Chart.min.js"></script>
-  <script src="../assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
-  <script src="../assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-  <!-- End plugin js for this page-->
-  <!-- inject:js -->
-  <script src="../assets/js/material.js"></script>
-  <script src="../assets/js/misc.js"></script>
-  <!-- endinject -->
-  <!-- Custom js for this page-->
-  <script src="../assets/js/dashboard.js"></script>
-  <!-- End custom js for this page-->
+
+<!-- Close Sidebar & Main wrappers opened in partials/header -->
+      </div>
+   </div>
+
+<!-- vendor scripts -->
+<script src="<%= assetUrl('assets/vendors/js/vendor.bundle.base.js') %>"></script>
+<script src="<%= assetUrl('assets/js/material.js') %>"></script>
+<script src="<%= assetUrl('assets/js/misc.js') %>"></script>
 </body>
-</html> 
+</html>

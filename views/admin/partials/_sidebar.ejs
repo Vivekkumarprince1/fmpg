@@ -1,138 +1,124 @@
-<aside class="mdc-drawer mdc-drawer--dismissible mdc-drawer--open">
-      <div class="mdc-drawer__header">
-        <a href="index" class="brand-logo">
-          <img src="<%= assetUrl('assets/images/logo.svg') %>" alt="logo">
-        </a>
-      </div>
-      <div class="mdc-drawer__content">
-        <div class="user-info">
-          <p class="name">Welcome back</p>
-          <p class="email">Dear <%=admin.username%> </p>
+<aside id="admin-sidebar" class="w-64 bg-bg-card/95 backdrop-blur-md border-r border-border-color h-screen sticky top-0 flex-shrink-0 flex flex-col justify-between transition-transform duration-300 z-50 fixed md:sticky -translate-x-full md:translate-x-0">
+  
+  <div class="flex-1 flex flex-col min-h-0 overflow-y-auto">
+    <!-- Brand Header -->
+    <div class="h-20 flex items-center justify-between px-6 border-b border-border-color/60">
+      <a href="/profile" class="flex items-center gap-2">
+        <img src="<%= assetUrl('img/logo.png') %>" alt="FMPG Logo" class="h-10 w-10 object-contain rounded-xl shadow-sm">
+        <span class="font-heading font-black text-lg tracking-wider bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">FMPG ADMIN</span>
+      </a>
+      
+      <!-- Mobile Close Trigger -->
+      <button id="close-sidebar-btn" class="md:hidden h-8 w-8 rounded-lg flex items-center justify-center border border-border-color hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer" aria-label="Close sidebar">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+    </div>
+
+    <!-- Active Admin Profile Info -->
+    <div class="px-6 py-6 border-b border-border-color/60">
+      <div class="flex items-center gap-3 bg-bg-body/60 border border-border-color/60 p-3.5 rounded-2xl">
+        <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-black font-heading text-base shadow-inner">
+          <%= (typeof admin !== 'undefined' && admin) ? admin.username.charAt(0).toUpperCase() : (typeof user !== 'undefined' && user ? user.username.charAt(0).toUpperCase() : 'A') %>
         </div>
-        <div class="mdc-list-group">
-          <nav class="mdc-list mdc-drawer-menu">
-
-            <div class="mdc-list-item mdc-drawer-item">
-              <a class="mdc-drawer-link" href="/index">
-                <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">home</i>
-                Home
-              </a>
-            </div>
-
-            <div class="mdc-list-item mdc-drawer-item">
-              <a class="mdc-drawer-link" href="/profile">
-                <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">home</i>
-                Dashboard
-              </a>
-            </div>
-
-            <!-- <div class="mdc-list-item mdc-drawer-item">
-              <a class="mdc-drawer-link" href="pages/forms/basic-forms.ejs">
-                <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">track_changes</i>
-                Forms
-              </a>
-            </div> -->
-
-            <div class="mdc-list-item mdc-drawer-item">
-              <a class="mdc-expansion-panel-link" href="#" data-toggle="expansionPanel" data-target="ui-sub-menu">
-                <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">dashboard</i>
-                Manegement
-                <i class="mdc-drawer-arrow material-icons">chevron_right</i>
-              </a>
-              <div class="mdc-expansion-panel" id="ui-sub-menu">
-                <nav class="mdc-list mdc-drawer-submenu">
-                  <div class="mdc-list-item mdc-drawer-item">
-                    <a class="mdc-drawer-link" href="/admin/users">
-                      <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">track_changes</i>
-                      Users
-                    </a>
-                  </div>
-                  <div class="mdc-list-item mdc-drawer-item">
-                    <a class="mdc-drawer-link" href="/admin/bookings">
-                      <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">track_changes</i>
-                      Bookings
-                    </a>
-                  </div>
-                  <div class="mdc-list-item mdc-drawer-item">
-                    <a class="mdc-drawer-link" href="/admin/properties">
-                      <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">track_changes</i>
-                      Properties
-                    </a>
-                    </div>
-
-                </nav>
-              </div>
-            </div>
-            <!-- <div class="mdc-list-item mdc-drawer-item">
-              <a class="mdc-drawer-link" href="pages/tables/basic-tables.html">
-                <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">grid_on</i>
-                Tables
-              </a>
-            </div> -->
-            <div class="mdc-list-item mdc-drawer-item">
-              <a class="mdc-drawer-link" href="/admin/analytics">
-                <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">pie_chart_outlined</i>
-                Charts
-              </a>
-            </div>
-            <div class="mdc-list-item mdc-drawer-item">
-              <a class="mdc-expansion-panel-link" href="#" data-toggle="expansionPanel" data-target="sample-page-submenu">
-                <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">pages</i>
-                Requests
-                <i class="mdc-drawer-arrow material-icons">chevron_right</i>
-              </a>
-              <div class="mdc-expansion-panel" id="sample-page-submenu">
-                <nav class="mdc-list mdc-drawer-submenu">
-                  <div class="mdc-list-item mdc-drawer-item">
-                    <a href="/admin/newOwnerrequest" class="mdc-drawer-link">
-                      list property
-                    </a>
-                  </div>
-                  <div class="mdc-list-item mdc-drawer-item">
-                    <a class="mdc-drawer-link" href="/admin/messages">
-                      Public Support req
-                    </a>
-                  </div>
-                  <!-- <div class="mdc-list-item mdc-drawer-item">
-                    <a class="mdc-drawer-link" href="pages/samples/404.html">
-                      404
-                    </a>
-                  </div>
-                  <div class="mdc-list-item mdc-drawer-item">
-                    <a class="mdc-drawer-link" href="pages/samples/500.html">
-                      500
-                    </a>
-                  </div>
-                  <div class="mdc-list-item mdc-drawer-item">
-                    <a class="mdc-drawer-link" href="pages/samples/505.html">
-                      505
-                    </a>
-                  </div>
-                  <div class="mdc-list-item mdc-drawer-item">
-                    <a class="mdc-drawer-link" href="pages/samples/login.html">
-                      Login
-                    </a>
-                  </div>
-                  <div class="mdc-list-item mdc-drawer-item">
-                    <a class="mdc-drawer-link" href="pages/samples/register.html">
-                      Register
-                    </a>
-                  </div> -->
-                </nav>
-              </div>
-            </div>
-            <!-- <div class="mdc-list-item mdc-drawer-item">
-              <a class="mdc-drawer-link" href="https://www.bootstrapdash.com/demo/material-admin-free/jquery/documentation/documentation.html" target="_blank">
-                <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">description</i>
-                Documentation
-              </a>
-            </div> -->
-          </nav>
-        </div>
-        <div class="profile-actions">
-          <a href="/settings">Settings</a>
-          <span class="divider"></span>
-          <a href="/logout">Logout</a>
+        <div class="min-w-0 flex-1">
+          <span class="block text-[10px] font-bold text-text-secondary uppercase tracking-widest mb-0.5">Welcome back</span>
+          <h4 class="font-heading font-extrabold text-sm text-text-primary truncate">
+            <%= (typeof admin !== 'undefined' && admin) ? admin.username : (typeof user !== 'undefined' && user ? user.username : 'Admin') %>
+          </h4>
         </div>
       </div>
-    </aside>
+    </div>
+
+    <!-- Nav List Menu -->
+    <nav class="flex-1 px-4 py-6 space-y-7">
+      
+      <!-- Group 1: Core Systems -->
+      <div class="space-y-2">
+        <span class="px-3 text-[10px] font-bold text-text-secondary uppercase tracking-widest block opacity-70">Core Suite</span>
+        <div class="space-y-1">
+          <a href="/index" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-text-secondary hover:text-primary hover:bg-primary/5 border border-transparent hover:border-primary/10 transition-all duration-200">
+            <i class="fa-solid fa-house text-sm w-5 text-center"></i>
+            <span>Home Portal</span>
+          </a>
+          <a href="/profile" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-text-secondary hover:text-primary hover:bg-primary/5 border border-transparent hover:border-primary/10 transition-all duration-200">
+            <i class="fa-solid fa-gauge-high text-sm w-5 text-center"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="/admin/analytics" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-text-secondary hover:text-primary hover:bg-primary/5 border border-transparent hover:border-primary/10 transition-all duration-200">
+            <i class="fa-solid fa-chart-line text-sm w-5 text-center"></i>
+            <span>Analytics Hub</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Group 2: Management systems -->
+      <div class="space-y-2">
+        <span class="px-3 text-[10px] font-bold text-text-secondary uppercase tracking-widest block opacity-70">Management</span>
+        <div class="space-y-1">
+          <a href="/admin/users" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-text-secondary hover:text-primary hover:bg-primary/5 border border-transparent hover:border-primary/10 transition-all duration-200">
+            <i class="fa-solid fa-users text-sm w-5 text-center"></i>
+            <span>Users Registry</span>
+          </a>
+          <a href="/admin/bookings" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-text-secondary hover:text-primary hover:bg-primary/5 border border-transparent hover:border-primary/10 transition-all duration-200">
+            <i class="fa-solid fa-calendar-days text-sm w-5 text-center"></i>
+            <span>Bookings</span>
+          </a>
+          <a href="/admin/properties" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-text-secondary hover:text-primary hover:bg-primary/5 border border-transparent hover:border-primary/10 transition-all duration-200">
+            <i class="fa-solid fa-hotel text-sm w-5 text-center"></i>
+            <span>Properties</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Group 3: Onboarding & Support -->
+      <div class="space-y-2">
+        <span class="px-3 text-[10px] font-bold text-text-secondary uppercase tracking-widest block opacity-70">Requests</span>
+        <div class="space-y-1">
+          <a href="/admin/newOwnerrequest" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-text-secondary hover:text-primary hover:bg-primary/5 border border-transparent hover:border-primary/10 transition-all duration-200">
+            <i class="fa-solid fa-file-signature text-sm w-5 text-center"></i>
+            <span>Owner Requests</span>
+          </a>
+          <a href="/admin/messages" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-text-secondary hover:text-primary hover:bg-primary/5 border border-transparent hover:border-primary/10 transition-all duration-200">
+            <i class="fa-solid fa-envelope-open-text text-sm w-5 text-center"></i>
+            <span>Support Enquiries</span>
+          </a>
+        </div>
+      </div>
+
+    </nav>
+  </div>
+
+  <!-- Sidebar Actions Footer -->
+  <div class="p-4 border-t border-border-color/60 bg-bg-body/40">
+    <div class="flex items-center gap-2">
+      <a href="/settings" class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-text-secondary bg-bg-card hover:bg-border-color border border-border-color transition-colors" title="Settings">
+        <i class="fa-solid fa-gear"></i> Settings
+      </a>
+      <a href="/logout" class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-white bg-red-500 hover:bg-red-600 transition-colors shadow-sm" title="Log Out">
+        <i class="fa-solid fa-right-from-bracket"></i> Logout
+      </a>
+    </div>
+  </div>
+
+</aside>
+
+<!-- Sidebar Overlay (For mobile screen overlay) -->
+<div id="sidebar-overlay" class="hidden fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-sm transition-all duration-300 md:hidden"></div>
+
+<script>
+  (function() {
+    const sidebar = document.getElementById('admin-sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const closeBtn = document.getElementById('close-sidebar-btn');
+
+    function closeSidebar() {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    }
+
+    if (closeBtn && overlay) {
+      closeBtn.addEventListener('click', closeSidebar);
+      overlay.addEventListener('click', closeSidebar);
+    }
+  })();
+</script>

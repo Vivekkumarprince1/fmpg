@@ -1,263 +1,158 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form method="POST" action="https://securegw-stage.paytm.in/theia/processTransaction" name="paytm">
-        <input type="hidden" name="MID" value="YOUR_MERCHANT_ID">
-        <input type="hidden" name="ORDER_ID" value="ORDERID_98765">
-        <input type="hidden" name="CUST_ID" value="CUSTOMER_ID">
-        <input type="hidden" name="INDUSTRY_TYPE_ID" value="Retail">
-        <input type="hidden" name="CHANNEL_ID" value="WEB">
-        <input type="hidden" name="TXN_AMOUNT" value="500">
-        <input type="hidden" name="WEBSITE" value="WEBSTAGING">
-        <input type="hidden" name="CALLBACK_URL" value="http://localhost:3000/callback">
-        <input type="hidden" name="CHECKSUMHASH" value="GENERATED_CHECKSUM_FROM_BACKEND">
-        <input type="submit" value="Pay Now">
-    </form>
-    <script type="application/javascript" crossorigin="anonymous" src="https://securegw-stage.paytm.in/merchantpgpui/checkoutjs/merchants/YOUR_MERCHANT_ID.js"></script>
-
-<button id="pay-button">Pay with Paytm UPI</button>
-
-<script>
-    document.getElementById('pay-button').addEventListener('click', function() {
-        var config = {
-            "root": "",
-            "flow": "DEFAULT",
-            "data": {
-                "orderId": "ORDERID_98765",  // Replace with Order ID from backend
-                "token": "GENERATED_TXN_TOKEN",  // Replace with txnToken from backend
-                "tokenType": "TXN_TOKEN",
-                "amount": "500"
-            },
-            "handler": {
-                "notifyMerchant": function(eventName, data) {
-                    console.log("eventName => ", eventName);
-                    console.log("data => ", data);
-                }
-            }
-        };
-        window.Paytm.CheckoutJS.init(config).then(function onSuccess() {
-            // after Paytm SDK is initialized, invoke the checkout
-            window.Paytm.CheckoutJS.invoke();
-        }).catch(function onError(error) {
-            console.log("Error => ", error);
-        });
-    });
-</script>
-    
-</body>
-</html> -->
-
-
-
-
-
-
-<!-- <form id="payment-form">
-    <button id="pay-btn">Pay Now</button>
-  </form>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirm Booking & Payment - FMPG</title>
+  <link rel="icon" href="/img/logo.png" type="image/icon type">
+  
+  <!-- Central Tailwind CSS & Theme Config -->
+  <%- include('tailwind-head') %>
   
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+
+<body class="bg-bg-body text-text-primary min-h-screen flex flex-col transition-colors duration-300">
+  <!-- Header / Navigation Placeholder to maintain uniform flow -->
+  <header class="w-full border-b border-border-color bg-bg-nav backdrop-blur-md sticky top-0 z-50 transition-colors duration-300">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2">
+        <img src="/img/logo.png" alt="FMPG" class="w-10 h-10 object-contain">
+        <span class="font-heading text-xl font-extrabold tracking-wider text-primary">FMPG</span>
+      </a>
+      <div class="text-xs text-text-secondary font-semibold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20 px-3 py-1.5 rounded-full flex items-center gap-1">
+        <i class="fa-solid fa-lock"></i> Secure Checkout
+      </div>
+    </div>
+  </header>
+
+  <!-- Checkout Container -->
+  <main class="flex-grow flex items-center justify-center py-12 px-4">
+    <div class="glass-panel max-w-xl w-full rounded-3xl p-8 md:p-10 shadow-2xl relative overflow-hidden animate-fade-in-up">
+      <!-- Background highlights -->
+      <div class="absolute -top-12 -left-12 w-48 h-48 bg-primary/10 rounded-full blur-3xl"></div>
+      
+      <div class="relative z-10">
+        <!-- Title & Step Progress -->
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4 animate-bounce">
+            <i class="fa-solid fa-receipt text-2xl"></i>
+          </div>
+          <h1 class="text-2xl md:text-3xl font-extrabold font-heading text-text-primary">Confirm Your Booking</h1>
+          <p class="text-text-secondary text-sm mt-1">Please review details and complete the verification fee below.</p>
+        </div>
+
+        <!-- Receipt / Invoice Card -->
+        <div class="bg-bg-body/60 border border-border-color rounded-2xl p-6 mb-8 space-y-4 shadow-inner">
+          <h3 class="text-xs font-bold text-text-secondary uppercase tracking-widest border-b border-border-color pb-2">Booking Receipt</h3>
+          
+          <div class="space-y-3">
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-text-secondary font-medium"><i class="fa-solid fa-building text-xs mr-2"></i>Property Name</span>
+              <span class="text-text-primary font-semibold text-right">The Sunshine Hostel</span>
+            </div>
+            
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-text-secondary font-medium"><i class="fa-solid fa-bed text-xs mr-2"></i>Room Type</span>
+              <span class="text-text-primary font-semibold text-right capitalize">Single Deluxe</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 border-t border-dashed border-border-color pt-3 mt-3 text-sm">
+              <div>
+                <span class="block text-[10px] uppercase font-bold text-text-secondary tracking-wider mb-0.5">Check-In Date</span>
+                <span class="text-text-primary font-semibold"><%= typeof startDate !== 'undefined' ? new Date(startDate).toDateString() : '01-Jan-2025' %></span>
+              </div>
+              <div class="text-right">
+                <span class="block text-[10px] uppercase font-bold text-text-secondary tracking-wider mb-0.5">Check-Out Date</span>
+                <span class="text-text-primary font-semibold"><%= typeof endDate !== 'undefined' ? new Date(endDate).toDateString() : '07-Jan-2025' %></span>
+              </div>
+            </div>
+
+            <% if (typeof specialRequest !== 'undefined' && specialRequest) { %>
+              <div class="border-t border-dashed border-border-color pt-3 text-sm">
+                <span class="block text-[10px] uppercase font-bold text-text-secondary tracking-wider mb-1">Special Request</span>
+                <p class="text-text-secondary italic text-xs bg-bg-body p-2.5 rounded-xl border border-border-color"><%= specialRequest %></p>
+              </div>
+            <% } %>
+
+            <!-- Price highlight box -->
+            <div class="bg-primary/10 border border-primary/20 rounded-xl p-4 flex items-center justify-between mt-4">
+              <div>
+                <span class="block text-[10px] uppercase font-bold text-primary tracking-wider font-heading">Verification Fee</span>
+                <span class="text-xs text-text-secondary">Fully refundable / deductible on rent</span>
+              </div>
+              <div class="text-right">
+                <span class="text-2xl font-extrabold text-primary font-heading">₹<%= typeof order !== 'undefined' ? order.amount / 100 : '500' %></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkout Action Button -->
+        <button id="rzp-button" class="w-full bg-primary hover:bg-primary-hover text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/45 transition-all duration-300 text-lg flex items-center justify-center gap-2 hover:-translate-y-0.5 cursor-pointer">
+          <i class="fa-solid fa-credit-card"></i>
+          Pay ₹<%= typeof order !== 'undefined' ? order.amount / 100 : '500' %> Now
+        </button>
+
+        <p class="text-center text-[10px] text-text-secondary mt-4 flex items-center justify-center gap-1 select-none">
+          <i class="fa-solid fa-shield-halved text-primary"></i> 256-bit SSL Encrypted Transaction. Razorpay Gateway.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer block -->
+  <footer class="w-full border-t border-border-color py-6 text-center text-xs text-text-secondary bg-bg-body transition-colors duration-300">
+    <p>&copy; <%= new Date().getFullYear() %> FMPG. All rights reserved.</p>
+  </footer>
+
   <script>
-    document.getElementById('pay-btn').onclick = function (e) {
-      e.preventDefault();
-  
-      // Fetch order details from the server
-      fetch('/create-order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: 500, // Amount in INR
-        }),
-      })
-        .then((response) => response.json())
-        .then((order) => {
-          // Initialize Razorpay payment
-          const options = {
-            key: 'your_razorpay_key_id', // Replace with your key ID
-            amount: order.amount,
-            currency: order.currency,
-            name: 'Your Company Name',
-            description: 'Test Transaction',
-            order_id: order.id, // Order ID from server
-            handler: function (response) {
-              alert('Payment successful!');
-              console.log('Payment Response:', response);
-              // Send the response to your server for verification and booking
-            },
-          };
-  
-          const rzp = new Razorpay(options);
-          rzp.open();
+    const options = {
+      key: "<%= process.env.RAZORPAY_KEY_ID %>",
+      amount: "<%= order.amount %>",
+      currency: "INR",
+      name: "FMPG",
+      description: "Room Booking Payment",
+      order_id: "<%= order.id %>",
+      handler: function (response) {
+        const data = {
+          payment_id: response.razorpay_payment_id,
+          order_id: response.razorpay_order_id,
+          signature: response.razorpay_signature,
+          userId: "<%= userId %>",
+          roomId: "<%= roomId %>",
+          propertyID: "<%= propertyID %>",
+          mobile: "<%= mobile %>",
+          startDate: "<%= startDate %>",
+          endDate: "<%= endDate %>",
+          specialRequest: "<%= specialRequest %>",
+          username: "<%= username %>",
+        };
+
+        fetch('/api/bookings/payment-success', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
         })
-        .catch((err) => {
-          console.error('Error fetching order:', err);
-          alert('Payment initiation failed.');
-        });
+          .then(response => response.json())
+          .then(result => {
+            if (result.success) {
+              alert('Payment successful!');
+              window.location.href = result.redirect;
+            } else {
+              alert('Payment failed: ' + result.message);
+            }
+          });
+      },
+      theme: {
+        color: "#10b981"
+      }
     };
+
+    const rzp = new Razorpay(options);
+    document.getElementById('rzp-button').onclick = () => rzp.open();
   </script>
-   -->
+</body>
 
-
-
-
-   <!DOCTYPE html>
-   <html lang="en">
-   
-   <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Order Summary</title>
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-     <style>
-       body {
-         font-family: 'Arial', sans-serif;
-         margin: 0;
-         padding: 0;
-         background: #f9f9f9;
-       }
-   
-       .container {
-         max-width: 600px;
-         margin: 50px auto;
-         padding: 20px;
-         background: #fff;
-         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-         border-radius: 10px;
-       }
-   
-       h1 {
-         text-align: center;
-         color: #333;
-       }
-   
-       .summary {
-         margin: 20px 0;
-       }
-   
-       .summary p {
-         font-size: 16px;
-         color: #555;
-         margin: 10px 0;
-       }
-   
-       .summary .highlight {
-         color: #000;
-         font-weight: bold;
-       }
-   
-       .fee {
-         margin-top: 20px;
-         font-size: 18px;
-         text-align: center;
-         background: #f4f4f4;
-         padding: 10px;
-         border-radius: 5px;
-       }
-   
-       .pay-btn {
-         display: block;
-         width: 100%;
-         margin: 20px auto;
-         padding: 15px;
-         font-size: 18px;
-         color: #fff;
-         background: #28a745;
-         text-align: center;
-         border: none;
-         border-radius: 5px;
-         cursor: pointer;
-         transition: background 0.3s ease;
-       }
-   
-       .pay-btn:hover {
-         background: #218838;
-       }
-   
-       footer {
-         margin-top: 20px;
-         text-align: center;
-         font-size: 14px;
-         color: #777;
-       }
-     </style>
-     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-   </head>
-   
-   <body>
-     <div class="container">
-       <h1>Order Summary</h1>
-   
-       <div class="summary">
-         <p>Property Name: <span class="highlight">The Sunshine Hostel</span></p>
-         <p>Room Type: <span class="highlight">Single Deluxe</span></p>
-         <p>Check-in Date: <span class="highlight">01-Jan-2025</span></p>
-         <p>Check-out Date: <span class="highlight">07-Jan-2025</span></p>
-         <p>Special Request: <span class="highlight">Late Check-in</span></p>
-         <div class="fee">Booking Verification Fee: <span class="highlight">₹500</span></div>
-       </div>
-   
-       <button id="rzp-button" class="pay-btn">Pay ₹500 to Confirm Booking</button>
-     </div>
-   
-     <footer>
-       <p>&copy; 2024 FMPG. All rights reserved.</p>
-     </footer>
-   
-   
-     <script>
-       const options = {
-         key: "<%= process.env.RAZORPAY_KEY_ID %>",
-         amount: "<%= order.amount %>",
-         currency: "INR",
-         name: "FMPG",
-         description: "Room Booking Payment",
-         order_id: "<%= order.id %>",
-         handler: function (response) {
-           const data = {
-             payment_id: response.razorpay_payment_id,
-             order_id: response.razorpay_order_id,
-             signature: response.razorpay_signature,
-             userId: "<%= userId %>",
-             roomId: "<%= roomId %>",
-             propertyID: "<%= propertyID %>",
-             mobile: "<%= mobile %>",
-             startDate: "<%= startDate %>",
-             endDate: "<%= endDate %>",
-             specialRequest: "<%= specialRequest %>",
-             username: "<%= username %>",
-           };
-   
-           fetch('/api/bookings/payment-success', {
-             method: 'POST',
-             headers: { 'Content-Type': 'application/json' },
-             body: JSON.stringify(data),
-           })
-             .then(response => response.json())
-             .then(result => {
-               if (result.success) {
-                 alert('Payment successful!');
-                 window.location.href = result.redirect;
-                } else {
-                 alert('Payment failed: ' + result.message);
-               }
-             });
-         },
-         theme: {
-           color: "#F37254"
-         }
-       };
-   
-       const rzp = new Razorpay(options);
-       document.getElementById('rzp-button').onclick = () => rzp.open();
-     </script>
-   </body>
-   
-   </html>
-   
+</html>

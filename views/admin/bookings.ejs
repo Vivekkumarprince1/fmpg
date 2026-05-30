@@ -1,99 +1,155 @@
 <%- include('partials/header') %>
 
-
-    <!-- partial -->
-    <h1>Manage Bookings</h1>
-    <a href="/admin/bookings/add">Add New Booking</a><br>
-    <a href="/profile"> back to profile</a>
-
-    <ol>
-        <table border="1" style="width: 100%; text-align: center;" class="customers">
-            <thead>
-                <tr>
-                    <th>user</th>
-                    <th>Booking ID</th>
-                    <th>Username</th>
-                    <th>mobile</th>
-                    <th>property Type</th>
-                    <th>Start-Date</th>
-                    <th>End-Date</th>
-                    <th>Property</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% bookings.forEach(booking=> { %>
-                    <tr>
-                        <td>
-                            <li>
-                                <%= booking.user ? booking.user.username : 'N/A' %>
-                        </td> <!-- User (populated) --></li>
-                        </td>
-                        <td>
-                            <%= booking._id %>
-                        </td> <!-- Booking ID -->
-                        <td>
-                            <%= booking.username %>
-                        </td> <!-- Username -->
-                        <td>
-                            <%= booking.mobile %>
-                        </td> <!-- Mobile -->
-
-                        <td>
-                            <%= booking.propertyID ? booking.propertyID.type : 'N/A' %>
-                        </td> <!-- Property Type -->
-
-                        <td>
-                            <%= booking.startDate.toDateString() %>
-                        </td> <!-- Start-Date -->
-                        <td>
-                            <%= booking.endDate.toDateString() %>
-                        </td> <!-- End-Date -->
-                        <td>
-                            <%= booking.propertyID && booking.propertyID.propertyName ? booking.propertyID.propertyName : 'N/A' %>
-                        </td> <!-- Property (populated) -->
-                        <td>
-                            <%= booking.status %>
-                        </td> <!-- Status -->
-                        <td>
-                            <a href="/admin/booking/view/<%= booking._id %>">view</a>
-                            <a href="/admin/bookings/edit/<%= booking._id %>"> Edit </a>
-                            <form action="/admin/bookings/delete/<%= booking._id %>" method="POST"
-                                style="display:inline;" onsubmit="confirmAction('delete', event);">
-                                <button type="submit"> Delete </button>
-                            </form>
-                        </td>
-                    </tr>
-                    <% }) %>
-            </tbody>
-            <script>
-                function confirmAction(action, event) {
-                    event.preventDefault(); // Prevent the form from submitting immediately
-                    const confirmation = confirm(`Are you sure you want to ${action} this booking?`);
-                    if (confirmation) {
-                        event.target.submit(); // Submit the form if confirmed
-                    }
-                }
-            </script>
-        </table>
-    </ol>
+<div class="p-6 space-y-6 animate-fade-in-up">
+  <!-- Title / CTAs Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border-color pb-4">
+    <div>
+      <h1 class="text-3xl font-extrabold font-heading text-primary">Manage Bookings</h1>
+      <p class="text-text-secondary text-sm mt-1">Review guest reservations, check-in schedules, property links, and checkout statuses.</p>
     </div>
-    <!-- plugins:js -->
-    <script src="../assets/vendors/js/vendor.bundle.base.js"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page-->
-    <script src="../assets/vendors/chartjs/Chart.min.js"></script>
-    <script src="../assets/vendors/jvectormap/jquery-jvectormap.min.js"></script>
-    <script src="../assets/vendors/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-    <!-- End plugin js for this page-->
-    <!-- inject:js -->
-    <script src="../assets/js/material.js"></script>
-    <script src="../assets/js/misc.js"></script>
-    <!-- endinject -->
-    <!-- Custom js for this page-->
-    <script src="../assets/js/dashboard.js"></script>
-    <!-- End custom js for this page-->
-    </body>
+    <div class="flex flex-wrap gap-3">
+      <a href="/profile" class="inline-flex items-center gap-2 bg-bg-card hover:bg-border-color border border-border-color text-text-primary px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300">
+        <i class="fa-solid fa-arrow-left text-primary"></i>
+        Profile
+      </a>
+      <a href="/admin/bookings/add" class="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-md shadow-primary/20 hover:shadow-primary/35 transition-all duration-300 hover:-translate-y-0.5">
+        <i class="fa-solid fa-calendar-plus"></i>
+        Add New Booking
+      </a>
+    </div>
+  </div>
 
-    </html>
+  <!-- Bookings Inventory Table -->
+  <div class="glass-panel rounded-2xl overflow-hidden shadow-xl border border-border-color">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse bg-bg-card">
+        <thead>
+          <tr class="bg-primary text-white">
+            <th class="p-4 font-heading font-semibold text-xs uppercase tracking-wider">User Account</th>
+            <th class="p-4 font-heading font-semibold text-xs uppercase tracking-wider">Booking ID</th>
+            <th class="p-4 font-heading font-semibold text-xs uppercase tracking-wider">Guest Details</th>
+            <th class="p-4 font-heading font-semibold text-xs uppercase tracking-wider">Property & Type</th>
+            <th class="p-4 font-heading font-semibold text-xs uppercase tracking-wider">Check In / Out</th>
+            <th class="p-4 font-heading font-semibold text-xs uppercase tracking-wider">Status</th>
+            <th class="p-4 font-heading font-semibold text-xs uppercase tracking-wider text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border-color text-sm">
+          <% if (bookings && bookings.length > 0) { %>
+            <% bookings.forEach(booking => { %>
+              <tr class="hover:bg-primary/5 transition-colors duration-200">
+                <!-- User Account -->
+                <td class="p-4 font-semibold text-text-primary">
+                  <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
+                      <%= booking.user ? booking.user.username.charAt(0).toUpperCase() : 'G' %>
+                    </div>
+                    <div>
+                      <span class="block text-sm font-bold"><%= booking.user ? booking.user.username : 'Guest User' %></span>
+                      <span class="block text-[10px] text-text-secondary">Linked Account</span>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Booking ID -->
+                <td class="p-4 font-mono text-xs text-text-secondary select-all">
+                  <%= booking._id %>
+                </td>
+
+                <!-- Guest Details -->
+                <td class="p-4">
+                  <div class="space-y-0.5">
+                    <span class="block font-bold text-text-primary"><%= booking.username %></span>
+                    <span class="block text-xs text-text-secondary font-mono"><%= booking.mobile %></span>
+                  </div>
+                </td>
+
+                <!-- Property & Type -->
+                <td class="p-4">
+                  <div class="space-y-0.5">
+                    <span class="block font-bold text-text-primary text-xs">
+                      <%= booking.propertyID && booking.propertyID.propertyName ? booking.propertyID.propertyName : 'N/A' %>
+                    </span>
+                    <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+                      <%= booking.propertyID ? booking.propertyID.type : 'N/A' %>
+                    </span>
+                  </div>
+                </td>
+
+                <!-- Timelines -->
+                <td class="p-4 font-semibold text-text-secondary">
+                  <div class="flex flex-col gap-1 text-xs">
+                    <span class="flex items-center gap-1"><i class="fa-solid fa-calendar-check text-[10px] text-emerald-500"></i><%= booking.startDate ? booking.startDate.toDateString() : 'N/A' %></span>
+                    <span class="flex items-center gap-1"><i class="fa-solid fa-calendar-xmark text-[10px] text-red-500"></i><%= booking.endDate ? booking.endDate.toDateString() : 'N/A' %></span>
+                  </div>
+                </td>
+
+                <!-- Status badge -->
+                <td class="p-4 text-xs font-semibold">
+                  <% 
+                    let statusBadge = "bg-amber-500/10 text-amber-500 border border-amber-500/20";
+                    if (booking.status && (booking.status.toLowerCase().includes('confirm') || booking.status.toLowerCase().includes('accept') || booking.status.toLowerCase().includes('active'))) {
+                      statusBadge = "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20";
+                    } else if (booking.status && (booking.status.toLowerCase().includes('cancel') || booking.status.toLowerCase().includes('decline') || booking.status.toLowerCase().includes('reject'))) {
+                      statusBadge = "bg-red-500/10 text-red-500 border border-red-500/20";
+                    }
+                  %>
+                  <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider <%= statusBadge %>">
+                    <span class="w-1 h-1 rounded-full bg-current"></span>
+                    <%= booking.status || 'Pending' %>
+                  </span>
+                </td>
+
+                <!-- Actions -->
+                <td class="p-4">
+                  <div class="flex items-center justify-center gap-2">
+                    <a href="/admin/booking/view/<%= booking._id %>" class="inline-flex items-center gap-1 bg-bg-body hover:bg-border-color border border-border-color text-text-primary text-xs font-bold px-2.5 py-1.5 rounded-xl transition-all duration-300">
+                      <i class="fa-solid fa-eye text-primary"></i> View
+                    </a>
+                    <a href="/admin/bookings/edit/<%= booking._id %>" class="inline-flex items-center gap-1 text-primary hover:text-primary-hover font-bold text-xs transition-colors duration-200">
+                      <i class="fa-solid fa-pen-to-square"></i> Edit
+                    </a>
+                    <form action="/admin/bookings/delete/<%= booking._id %>" method="POST" style="display:inline;"
+                      onsubmit="confirmAction('delete', event);">
+                      <button type="submit" class="inline-flex items-center gap-1 text-red-500 hover:text-red-600 font-bold text-xs transition-colors duration-200 cursor-pointer">
+                        <i class="fa-solid fa-trash-can"></i> Delete
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="7" class="p-12 text-center text-text-secondary font-medium">
+                <i class="fa-solid fa-calendar-minus text-4xl text-border-color mb-3 block animate-pulse"></i>
+                No booking records found in database.
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  function confirmAction(action, event) {
+    event.preventDefault();
+    const confirmation = confirm(`Are you sure you want to ${action} this booking?`);
+    if (confirmation) {
+      event.target.submit();
+    }
+  }
+</script>
+
+<!-- Close Sidebar & Main wrappers opened in partials/header -->
+      </div>
+   </div>
+
+<!-- vendor scripts -->
+<script src="<%= assetUrl('assets/vendors/js/vendor.bundle.base.js') %>"></script>
+<script src="<%= assetUrl('assets/js/material.js') %>"></script>
+<script src="<%= assetUrl('assets/js/misc.js') %>"></script>
+</body>
+</html>

@@ -1,216 +1,301 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Property</title>
-    <link rel="stylesheet" href="/css/management.css">
-    <style>
-        .input-group {
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-    </style>
+    <title>Edit Property - FMPG Admin</title>
+    <link rel="icon" href="/img/logo.png" type="image/icon type">
+    
+    <!-- Central Tailwind CSS & Theme Config -->
+    <%- include('../tailwind-head') %>
 </head>
 
-<body>
-    <div class="form">
-        <h1>Edit Property</h1>
-        <form class="edit add" action="/admin/properties/edit/<%= property._id %>" method="POST"
-            enctype="multipart/form-data">
-            <label for="ownerName">Owner Name:</label><br>
-            <input class="input" type="text" id="ownerName" name="ownerName" value="<%= property.ownerName %>"
-                required><br><br>
-
-            <label for="contactNumber">Contact Number:</label><br>
-            <input class="input" type="tel" id="contactNumber" name="contactNumber"
-                value="<%= property.contactNumber %>" required><br><br>
-
-            <label for="email">Email:</label><br>
-            <input class="input" type="email" id="email" name="email" value="<%= property.email %>" required><br><br>
-
-            <label for="propertyName">Property Name:</label><br>
-            <input class="input" type="text" id="propertyName" name="propertyName" value="<%= property.propertyName %>"
-                required><br><br>
-
-            <label for="type">Type:</label><br>
-            <select class="select" id="type" name="type">
-                <option value="PG" <%=property.type==='PG' ? 'selected' : '' %>>PG</option>
-                <option value="Hostel" <%=property.type==='Hostel' ? 'selected' : '' %>>Hostel</option>
-                <option value="PG with Mess" <%=property.type==='PG with Mess' ? 'selected' : '' %>>PG with Mess
-                </option>
-            </select><br><br>
-
-            <label for="address">Address:</label><br>
-            <input class="input" type="text" id="address" name="address" value="<%= property.address %>"
-                required><br><br>
-
-            <label for="map">Google Map link:</label><br>
-            <input class="input" type="text" id="map" name="map" value="<%= property.map %>" required><br><br>
-
-            <label for="locations">Locations:</label>
-            <div id="location-container">
-                <p>Eg:distance from nearest bus stand :- 1.3km</p>
-                <% property.locations.forEach((location)=> { %>
-                    <div class="input-group">
-                        <input class="input" type="text" name="locations[]" value="<%= location %>"
-                            placeholder="Eg:Delhi bus stand :- 15.6km" required>
-                        <button type="button" onclick="removeField(this)">-</button>
+<body class="bg-bg-body text-text-primary min-h-screen flex items-center justify-center py-12 px-4 transition-colors duration-300">
+    <div class="glass-panel max-w-4xl w-full rounded-2xl p-8 md:p-10 animate-fade-in-up relative overflow-hidden shadow-2xl">
+        <!-- Decorative Glow -->
+        <div class="absolute -top-12 -right-12 w-48 h-48 bg-primary/10 rounded-full blur-3xl"></div>
+        
+        <div class="relative z-10">
+            <!-- Header bar -->
+            <div class="flex items-center justify-between border-b border-border-color pb-4 mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                        <i class="fa-solid fa-pen-to-square text-lg"></i>
                     </div>
-                    <% }) %>
-            </div>
-            <button type="button" onclick="addLocationField()">+</button>
-            <br><br>
-
-            <label for="landmark">Landmark:</label><br>
-            <input class="input" type="text" id="landmark" name="landmark" value="<%= property.landmark %>"
-                required><br><br>
-
-            <label for="image">Upload Images or PDFs:</label><br>
-            <div id="image-container">
-                <% property.images.forEach((image)=> { %>
-                    <div class="input-group">
-                        <span>
-                            <%= image %>
-                        </span>
-                        <input type="file" class="input" name="images" accept=".jpg, .jpeg, .png, .pdf">
-                        <button type="button" onclick="removeField(this)">-</button>
+                    <div>
+                        <h1 class="text-2xl font-bold font-heading">Edit Property</h1>
+                        <p class="text-xs text-text-secondary mt-0.5">Admin Management Console</p>
                     </div>
-                    <% }) %>
+                </div>
+                <a href="/admin/properties" class="text-xs text-text-secondary hover:text-primary font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> Properties List
+                </a>
             </div>
-            <button type="button" onclick="addImageField()">+</button>
-            <br><br>
 
-            <label for="gender">Allowed Gender:</label><br>
-            <select class="select" id="gender" name="gender">
-                <option value="male" <%=property.gender==='male' ? 'selected' : '' %>>Male</option>
-                <option value="female" <%=property.gender==='female' ? 'selected' : '' %>>Female</option>
-                <option value="unisex" <%=property.gender==='unisex' ? 'selected' : '' %>>Unisex</option>
-            </select><br><br>
-
-            <label>Rooms:</label>
-            <div id="room-container">
-                <% property.rooms.forEach((room, index)=> { %>
-                    <div class="input-group">
-                        <input type="hidden" name="rooms[<%= index %>][id]" value="<%= room._id %>">
-                        <!-- Hidden input to track room ID -->
-                        <select name="rooms[<%= index %>][type]" required>
-                            <option value="single" <%=room.type==='single' ? 'selected' : '' %>>Single</option>
-                            <option value="double" <%=room.type==='double' ? 'selected' : '' %>>Double</option>
-                            <option value="triple" <%=room.type==='triple' ? 'selected' : '' %>>Triple</option>
-                            <option value="morethanthree" <%=room.type==='morethanthree' ? 'selected' : '' %>>More than
-                                Three</option>
-                        </select>
-                        <input type="number" name="rooms[<%= index %>][price]" placeholder="Price"
-                            value="<%= room.price %>" required>
-                        <input type="number" name="rooms[<%= index %>][capacity]" placeholder="Total Rooms"
-                            value="<%= room.capacity %>" required>
-                        <input type="number" name="rooms[<%= index %>][availableRooms]" placeholder="Available Rooms"
-                            value="<%= room.availableRooms %>" required>
-                        <select name="rooms[<%= index %>][available]" required>
-                            <option value="true" <%=room.available ? 'selected' : '' %>>Available</option>
-                            <option value="false" <%=!room.available ? 'selected' : '' %>>Not Available</option>
-                        </select>
-                        <button type="button" onclick="removeField(this)">-</button>
+            <!-- Form -->
+            <form action="/admin/properties/edit/<%= property._id %>" method="POST" enctype="multipart/form-data" class="space-y-8">
+                
+                <!-- Section 1: Owner Information -->
+                <div class="space-y-4">
+                    <h3 class="text-base font-extrabold font-heading text-primary border-b border-border-color pb-1.5 flex items-center gap-2">
+                        <i class="fa-solid fa-user-tie"></i> Owner Information
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div>
+                            <label for="ownerName" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Owner Full Name</label>
+                            <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" id="ownerName" name="ownerName" value="<%= property.ownerName %>" required>
+                        </div>
+                        <div>
+                            <label for="contactNumber" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Contact Number</label>
+                            <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 font-mono" type="tel" id="contactNumber" name="contactNumber" value="<%= property.contactNumber %>" required>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Email Address</label>
+                            <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="email" id="email" name="email" value="<%= property.email %>" required>
+                        </div>
                     </div>
-                    <% }) %>
-            </div>
-            <button type="button" onclick="addRoomField()">+</button>
-            <br>
+                </div>
 
-            <label>Amenities:</label>
-            <div id="amenity-container">
-                <% property.amenities.forEach((amenity)=> { %>
-                    <div class="input-group">
-                        <input class="input" type="text" name="amenities[]" value="<%= amenity %>" required>
-                        <button type="button" onclick="removeField(this)">-</button>
+                <!-- Section 2: Property Basic Parameters -->
+                <div class="space-y-4">
+                    <h3 class="text-base font-extrabold font-heading text-primary border-b border-border-color pb-1.5 flex items-center gap-2">
+                        <i class="fa-solid fa-building"></i> Accommodation Parameters
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div>
+                            <label for="propertyName" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Property Name</label>
+                            <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" id="propertyName" name="propertyName" value="<%= property.propertyName %>" required>
+                        </div>
+                        <div>
+                            <label for="type" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Accommodation Type</label>
+                            <select class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 appearance-none" id="type" name="type">
+                                <option value="PG" <%= property.type === 'PG' ? 'selected' : '' %>>PG</option>
+                                <option value="Hostel" <%= property.type === 'Hostel' ? 'selected' : '' %>>Hostel</option>
+                                <option value="PG with Mess" <%= property.type === 'PG with Mess' ? 'selected' : '' %>>PG with Mess</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="gender" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Allowed Gender</label>
+                            <select class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 appearance-none" id="gender" name="gender">
+                                <option value="male" <%= property.gender === 'male' ? 'selected' : '' %>>Boys Only</option>
+                                <option value="female" <%= property.gender === 'female' ? 'selected' : '' %>>Girls Only</option>
+                                <option value="unisex" <%= property.gender === 'unisex' ? 'selected' : '' %>>Co-Living / Unisex</option>
+                            </select>
+                        </div>
                     </div>
-                    <% }) %>
-            </div>
-            <button type="button" onclick="addAmenityField()">+</button>
-            <br>
+                </div>
 
-            <label for="rules">House Rules:</label><br>
-            <textarea class="input" id="rules" name="rules" ><%= property.rules %></textarea><br><br>
+                <!-- Section 3: Geographics & Maps -->
+                <div class="space-y-4">
+                    <h3 class="text-base font-extrabold font-heading text-primary border-b border-border-color pb-1.5 flex items-center gap-2">
+                        <i class="fa-solid fa-map-location-dot"></i> Geographical Details
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div class="md:col-span-2">
+                            <label for="address" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Full Address</label>
+                            <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" id="address" name="address" value="<%= property.address %>" required>
+                        </div>
+                        <div>
+                            <label for="map" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Google Map Share Link</label>
+                            <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 font-mono text-xs" type="text" id="map" name="map" value="<%= property.map %>" required>
+                        </div>
+                    </div>
 
-            <label for="securityDeposit">Security Deposit:</label><br>
-            <input class="input" type="number" id="securityDeposit" name="securityDeposit"
-                value="<%= property.securityDeposit %>" required><br><br>
+                    <!-- Locations dynamic listings -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Transit & Distance Metrics</label>
+                        <div id="location-container" class="space-y-2">
+                            <% property.locations.forEach((location) => { %>
+                                <div class="flex items-center gap-3">
+                                    <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-2.5 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 text-sm" type="text" name="locations[]" value="<%= location %>" required>
+                                    <button type="button" onclick="removeField(this)" class="bg-red-500/10 hover:bg-red-500/25 text-red-500 font-bold px-3 py-2 rounded-xl transition-all duration-300"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            <% }) %>
+                        </div>
+                        <button type="button" onclick="addLocationField()" class="mt-2 text-xs text-primary hover:text-primary-hover font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-plus-circle"></i> Add Location field
+                        </button>
+                    </div>
 
-            <label for="description">Description:</label><br>
-            <textarea class="input" id="description" name="description"
-                required><%= property.description %></textarea><br><br>
+                    <div>
+                        <label for="landmark" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Major Landmark</label>
+                        <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="text" id="landmark" name="landmark" value="<%= property.landmark %>" required>
+                    </div>
+                </div>
 
-            <label for="additionalDetails">Additional Details:</label><br>
-            <textarea class="input" id="additionalDetails" name="additionalDetails"
-                ><%= property.additionalDetails %></textarea><br><br>
+                <!-- Section 4: Room Slots Allocation -->
+                <div class="space-y-4">
+                    <h3 class="text-base font-extrabold font-heading text-primary border-b border-border-color pb-1.5 flex items-center gap-2">
+                        <i class="fa-solid fa-door-open"></i> Room Slots Inventory
+                    </h3>
+                    <div id="room-container" class="space-y-3">
+                        <% property.rooms.forEach((room, index) => { %>
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-3 items-center bg-bg-card/40 border border-border-color rounded-2xl p-4 relative">
+                                <input type="hidden" name="rooms[<%= index %>][id]" value="<%= room._id %>">
+                                <div>
+                                    <select name="rooms[<%= index %>][type]" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                                        <option value="single" <%= room.type === 'single' ? 'selected' : '' %>>Single</option>
+                                        <option value="double" <%= room.type === 'double' ? 'selected' : '' %>>Double</option>
+                                        <option value="triple" <%= room.type === 'triple' ? 'selected' : '' %>>Triple</option>
+                                        <option value="morethanthree" <%= room.type === 'morethanthree' ? 'selected' : '' %>>More than Three</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <input type="number" name="rooms[<%= index %>][price]" placeholder="Rent Price" value="<%= room.price %>" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                                </div>
+                                <div>
+                                    <input type="number" name="rooms[<%= index %>][capacity]" placeholder="Total quantity" value="<%= room.capacity %>" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                                </div>
+                                <div>
+                                    <input type="number" name="rooms[<%= index %>][availableRooms]" placeholder="Available quantity" value="<%= room.availableRooms %>" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <select name="rooms[<%= index %>][available]" class="flex-grow bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                                        <option value="true" <%= room.available ? 'selected' : '' %>>Available</option>
+                                        <option value="false" <%= !room.available ? 'selected' : '' %>>Not Available</option>
+                                    </select>
+                                    <button type="button" onclick="removeField(this)" class="bg-red-500/10 hover:bg-red-500/25 text-red-500 p-2 rounded-xl transition-all duration-300"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                    <button type="button" onclick="addRoomField()" class="text-xs text-primary hover:text-primary-hover font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-plus-circle"></i> Add Room Type
+                    </button>
+                </div>
 
-            <label for="tenantContract">Upload Tenant Contract:</label><br>
-            <input type="file" id="tenantContract" name="tenantContract" accept=".jpg, .jpeg, .png, .pdf"><br><br>
+                <!-- Section 5: Amenities & Documents -->
+                <div class="space-y-4">
+                    <h3 class="text-base font-extrabold font-heading text-primary border-b border-border-color pb-1.5 flex items-center gap-2">
+                        <i class="fa-solid fa-bell-concierge"></i> Amenities & Files
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <!-- Amenities -->
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Amenities</label>
+                            <div id="amenity-container" class="space-y-2">
+                                <% property.amenities.forEach((amenity) => { %>
+                                    <div class="flex items-center gap-3">
+                                        <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-2.5 text-text-primary focus:outline-none focus:border-primary transition-all duration-300 text-sm" type="text" name="amenities[]" value="<%= amenity %>" required>
+                                        <button type="button" onclick="removeField(this)" class="bg-red-500/10 hover:bg-red-500/25 text-red-500 font-bold px-3 py-2 rounded-xl transition-all duration-300"><i class="fa-solid fa-trash"></i></button>
+                                    </div>
+                                <% }) %>
+                            </div>
+                            <button type="button" onclick="addAmenityField()" class="mt-2 text-xs text-primary hover:text-primary-hover font-bold flex items-center gap-1">
+                                <i class="fa-solid fa-plus-circle"></i> Add Amenity
+                            </button>
+                        </div>
 
-            <input class="submit" type="submit" value="Update">
-        </form>
+                        <div>
+                            <label for="securityDeposit" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Security Deposit (₹)</label>
+                            <input class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 text-text-primary focus:outline-none focus:border-primary transition-all duration-300" type="number" id="securityDeposit" name="securityDeposit" value="<%= property.securityDeposit %>" required>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div>
+                            <label for="rules" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">House Rules</label>
+                            <textarea class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 min-h-[96px] text-text-primary focus:outline-none focus:border-primary transition-all duration-300 resize-none text-sm" id="rules" name="rules"><%= property.rules %></textarea>
+                        </div>
+                        <div>
+                            <label for="description" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Short Description</label>
+                            <textarea id="description" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 min-h-[96px] text-text-primary focus:outline-none focus:border-primary transition-all duration-300 resize-none text-sm" name="description" required><%= property.description %></textarea>
+                        </div>
+                        <div>
+                            <label for="additionalDetails" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Additional Details</label>
+                            <textarea id="additionalDetails" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-3 min-h-[96px] text-text-primary focus:outline-none focus:border-primary transition-all duration-300 resize-none text-sm" name="additionalDetails"><%= property.additionalDetails %></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Uploads -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-3">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Property Images</label>
+                            <div id="image-container" class="space-y-2 mb-3">
+                                <% property.images.forEach((image) => { %>
+                                    <div class="flex items-center gap-3 bg-bg-body/75 border border-border-color rounded-xl p-2 justify-between">
+                                        <span class="text-xs truncate max-w-[200px]"><%= image %></span>
+                                        <button type="button" onclick="removeField(this)" class="bg-red-500/10 hover:bg-red-500/25 text-red-500 text-xs font-bold px-2.5 py-1.5 rounded-xl"><i class="fa-solid fa-trash-can"></i></button>
+                                    </div>
+                                <% }) %>
+                            </div>
+                            <input type="file" name="images" accept=".jpg, .jpeg, .png, .pdf" class="block w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" multiple>
+                        </div>
+                        <div>
+                            <label for="tenantContract" class="block text-xs font-semibold uppercase tracking-wider text-text-secondary mb-2">Upload Sample Tenant Contract</label>
+                            <input type="file" id="tenantContract" name="tenantContract" accept=".jpg, .jpeg, .png, .pdf" class="block w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit buttons -->
+                <div class="pt-4 border-t border-border-color flex gap-4">
+                    <a href="/admin/properties" class="flex-1 text-center bg-bg-body hover:bg-border-color border border-border-color text-text-primary font-semibold py-4 rounded-xl transition-all duration-300">
+                        Cancel
+                    </a>
+                    <button class="flex-grow bg-primary hover:bg-primary-hover text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/35 transition-all duration-300 text-lg cursor-pointer" type="submit">
+                        Update Property Listing
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
+    <!-- Dynamic Fields Handlers -->
     <script>
         function addLocationField() {
             const container = document.getElementById('location-container');
-            const newLocationInput = document.createElement('div');
-            newLocationInput.className = 'input-group';
-            newLocationInput.innerHTML = '<input type="text" class="input" name="locations[]" required><button type="button" onclick="removeField(this)">-</button>';
-            container.appendChild(newLocationInput);
+            const newDiv = document.createElement('div');
+            newDiv.className = 'flex items-center gap-3 mt-2 animate-scale-up';
+            newDiv.innerHTML = '<input type="text" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-2.5 text-sm text-text-primary focus:outline-none focus:border-primary" name="locations[]" required><button type="button" onclick="removeField(this)" class="bg-red-500/10 hover:bg-red-500/25 text-red-500 font-bold px-3 py-2 rounded-xl transition-all duration-300"><i class="fa-solid fa-trash"></i></button>';
+            container.appendChild(newDiv);
         }
-
-        function addImageField() {
-            const container = document.getElementById('image-container');
-            const newImageInput = document.createElement('div');
-            newImageInput.className = 'input-group';
-            newImageInput.innerHTML = '<input type="file" class="input" name="images" accept=".jpg, .jpeg, .png, .pdf"><button type="button" onclick="removeField(this)">-</button>';
-            container.appendChild(newImageInput);
-        }
-
-        function addRoomField() {
-    const container = document.getElementById('room-container');
-    const roomCount = container.children.length; // Count the current number of room entries to create unique indexes
-    const newRoomInput = document.createElement('div');
-    newRoomInput.className = 'input-group';
-    
-    // Dynamically create room inputs with the correct index in the 'name' attributes
-    newRoomInput.innerHTML = `
-        <select name="rooms[${roomCount}][type]" required>
-            <option value="single">Single</option>
-            <option value="double">Double</option>
-            <option value="triple">Triple</option>
-            <option value="morethanthree">More than Three</option>
-        </select>
-        <input type="number" name="rooms[${roomCount}][price]" placeholder="Price" required>
-        <input type="number" name="rooms[${roomCount}][capacity]" placeholder="Total Rooms" required>
-        <input type="number" name="rooms[${roomCount}][availableRooms]" placeholder="Available Rooms" required>
-        <select name="rooms[${roomCount}][available]" required>
-            <option value="true">Available</option>
-            <option value="false">Not Available</option>
-        </select>
-        <button type="button" onclick="removeField(this)">-</button>
-    `;
-    
-    container.appendChild(newRoomInput);
-}
-
 
         function addAmenityField() {
             const container = document.getElementById('amenity-container');
-            const newAmenityInput = document.createElement('div');
-            newAmenityInput.className = 'input-group';
-            newAmenityInput.innerHTML = '<input type="text" class="input" name="amenities[]" required><button type="button" onclick="removeField(this)">-</button>';
-            container.appendChild(newAmenityInput);
+            const newDiv = document.createElement('div');
+            newDiv.className = 'flex items-center gap-3 mt-2 animate-scale-up';
+            newDiv.innerHTML = '<input type="text" class="w-full bg-bg-body border border-border-color rounded-xl px-4 py-2.5 text-sm text-text-primary focus:outline-none focus:border-primary" name="amenities[]" required><button type="button" onclick="removeField(this)" class="bg-red-500/10 hover:bg-red-500/25 text-red-500 font-bold px-3 py-2 rounded-xl transition-all duration-300"><i class="fa-solid fa-trash"></i></button>';
+            container.appendChild(newDiv);
+        }
+
+        function addRoomField() {
+            const container = document.getElementById('room-container');
+            const roomCount = container.children.length;
+            const newDiv = document.createElement('div');
+            newDiv.className = 'grid grid-cols-1 md:grid-cols-5 gap-3 items-center bg-bg-card/40 border border-border-color rounded-2xl p-4 relative animate-scale-up';
+            newDiv.innerHTML = `
+                <div>
+                    <select name="rooms[\${roomCount}][type]" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                        <option value="single">Single</option>
+                        <option value="double">Double</option>
+                        <option value="triple">Triple</option>
+                        <option value="morethanthree">More than Three</option>
+                    </select>
+                </div>
+                <div>
+                    <input type="number" name="rooms[\${roomCount}][price]" placeholder="Rent Price" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                </div>
+                <div>
+                    <input type="number" name="rooms[\${roomCount}][capacity]" placeholder="Total quantity" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                </div>
+                <div>
+                    <input type="number" name="rooms[\${roomCount}][availableRooms]" placeholder="Available quantity" class="w-full bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                </div>
+                <div class="flex items-center gap-2">
+                    <select name="rooms[\${roomCount}][available]" class="flex-grow bg-bg-body border border-border-color rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-primary" required>
+                        <option value="true">Available</option>
+                        <option value="false">Not Available</option>
+                    </select>
+                    <button type="button" onclick="removeField(this)" class="bg-red-500/10 hover:bg-red-500/25 text-red-500 p-2 rounded-xl transition-all duration-300"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `;
+            container.appendChild(newDiv);
         }
 
         function removeField(button) {
-            const field = button.parentElement;
-            field.remove();
+            button.parentNode.parentNode.remove();
         }
     </script>
 </body>
