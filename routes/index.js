@@ -213,6 +213,10 @@ router.get('/destination', function (req, res, next) {
   res.render('destination', { page: 'destination', title: 'Destination' });
 });
 
+router.get('/team', function (req, res, next) {
+  res.render('team', { page: 'team', title: 'Team' });
+});
+
 router.get('/fooding', function (req, res, next) {
   res.render('fooding', { page: 'fooding', title: 'Fooding' });
 });

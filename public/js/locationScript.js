@@ -25,6 +25,14 @@ if (!input || !searchBtn || !dropdown) {
 
 let activeIndex = -1;
 let currentSuggestions = [];
+let ignoreBackdropClick = false;
+
+function armBackdropIgnore() {
+    ignoreBackdropClick = true;
+    setTimeout(() => {
+        ignoreBackdropClick = false;
+    }, 250);
+}
 
 // Overlay elements declarations
 const searchOverlay = document.getElementById('search-overlay');
@@ -103,6 +111,7 @@ function showPopularCities() {
 
 // Function to handle open overlay
 function openSearchOverlay() {
+    armBackdropIgnore();
     searchOverlay.classList.remove('hidden');
     // Allow thread to register hidden removal before animating opacity & scale
     requestAnimationFrame(() => {
@@ -143,12 +152,22 @@ function closeSearchOverlay() {
 // Open overlay when clicking/focusing original input
 input.addEventListener('focus', function (e) {
     e.preventDefault();
+    e.stopPropagation();
     openSearchOverlay();
 });
 
 input.addEventListener('click', function (e) {
     e.preventDefault();
+    e.stopPropagation();
     openSearchOverlay();
+});
+
+searchBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+});
+
+nearMeBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
 });
 
 // Close overlay when clicking close button, backdrop, or pressing Escape
@@ -157,6 +176,9 @@ if (closeOverlayBtn) {
 }
 
 searchOverlay.addEventListener('click', function (e) {
+    if (ignoreBackdropClick) {
+        return;
+    }
     if (e.target === searchOverlay) {
         closeSearchOverlay();
     }
@@ -220,7 +242,11 @@ overlayInput.addEventListener('input', function () {
 // Hide dropdown when clicking outside
 document.addEventListener('click', function (e) {
     if (searchOverlay && !searchOverlay.classList.contains('hidden')) {
-        if (!overlayInput.contains(e.target) && !overlayDropdown.contains(e.target) && !closeOverlayBtn.contains(e.target) && !overlaySearchCard.contains(e.target)) {
+        if (ignoreBackdropClick) {
+            return;
+        }
+        const isTriggerElement = input.contains(e.target) || searchBtn.contains(e.target) || nearMeBtn.contains(e.target);
+        if (!isTriggerElement && !overlayInput.contains(e.target) && !overlayDropdown.contains(e.target) && !closeOverlayBtn.contains(e.target) && !overlaySearchCard.contains(e.target)) {
             closeSearchOverlay();
         }
     }
