@@ -29,10 +29,10 @@
                 <!-- Gender Filter -->
                 <div class="relative">
                     <select id="gender-filter" class="w-full sm:w-48 bg-bg-body border border-border-color rounded-2xl py-3 px-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors cursor-pointer appearance-none">
-                        <option value="all">All Genders</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="unisex">Unisex</option>
+                        <option value="all" <%= gender === 'all' ? 'selected' : '' %>>All Genders</option>
+                        <option value="male" <%= gender === 'male' ? 'selected' : '' %>>Male</option>
+                        <option value="female" <%= gender === 'female' ? 'selected' : '' %>>Female</option>
+                        <option value="unisex" <%= gender === 'unisex' ? 'selected' : '' %>>Unisex</option>
                     </select>
                     <i class="fa fa-chevron-down text-text-secondary text-xs absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                 </div>
@@ -40,10 +40,10 @@
                 <!-- Sorting Filter -->
                 <div class="relative">
                     <select id="sorting-filter" class="w-full sm:w-48 bg-bg-body border border-border-color rounded-2xl py-3 px-4 text-sm font-semibold focus:outline-none focus:border-primary text-text-primary transition-colors cursor-pointer appearance-none">
-                        <option value="relevant">Most Relevant</option>
-                        <option value="low-to-high">Price: Low to High</option>
-                        <option value="high-to-low">Price: High to Low</option>
-                        <option value="distance">Distance (GPS)</option>
+                        <option value="relevant" <%= !sort || sort === 'relevant' ? 'selected' : '' %>>Most Relevant</option>
+                        <option value="low-to-high" <%= sort === 'low-to-high' ? 'selected' : '' %>>Price: Low to High</option>
+                        <option value="high-to-low" <%= sort === 'high-to-low' ? 'selected' : '' %>>Price: High to Low</option>
+                        <option value="distance" <%= sort === 'distance' ? 'selected' : '' %>>Distance (GPS)</option>
                     </select>
                     <i class="fa fa-chevron-down text-text-secondary text-xs absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                 </div>
@@ -128,26 +128,30 @@
         async function applyFilters() {
             const gender = document.getElementById('gender-filter').value;
             const sort = document.getElementById('sorting-filter').value;
-    
-            // Extract active city query parameter from current URL
+
             const urlParams = new URLSearchParams(window.location.search);
             const city = urlParams.get('city');
-    
-            let queryParams = new URLSearchParams({ gender, sort });
+            const lat = urlParams.get('lat');
+            const lng = urlParams.get('lng');
+
+            const queryParams = new URLSearchParams({ gender, sort });
             if (city) {
                 queryParams.append('city', city);
             }
-    
-            // If the user selected "Distance", request geolocation access
-            if (sort === 'distance') {
+            if (lat && lng) {
+                queryParams.append('lat', lat);
+                queryParams.append('lng', lng);
+            }
+
+            if (sort === 'distance' && !(lat && lng)) {
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(async (position) => {
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
-    
-                        queryParams.append('lat', lat);
-                        queryParams.append('lng', lng);
-    
+                        const nextLat = position.coords.latitude;
+                        const nextLng = position.coords.longitude;
+
+                        queryParams.set('lat', nextLat);
+                        queryParams.set('lng', nextLng);
+
                         await fetchProperties(queryParams);
                     }, (error) => {
                         alert("Unable to retrieve your location for distance calculations.");

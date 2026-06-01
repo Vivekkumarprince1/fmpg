@@ -9,9 +9,10 @@ const { isAuthenticated, authorizeAdmin } = require('../middleware/auth'); // Ad
 // Helper function to get booking count over time
 async function getBookingsOverTime() {
   return await Booking.aggregate([
+    { $addFields: { createdAtSafe: { $ifNull: ["$createdAt", { $toDate: "$_id" }] } } },
     {
       $group: {
-        _id: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
+        _id: { $dateToString: { format: "%d-%m-%Y", date: "$createdAtSafe" } },
         count: { $sum: 1 }
       }
     },
@@ -90,7 +91,7 @@ router.get('/', isAuthenticated, async (req, res) => {
       },
       {
         $project: {
-          propertyName: { $ifNull: ['$property.name', 'Unknown'] }, // Use property.name
+          propertyName: { $ifNull: ['$property.propertyName', 'Unknown'] }, // Use property.propertyName
           total: 1
         }
       }

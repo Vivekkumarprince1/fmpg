@@ -46,7 +46,7 @@ const bookingSchema = new mongoose.Schema({
     type: String,
     ref: 'User', 
     required: true }, // Reference to the owner
-});
+}, { timestamps: true });
 
 bookingSchema.index({ user: 1, createdAt: -1 });
 bookingSchema.index({ propertyID: 1, status: 1 });

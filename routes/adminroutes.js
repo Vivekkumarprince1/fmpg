@@ -105,7 +105,7 @@ router.post('/confirm/:ownerId', isAuthenticated, async (req, res) => {
     // Audit Log
     await AuditLog.create({
       action: 'CONFIRM_OWNER',
-      admin: req.user.userId,
+      admin: req.user.id,
       targetType: 'Property',
       targetId: newProperty._id,
       details: { propertyName: newProperty.propertyName, ownerEmail: owner.email }
@@ -315,7 +315,7 @@ router.post('/users/delete/:id', isAuthenticated, async (req, res) => {
     // Audit Log
     await AuditLog.create({
       action: 'DELETE_USER',
-      admin: req.user.userId,
+      admin: req.user.id,
       targetType: 'User',
       targetId: userId,
       details: { username: user.username, email: user.email }
@@ -657,7 +657,7 @@ router.post('/properties/delete/:id', isAuthenticated, async (req, res) => {
     // Audit Log
     await AuditLog.create({
       action: 'DELETE_PROPERTY',
-      admin: req.user.userId,
+      admin: req.user.id,
       targetType: 'Property',
       targetId: propertyId,
       details: { propertyName: property.propertyName }

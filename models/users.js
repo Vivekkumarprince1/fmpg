@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-});
+}, { timestamps: true });
 
 userSchema.index({ mobile: 1 });
 

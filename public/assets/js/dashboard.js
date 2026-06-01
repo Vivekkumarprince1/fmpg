@@ -2,6 +2,60 @@
     'use strict'; 
     $(function() {
 
+    var dashboardData = window.dashboardData || {};
+    var defaultRevenueLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    var defaultRevenueData = [105, 195, 290, 320, 400, 100, 290];
+    var defaultSalesLabels = ["2am", "4am", "6am", "8am", "10am", "12am"];
+    var defaultSalesDataA = [80, 115, 115, 150, 130, 160];
+    var defaultSalesDataB = [250, 310, 270, 330, 270, 380];
+
+    function normalizeSeries(series, length, fallback) {
+      if (!Array.isArray(series) || series.length === 0) {
+        return fallback.slice(0, length);
+      }
+      if (series.length >= length) {
+        return series.slice(series.length - length);
+      }
+      var padded = series.slice();
+      while (padded.length < length) {
+        padded.unshift(0);
+      }
+      return padded;
+    }
+
+    function buildRevenueColors(length) {
+      var colors = [];
+      for (var i = 0; i < length; i += 1) {
+        colors.push("rgba(255, 86, 48, 0.3)");
+      }
+      if (colors.length > 0) {
+        colors[colors.length - 1] = "rgb(255, 86, 48)";
+      }
+      return colors;
+    }
+
+    var revenueLabels = Array.isArray(dashboardData.labels) && dashboardData.labels.length > 0
+      ? dashboardData.labels
+      : defaultRevenueLabels;
+    var revenueData = normalizeSeries(dashboardData.bookings, revenueLabels.length, defaultRevenueData);
+    var orderLabels = Array.isArray(dashboardData.orderLabels) && dashboardData.orderLabels.length > 0
+      ? dashboardData.orderLabels
+      : null;
+    var orderSeries = Array.isArray(dashboardData.orderSeries) && dashboardData.orderSeries.length > 0
+      ? dashboardData.orderSeries
+      : null;
+
+    var salesLabels = orderLabels || revenueLabels.slice(-defaultSalesLabels.length);
+    if (salesLabels.length === 0) {
+      salesLabels = defaultSalesLabels.slice();
+    }
+    var salesDataA = orderSeries
+      ? normalizeSeries(orderSeries, salesLabels.length, defaultSalesDataA)
+      : normalizeSeries(dashboardData.bookings, salesLabels.length, defaultSalesDataA);
+    var salesDataB = orderSeries
+      ? normalizeSeries([], salesLabels.length, defaultSalesDataB)
+      : normalizeSeries(dashboardData.users, salesLabels.length, defaultSalesDataB);
+
     //Revenue Chart
     if ($("#revenue-chart").length) {
         var revenueChartCanvas = $("#revenue-chart").get(0).getContext("2d");
@@ -9,10 +63,10 @@
         var revenueChart = new Chart(revenueChartCanvas, {
             type: 'bar',
             data: {
-            labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        labels: revenueLabels,
             datasets: [{
-                data: [105, 195, 290, 320, 400, 100, 290],
-                backgroundColor: ["rgba(255, 86, 48, 0.3)", "rgba(255, 86, 48, 0.3)", "rgba(255, 86, 48, 0.3)", "rgb(255, 86, 48)", "rgba(255, 86, 48, 0.3)", "rgba(255, 86, 48, 0.3)", "rgba(255, 86, 48, 0.3)"],
+          data: revenueData,
+          backgroundColor: buildRevenueColors(revenueLabels.length),
                 }
             ]
             },
@@ -65,9 +119,20 @@
         var salesChart = new Chart(salesChartCanvas, {
           type: 'line',
           data: {
-            labels: ["2am", "4am", "6am", "8am", "10am", "12am"],
-            datasets: [{
-                data: [80, 115, 115, 150, 130, 160],
+            labels: salesLabels,
+            datasets: orderSeries ? [{
+                data: salesDataA,
+                backgroundColor: gradient1,
+                borderColor: [
+                  '#08bdde'
+                ],
+                borderWidth: 2,
+                pointBorderColor: "#08bdde",
+                pointBorderWidth: 4,
+                pointRadius: 3,
+                fill: false,
+              }] : [{
+                data: salesDataA,
                 backgroundColor: gradient1,
                 borderColor: [
                   '#08bdde'
@@ -79,7 +144,7 @@
                 fill: 'origin',
               },
               {
-                data: [250, 310, 270, 330, 270, 380],
+                data: salesDataB,
                 backgroundColor: gradient2,
                 borderColor: [
                   '#00b67a'
@@ -89,8 +154,7 @@
                 pointBorderWidth: 4,
                 pointRadius: 1,
                 fill: 'origin',
-              }
-            ]
+              }]
           },
           options: {
             responsive: true,

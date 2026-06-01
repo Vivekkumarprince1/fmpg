@@ -8,6 +8,7 @@ const localStrategy = require("passport-local");
 const { error } = require('console');
 const Booking = require('../models/Booking');
 const Property = require('../models/Property');
+const Payment = require('../models/Payment');
 const { isAuthenticated, authorizeAdmin } = require('../middleware/auth'); // Adjust path as needed
 
 // passport.use(new localStrategy({ usernameField: 'email' }, userModel.authenticate()));
@@ -279,6 +280,10 @@ router.get('/search-page', async (req, res) => {
   try {
     let { gender = 'all', sort = '', lat, lng, city } = req.query;
 
+    if (sort === 'relevant') {
+      sort = '';
+    }
+
     // Use session/cookie as fallback for city if not provided
     if (!city && !lat && !lng) {
       city = req.session.lastCity || 'Hoshiarpur';
@@ -291,20 +296,27 @@ router.get('/search-page', async (req, res) => {
     // Initialize query
     let query = {};
     if (gender && gender !== 'all') {
-      query.gender = gender;
+      query.gender = new RegExp(`^${gender}$`, 'i');
     }
     if (city) {
-      query.city = new RegExp(city, 'i');
+      query.city = new RegExp(city.trim(), 'i');
     }
 
     // Fetch filtered properties
     let properties = await Property.find(query).populate('rooms');
 
+    const getMinRoomPrice = (property) => {
+      if (!property.rooms || property.rooms.length === 0) {
+        return Infinity;
+      }
+      return Math.min(...property.rooms.map(room => room.price ?? Infinity));
+    };
+
     // Sort properties based on selected criteria
     if (sort === 'low-to-high') {
-      properties = properties.sort((a, b) => (a.rooms[0]?.price || Infinity) - (b.rooms[0]?.price || Infinity));
+      properties = properties.sort((a, b) => getMinRoomPrice(a) - getMinRoomPrice(b));
     } else if (sort === 'high-to-low') {
-      properties = properties.sort((a, b) => (b.rooms[0]?.price || 0) - (a.rooms[0]?.price || 0));
+      properties = properties.sort((a, b) => getMinRoomPrice(b) - getMinRoomPrice(a));
     } else if (sort === 'distance' && lat && lng) {
       const userLat = parseFloat(lat);
       const userLng = parseFloat(lng);
@@ -449,7 +461,96 @@ router.get('/profile', isAuthenticated, async function (req, res) {
 
     if (user.role === 'superadmin' || user.role === 'admin') {
       req.flash('success', 'Successfully logged in as admin!');
-      return res.render('admin/profile', { admin: user });
+
+      const now = new Date();
+      const startDate = new Date(now);
+      startDate.setDate(startDate.getDate() - 6);
+      startDate.setHours(0, 0, 0, 0);
+
+      const endDate = new Date(now);
+      endDate.setHours(23, 59, 59, 999);
+
+      const [
+        bookingsByDay,
+        usersByDay,
+        totalBookings,
+        totalUsers,
+        activeBookings,
+        totalRevenueAgg,
+        confirmedBookings,
+        pendingBookings,
+        cancelledBookings
+      ] = await Promise.all([
+        Booking.aggregate([
+          { $addFields: { createdAtSafe: { $ifNull: ["$createdAt", { $toDate: "$_id" }] } } },
+          { $match: { createdAtSafe: { $gte: startDate, $lte: endDate } } },
+          {
+            $group: {
+              _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAtSafe" } },
+              count: { $sum: 1 }
+            }
+          }
+        ]),
+        userModel.aggregate([
+          { $addFields: { createdAtSafe: { $ifNull: ["$createdAt", { $toDate: "$_id" }] } } },
+          { $match: { createdAtSafe: { $gte: startDate, $lte: endDate } } },
+          {
+            $group: {
+              _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAtSafe" } },
+              count: { $sum: 1 }
+            }
+          }
+        ]),
+        Booking.countDocuments(),
+        userModel.countDocuments(),
+        Booking.countDocuments({
+          startDate: { $lt: Date.now() },
+          endDate: { $gt: Date.now() }
+        }),
+        Payment.aggregate([
+          { $group: { _id: null, total: { $sum: "$amount" } } }
+        ]),
+        Booking.countDocuments({ status: 'Confirmed' }),
+        Booking.countDocuments({ status: 'Pending waiting for owner confirmation' }),
+        Booking.countDocuments({ status: 'Cancelled' })
+      ]);
+
+      const bookingsMap = new Map(bookingsByDay.map(item => [item._id, item.count]));
+      const usersMap = new Map(usersByDay.map(item => [item._id, item.count]));
+
+      const labels = [];
+      const bookingsSeries = [];
+      const usersSeries = [];
+      const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+      for (let i = 0; i < 7; i += 1) {
+        const day = new Date(startDate);
+        day.setDate(startDate.getDate() + i);
+        const key = day.toISOString().slice(0, 10);
+
+        labels.push(weekDays[day.getDay()]);
+        bookingsSeries.push(bookingsMap.get(key) || 0);
+        usersSeries.push(usersMap.get(key) || 0);
+      }
+
+      const totalRevenue = totalRevenueAgg[0] ? totalRevenueAgg[0].total : 0;
+
+      return res.render('admin/profile', {
+        admin: user,
+        dashboardData: {
+          labels,
+          bookings: bookingsSeries,
+          users: usersSeries,
+          orderLabels: ['Confirmed', 'Pending', 'Cancelled'],
+          orderSeries: [confirmedBookings, pendingBookings, cancelledBookings]
+        },
+        summaryStats: {
+          totalRevenue,
+          totalBookings,
+          totalUsers,
+          activeBookings,
+        }
+      });
     }
 
     if (user.role === 'owner') {
