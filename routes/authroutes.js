@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const User = require('../models/users'); // Adjust the path to your User model
 const Otp = require('../models/Otp');
-const nodemailer = require('nodemailer');
+const { transporter } = require('../utils/emailService');
 
 const emailUser = process.env.EMAIL_USER;
 const emailPass = process.env.EMAIL_PASS;
@@ -24,15 +24,6 @@ const otpLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { message: 'Too many OTP requests. Please try again later.' },
-});
-
-// Setup Nodemailer transporter
-const transporter = nodemailer.createTransport({
-  service: process.env.EMAIL_SERVICE || 'gmail',
-  auth: {
-    user: emailUser,
-    pass: emailPass,
-  },
 });
 
 // Login GET route
@@ -136,10 +127,23 @@ router.post('/send-otp', otpLimiter, async (req, res) => {
 
   // Email options
   const mailOptions = {
-    from: process.env.EMAIL_FROM || emailUser,
+    from: process.env.EMAIL_FROM || 'FMPG <contact@fmpg.in>',
+    replyTo: process.env.REPLY_TO_EMAIL || 'fmpg974@gmail.com',
     to: email,
-    subject: 'Your OTP for Verification',
-    text: `Your OTP is ${otp}. Please do not share this with anyone.`,
+    subject: 'Your FMPG Verification OTP',
+    text: `Your OTP is ${otp}. Please do not share this with anyone. This code is valid for 10 minutes.`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 8px;">
+        <h2 style="color: #2563eb; margin-top: 0;">FMPG Verification Code</h2>
+        <p style="color: #334155; font-size: 15px;">Use the OTP below to complete your login or verification:</p>
+        <div style="text-align: center; margin: 24px 0;">
+          <span style="font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #1e293b; background: #f1f5f9; padding: 10px 20px; border-radius: 6px; display: inline-block;">${otp}</span>
+        </div>
+        <p style="color: #64748b; font-size: 13px;">This code is valid for 10 minutes. If you did not request this, please ignore this email.</p>
+        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+        <p style="color: #94a3b8; font-size: 12px; margin-bottom: 0;">FMPG Team &bull; Reply to this email if you need assistance.</p>
+      </div>
+    `,
   };
 
   // Send the email

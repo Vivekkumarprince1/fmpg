@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/users');
-const nodemailer = require('nodemailer');
+const { sendMail } = require('../utils/emailService');
 const bcrypt = require('bcryptjs');
 
 // GET Forgot Password Page
@@ -24,21 +24,29 @@ router.post('/', async (req, res) => {
   await user.save();
 
   // Send OTP via email
-  const transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: { user: 'fmpg974@gmail.com', pass: 'fcdz hxcn yktl zzzx' },
-    pool: true, rateLimit: 1, maxConnections: 1, maxMessages: 5, connectionTimeout: 10000, socketTimeout: 10000,
-  });
-
   const mailOptions = {
     to: user.email,
-    from: 'fmpg974@gmail.com',
+    from: process.env.EMAIL_FROM || 'FMPG <contact@fmpg.in>',
+    replyTo: process.env.REPLY_TO_EMAIL || 'fmpg974@gmail.com',
     subject: 'Your Password Reset OTP',
     text: `You requested a password reset. Use this OTP to complete the process: ${otp}. If you didn't request this, ignore this email.`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 8px;">
+        <h2 style="color: #2563eb; margin-top: 0;">Password Reset Request</h2>
+        <p style="color: #334155; font-size: 15px;">You requested to reset your password. Use the OTP below to complete the reset process:</p>
+        <div style="text-align: center; margin: 24px 0;">
+          <span style="font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #1e293b; background: #f1f5f9; padding: 10px 20px; border-radius: 6px; display: inline-block;">${otp}</span>
+        </div>
+        <p style="color: #64748b; font-size: 13px;">This code is valid for 1 hour. If you didn't request this, you can safely ignore this email.</p>
+        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+        <p style="color: #94a3b8; font-size: 12px; margin-bottom: 0;">FMPG Security Team</p>
+      </div>
+    `,
   };
 
-  transporter.sendMail(mailOptions, (err) => {
+  sendMail(mailOptions, (err) => {
     if (err) {
+      console.error('Password reset email error:', err);
       req.flash('error', 'Error sending the email.');
       return res.redirect('/forgot');
     }

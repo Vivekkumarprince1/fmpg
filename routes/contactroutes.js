@@ -1,8 +1,6 @@
-//contactroutes.js
-
 const express = require('express');
 const router = express.Router();
-const nodemailer = require('nodemailer');
+const { sendMail } = require('../utils/emailService');
 const Contact = require('../models/Contact'); // Import the Contact model
 
 // Handle form submission
@@ -17,27 +15,30 @@ router.post('/contact', async (req, res) => {
         });
         await newContact.save();
 
-        // Send confirmation email
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'fmpg974@gmail.com', // Replace with your email
-                pass: 'fcdz hxcn yktl zzzx'   // Replace with your app password (Google)
-            }
-        });
-
+        // Send notification email to admin (fmpg974@gmail.com) with customer as replyTo
         const mailOptions = {
-            from: req.body.email,
-            to: 'fmpg974@gmail.com', // Replace with your email
-            subject: req.body.subject,
-            text: `Message from: ${req.body.name} (${req.body.email})\n\n${req.body.message}\n\nReceived at: ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })}`
+            from: process.env.EMAIL_FROM || 'FMPG Contact <contact@fmpg.in>',
+            replyTo: req.body.email,
+            to: process.env.REPLY_TO_EMAIL || 'fmpg974@gmail.com',
+            subject: `Contact Inquiry: ${req.body.subject || 'Website Message'}`,
+            text: `Message from: ${req.body.name} (${req.body.email})\n\n${req.body.message}\n\nReceived at: ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })}`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+                <h3 style="color: #1e293b; margin-top: 0;">New Contact Form Message</h3>
+                <p><strong>From:</strong> ${req.body.name} &lt;${req.body.email}&gt;</p>
+                <p><strong>Subject:</strong> ${req.body.subject || 'N/A'}</p>
+                <div style="background: #f8fafc; padding: 15px; border-radius: 6px; border-left: 4px solid #2563eb; margin: 15px 0;">
+                  <p style="white-space: pre-wrap; margin: 0; color: #334155;">${req.body.message}</p>
+                </div>
+                <p style="color: #64748b; font-size: 12px;">Hit 'Reply' directly to respond to ${req.body.email}.</p>
+              </div>
+            `
         };
-        
 
-        transporter.sendMail(mailOptions, (error, info) => {
+        sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.log('Error sending email:', error);
-                return res.status(500).send('Error sending email.');
+                console.error('Error sending contact notification email:', error);
+                // Even if email fails, record is saved
             }
             res.redirect('/contact?success=true'); // Redirect after submission
         });

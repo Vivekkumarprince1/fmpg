@@ -6,7 +6,7 @@ const userModel=require('../models/users');
 const Property = require('../models/Property');
 const Room = require('../models/Room');
 const PDFDocument = require('pdfkit');
-const nodemailer = require('nodemailer');
+const { sendMail } = require('../utils/emailService');
 const Owner = require('../models/owner');
 const { uploadPropertyAssets, isCloudinaryConfigured } = require('../middleware/cloudinaryUpload');
 const { isAuthenticated, authorizeOwner } = require('../middleware/auth'); // Adjust path as needed
@@ -222,28 +222,31 @@ function generateInvoice(booking, user, property, callback) {
 
 // Helper function to send email with PDF attachment
 function sendInvoiceEmail(user, pdfBuffer) {
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'fmpg974@gmail.com', // Your email
-      pass: 'fcdz hxcn yktl zzzx', // Your app-specific password
-    },
-  });
-
   const mailOptions = {
-    from: 'fmpg974@gmail.com',
+    from: process.env.EMAIL_FROM || 'FMPG Bookings <contact@fmpg.in>',
+    replyTo: process.env.REPLY_TO_EMAIL || 'fmpg974@gmail.com',
     to: user.email,
-    subject: 'Your Booking Invoice',
-    text: `Dear ${user.username},\n\nAttached is your invoice for your booking.\n\nBest regards,\nFMPG`,
+    subject: 'Your Booking Invoice - FMPG',
+    text: `Dear ${user.username},\n\nAttached is your invoice for your booking.\n\nBest regards,\nFMPG Team`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+        <h2 style="color: #2563eb; margin-top: 0;">Booking Confirmed!</h2>
+        <p>Dear ${user.username},</p>
+        <p>Your booking has been confirmed by the property owner. Please find your detailed booking invoice attached as a PDF.</p>
+        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+        <p style="color: #64748b; font-size: 13px;">If you have any questions, you can reply directly to this email.</p>
+        <p style="margin-bottom: 0;">Warm regards,<br><strong>FMPG Team</strong></p>
+      </div>
+    `,
     attachments: [
       {
-        filename: 'invoice.pdf',
+        filename: 'booking-invoice.pdf',
         content: pdfBuffer,
       },
     ],
   };
 
-  return transporter.sendMail(mailOptions);
+  return sendMail(mailOptions);
 }
 
 // Confirm a booking and send the invoice
