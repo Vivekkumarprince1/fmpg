@@ -22,13 +22,28 @@ async function sendMail(mailOptions, callback) {
       // Determine 'reply_to' address (defaults to fmpg974@gmail.com so replies go to personal inbox)
       const replyTo = mailOptions.replyTo || mailOptions.reply_to || process.env.REPLY_TO_EMAIL || 'fmpg974@gmail.com';
 
+      // Build well-formed HTML to prevent spam trigger on malformed/bare content
+      let htmlBody = mailOptions.html;
+      if (!htmlBody && mailOptions.text) {
+        htmlBody = `
+          <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; color: #1e293b; line-height: 1.6;">
+            <p style="font-size: 15px;">${mailOptions.text.replace(/\n/g, '<br>')}</p>
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0 16px;">
+            <p style="color: #94a3b8; font-size: 12px; margin: 0;">FMPG &bull; Automated notification. Need help? Reply directly to this email.</p>
+          </div>
+        `;
+      }
+
       const payload = {
         from,
         to,
         reply_to: replyTo,
         subject: mailOptions.subject || '(No Subject)',
         text: mailOptions.text || undefined,
-        html: mailOptions.html || (mailOptions.text ? `<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">${mailOptions.text.replace(/\n/g, '<br>')}</div>` : undefined),
+        html: htmlBody || undefined,
+        headers: {
+          'X-Entity-Ref-ID': `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+        },
       };
 
       // Process attachments if any (PDFs, invoices, etc.)
