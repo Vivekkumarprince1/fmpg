@@ -139,39 +139,65 @@
             });
         }
 
-        // Send OTP API fetch dispatch
-        function sendOTP() {
-            const email = emailInput.value.trim();
-            if (email) {
-                sendOtpButton.disabled = true;
-                sendOtpButton.innerText = "Sending...";
+        // Send OTP API fetch dispatch with 30s cooldown
+        let signupOtpCooldownTimer = null;
+        function startSignupOtpCooldown(seconds = 30) {
+            if (signupOtpCooldownTimer) clearInterval(signupOtpCooldownTimer);
+            sendOtpButton.disabled = true;
+            sendOtpButton.innerText = "Please wait...";
+            sendOtpButton.classList.add('opacity-60', 'cursor-not-allowed');
 
-                fetch('/send-otp', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message === 'OTP sent to email') {
-                        alert('Verification OTP sent successfully to ' + email);
-                        otpContainer.classList.remove('hidden');
-                        sendOtpButton.innerText = "Resend";
-                    } else {
-                        alert(data.message || 'Error occurred while sending OTP code.');
-                        sendOtpButton.innerText = "Send OTP";
-                    }
+            let remaining = seconds;
+            signupOtpCooldownTimer = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(signupOtpCooldownTimer);
+                    signupOtpCooldownTimer = null;
                     sendOtpButton.disabled = false;
-                })
-                .catch(error => {
-                    console.error('OTP Signup Send Failure:', error);
-                    alert('Server connection error. Failed to send OTP code.');
+                    sendOtpButton.innerText = "Resend OTP";
+                    sendOtpButton.classList.remove('opacity-60', 'cursor-not-allowed');
+                }
+            }, 1000);
+        }
+
+        function sendOTP() {
+            if (sendOtpButton.disabled) return;
+            const email = emailInput.value.trim();
+            if (!email) {
+                alert('Please enter a valid email address first.');
+                return;
+            }
+
+            // In-flight debounce
+            sendOtpButton.disabled = true;
+            sendOtpButton.innerText = "Sending...";
+
+            fetch('/send-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            })
+            .then(async (response) => {
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Verification OTP sent successfully to ' + email);
+                    otpContainer.classList.remove('hidden');
+                    startSignupOtpCooldown(data.cooldownSeconds || 30);
+                } else if (response.status === 429) {
+                    alert(data.message || 'Please wait before requesting another OTP.');
+                    startSignupOtpCooldown(data.remainingSeconds || 30);
+                } else {
+                    alert(data.message || 'Error occurred while sending OTP code.');
                     sendOtpButton.disabled = false;
                     sendOtpButton.innerText = "Send OTP";
-                });
-            } else {
-                alert('Please enter a valid email address first.');
-            }
+                }
+            })
+            .catch(error => {
+                console.error('OTP Signup Send Failure:', error);
+                alert('Server connection error. Failed to send OTP code.');
+                sendOtpButton.disabled = false;
+                sendOtpButton.innerText = "Send OTP";
+            });
         }
 
         // Verify OTP API fetch dispatch

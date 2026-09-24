@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const User = require('../models/users'); // Adjust the path to your User model
 const Otp = require('../models/Otp');
 const { transporter } = require('../utils/emailService');
+const { checkCooldown, recordSend } = require('../utils/cooldownManager');
 
 const emailUser = process.env.EMAIL_USER;
 const emailPass = process.env.EMAIL_PASS;
@@ -100,6 +101,15 @@ router.post('/send-otp', otpLimiter, async (req, res) => {
     return res.status(400).json({ message: 'Email is required' });
   }
 
+  // Enforce 30-second cooldown per recipient to prevent multiple rapid clicks
+  const cooldown = checkCooldown(email, 30);
+  if (!cooldown.allowed) {
+    return res.status(429).json({
+      message: `Please wait ${cooldown.remainingSeconds} seconds before requesting another OTP`,
+      remainingSeconds: cooldown.remainingSeconds,
+    });
+  }
+
   // Generate OTP and store hashed OTP in DB with TTL
   const otp = generateOTP();
   const otpHash = crypto.createHash('sha256').update(String(otp)).digest('hex');
@@ -113,15 +123,17 @@ router.post('/send-otp', otpLimiter, async (req, res) => {
   req.session.email = email;
   req.session.isVerified = false;
 
-  const emailConfigured = Boolean(emailUser && emailPass);
+  const emailConfigured = Boolean(process.env.RESEND_API_KEY || (emailUser && emailPass));
   if (!emailConfigured) {
     if (process.env.NODE_ENV === 'production') {
       return res.status(500).json({ message: 'Email configuration is missing' });
     }
 
+    recordSend(email);
     return res.status(200).json({
       message: 'OTP generated in development mode',
       devOtp: String(otp),
+      cooldownSeconds: 30,
     });
   }
 
@@ -149,7 +161,8 @@ router.post('/send-otp', otpLimiter, async (req, res) => {
   // Send the email
   try {
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: 'OTP sent to email' });
+    recordSend(email);
+    res.status(200).json({ message: 'OTP sent to email', cooldownSeconds: 30 });
   } catch (error) {
     console.error('Error sending email:', error);
     res.status(500).json({ message: 'Error sending OTP' });

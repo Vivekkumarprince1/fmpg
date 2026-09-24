@@ -149,15 +149,37 @@
             }
         });
 
-        // OTP Fetch request
+        // OTP Cooldown & Fetch request
+        let otpCooldownTimer = null;
+        function startOtpCooldown(seconds = 30) {
+            if (otpCooldownTimer) clearInterval(otpCooldownTimer);
+            sendOtpButton.disabled = true;
+            sendOtpButton.innerText = "Please wait...";
+            sendOtpButton.classList.add('opacity-60', 'cursor-not-allowed');
+
+            let remaining = seconds;
+            otpCooldownTimer = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(otpCooldownTimer);
+                    otpCooldownTimer = null;
+                    sendOtpButton.disabled = false;
+                    sendOtpButton.innerText = "Resend OTP";
+                    sendOtpButton.classList.remove('opacity-60', 'cursor-not-allowed');
+                }
+            }, 1000);
+        }
+
         if (sendOtpButton) {
             sendOtpButton.addEventListener('click', () => {
+                if (sendOtpButton.disabled) return;
                 const identifier = identifierInput.value.trim();
                 if (!identifier) {
                     alert('Please enter your email or mobile number first.');
                     return;
                 }
 
+                // In-flight debounce to prevent duplicate network calls
                 sendOtpButton.disabled = true;
                 sendOtpButton.innerText = "Sending...";
 
@@ -166,19 +188,23 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ identifier }),
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message) {
-                        alert(data.message);
-                        sendOtpButton.innerText = "Resend";
+                .then(async (response) => {
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert(data.message || 'OTP sent successfully to your email!');
+                        startOtpCooldown(data.cooldownSeconds || 30);
+                    } else if (response.status === 429) {
+                        alert(data.message || 'Please wait before requesting another OTP.');
+                        startOtpCooldown(data.remainingSeconds || 30);
                     } else {
-                        alert('Failed to send OTP code. Please try again.');
+                        alert(data.message || 'Failed to send OTP code. Please try again.');
+                        sendOtpButton.disabled = false;
                         sendOtpButton.innerText = "Send OTP";
                     }
-                    sendOtpButton.disabled = false;
                 })
                 .catch(error => {
                     console.error('OTP Send Error:', error);
+                    alert('Network error while sending OTP. Please try again.');
                     sendOtpButton.disabled = false;
                     sendOtpButton.innerText = "Send OTP";
                 });

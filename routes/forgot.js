@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/users');
 const { sendMail } = require('../utils/emailService');
+const { checkCooldown, recordSend } = require('../utils/cooldownManager');
 const bcrypt = require('bcryptjs');
 
 // GET Forgot Password Page
@@ -14,6 +15,13 @@ router.post('/', async (req, res) => {
 
   if (!user) {
     req.flash('error', 'No account with that email address exists.');
+    return res.redirect('/forgot');
+  }
+
+  // Check 30-second cooldown
+  const cooldown = checkCooldown(user.email, 30);
+  if (!cooldown.allowed) {
+    req.flash('error', `Please wait ${cooldown.remainingSeconds} seconds before requesting another password reset OTP.`);
     return res.redirect('/forgot');
   }
 
@@ -50,6 +58,7 @@ router.post('/', async (req, res) => {
       req.flash('error', 'Error sending the email.');
       return res.redirect('/forgot');
     }
+    recordSend(user.email);
     req.flash('success', `An OTP has been sent to ${user.email}.`);
     res.redirect(`/forgot/verify-otp?email=${encodeURIComponent(user.email)}`);
   });

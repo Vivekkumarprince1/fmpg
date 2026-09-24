@@ -1,11 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const { sendMail } = require('../utils/emailService');
+const { checkCooldown, recordSend } = require('../utils/cooldownManager');
 const Contact = require('../models/Contact'); // Import the Contact model
 
 // Handle form submission
 router.post('/contact', async (req, res) => {
     try {
+        const identifier = (req.body.email || req.ip || '').toLowerCase();
+        const cooldown = checkCooldown(identifier, 30);
+        if (!cooldown.allowed) {
+            return res.redirect(`/contact?error=${encodeURIComponent(`Please wait ${cooldown.remainingSeconds} seconds before sending another message.`)}`);
+        }
+
         // Store form data in database
         const newContact = new Contact({
             name: req.body.name,
@@ -38,7 +45,8 @@ router.post('/contact', async (req, res) => {
         sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.error('Error sending contact notification email:', error);
-                // Even if email fails, record is saved
+            } else {
+                recordSend(identifier);
             }
             res.redirect('/contact?success=true'); // Redirect after submission
         });
